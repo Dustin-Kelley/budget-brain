@@ -53,7 +53,7 @@ export function AppSidebar() {
         <SidebarGroup className="h-full">
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="flex flex-col gap-2">
               <DarkModeToggle />
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
