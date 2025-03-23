@@ -10,6 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { DarkModeToggle } from "./DarkModeToggle"
 
 // Menu items.
 const items = [
@@ -58,6 +59,7 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <DarkModeToggle />
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
