@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { BarChart, Calendar, Home, LogOut, Inbox, Search, Settings } from "lucide-react"
 
 import {
   Sidebar,
@@ -15,24 +15,29 @@ import { DarkModeToggle } from "./DarkModeToggle"
 // Menu items.
 const items = [
   {
-    title: "Home",
+    title: "Dashboard",
     url: "#",
     icon: Home,
   },
   {
-    title: "Inbox",
+    title: "Plan",
     url: "#",
     icon: Inbox,
   },
   {
-    title: "Calendar",
+    title: "Transactions",
     url: "#",
     icon: Calendar,
   },
   {
-    title: "Search",
+    title: "Remaining",
     url: "#",
     icon: Search,
+  },
+  {
+    title: "Insights",
+    url: "#",
+    icon: BarChart,
   },
   {
     title: "Settings",
@@ -45,10 +50,11 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>
-        <SidebarGroup>
+        <SidebarGroup className="h-full">
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              <DarkModeToggle />
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
@@ -59,7 +65,20 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
-              <DarkModeToggle />
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+            <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <a href="#">
+                      <LogOut />
+                      <span>Logout</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
