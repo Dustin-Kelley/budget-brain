@@ -31,9 +31,8 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      className="dark"
-      style={{ colorScheme: "dark" }}
       lang="en"
+      suppressHydrationWarning
     >
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
