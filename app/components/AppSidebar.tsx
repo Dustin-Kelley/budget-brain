@@ -1,4 +1,4 @@
-import { BarChart, Home, LogOut,  Settings, CreditCard, NotebookPen, TrendingDown } from "lucide-react"
+import { BarChart, Home, LogOut,  Settings, CreditCard, NotebookPen, TrendingDown, User } from "lucide-react"
 
 import {
   Sidebar,
@@ -52,7 +52,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup className="h-full">
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel>Budget Brain</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="flex flex-col gap-2">
               <DarkModeToggle />
@@ -72,6 +72,14 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
+            <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link href="/profile">
+                      <User />
+                      <span>Profile</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
             <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <a href="#">
