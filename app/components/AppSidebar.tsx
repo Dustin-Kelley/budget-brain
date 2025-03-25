@@ -1,4 +1,4 @@
-import { BarChart, Calendar, Home, LogOut, Inbox, Search, Settings } from "lucide-react"
+import { BarChart, Home, LogOut,  Settings, CreditCard, NotebookPen, TrendingDown } from "lucide-react"
 
 import {
   Sidebar,
@@ -11,37 +11,38 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { DarkModeToggle } from "./DarkModeToggle"
+import Link from "next/link"
 
 // Menu items.
 const items = [
   {
     title: "Dashboard",
-    url: "#",
+    url: "/",
     icon: Home,
   },
   {
     title: "Plan",
-    url: "#",
-    icon: Inbox,
+    url: "/plan",
+    icon: NotebookPen,
   },
   {
     title: "Transactions",
-    url: "#",
-    icon: Calendar,
+    url: "/transactions",
+    icon: CreditCard,
   },
   {
     title: "Remaining",
-    url: "#",
-    icon: Search,
+    url: "/remaining",
+    icon: TrendingDown,
   },
   {
     title: "Insights",
-    url: "#",
+    url: "/insights",
     icon: BarChart,
   },
   {
     title: "Settings",
-    url: "#",
+    url: "/settings",
     icon: Settings,
   },
 ]
@@ -58,10 +59,10 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
