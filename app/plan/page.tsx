@@ -1,4 +1,4 @@
-import { CalendarIcon, Plus } from "lucide-react"
+import { CalendarIcon, Plus, DollarSign } from "lucide-react"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
@@ -7,12 +7,16 @@ import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 // Sample data - replace with your actual data
- const budgetData = {
+const budgetData = {
   summary: {
     planned: 3000,
     spent: 1850,
     remaining: 1150,
   },
+  income: [
+    { name: "Salary", amount: 2500 },
+    { name: "Freelance", amount: 500 },
+  ],
   categories: [
     { 
       name: "Housing", 
@@ -95,9 +99,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
   ],
 }
 
-export default function BudgetPage() {
 
 
+export default function page() {
   return (
     <main className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -125,8 +129,9 @@ export default function BudgetPage() {
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
         </TabsList>
 
-        {/* Categories Tab */}
-        <TabsContent value="planned" className="space-y-4">
+        {/* Planed Tab */}
+        <TabsContent value="planned" className="flex flex-col gap-4">
+          <IncomeCard />
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
             {budgetData.categories.map((category) => (
               <Card key={category.name}>
@@ -144,6 +149,10 @@ export default function BudgetPage() {
                         <span className="font-medium">${subcategory.planned}</span>
                       </div>
                     ))}
+                    <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add New Item
+                    </Button>
                   </div>
                 </CardContent>
                 <CardFooter className="pt-0">
@@ -237,5 +246,48 @@ export default function BudgetPage() {
         </TabsContent>
       </Tabs>
     </main>
+  )
+}
+
+
+const IncomeCard = () => {
+  const totalIncome = budgetData.income.reduce((total, income) => total + income.amount, 0)
+  const totalPlanned = budgetData.categories.reduce((total, category) => total + category.planned, 0)
+  const remaining = totalIncome - totalPlanned
+
+  return (
+    <Card>
+      <CardContent>
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <p className="text-sm font-medium">Total Income</p>
+              <p className="text-2xl font-bold">${totalIncome}</p>
+            </div>
+            <div className="rounded-full bg-muted p-3">
+              <DollarSign className="h-6 w-6 text-muted-foreground" />
+            </div>
+          </div>
+          <div className="flex flex-col gap-2">
+            {budgetData.income.map((income) => (
+              <div key={income.name} className="flex items-center justify-between text-sm">
+                <span className="font-medium">{income.name}</span>
+                <span className="font-medium">${income.amount}</span>
+              </div>
+            ))}
+            <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Income Source
+            </Button>
+          </div>
+          <div className="flex items-center pt-2 border-t">
+            <div className="flex items-center gap-2">
+              <p className="text-2xl font-bold text-muted-foreground">${remaining}</p>
+              <span className="text-xs">left to budget</span>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   )
 }
