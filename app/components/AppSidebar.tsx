@@ -49,7 +49,7 @@ const items = [
 
 export function AppSidebar() {
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar variant="inset"  collapsible="icon">
       <SidebarContent>
         <SidebarGroup className="h-full">
           <SidebarGroupLabel>Budget Brain</SidebarGroupLabel>

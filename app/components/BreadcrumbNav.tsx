@@ -12,7 +12,7 @@ export function BreadcrumbNav() {
     segments[segments.length - 1].replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase())
   
   return (
-    <Breadcrumb>
+    <Breadcrumb >
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbPage>{pageName}</BreadcrumbPage>
