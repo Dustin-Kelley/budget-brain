@@ -122,5 +122,7 @@
   main {
     @apply bg-background;
     @apply flex-1 flex-col gap-4;
+    @apply p-4 md:p-8;
+    @apply rounded-b-xl;
   }
 }

@@ -1,10 +1,27 @@
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import {  TrendingUpIcon, TrendingDownIcon } from "lucide-react";
+import {  TrendingUpIcon, TrendingDownIcon, Plus, CalendarIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 export default function Home() {
   return (
-    <main className=" rounded-b-xl">
-      <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6">
+    <main className="flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Budget Dashboard</h1>
+          <p className="text-muted-foreground">Track and manage your monthly budget</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm">
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            April 2024
+          </Button>
+          <Button size="sm">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Expense
+          </Button>
+        </div>
+      </div>
+
       <Card className="@container/card">
         <CardHeader className="relative">
           <CardDescription>Total Revenue</CardDescription>
@@ -89,7 +106,6 @@ export default function Home() {
           <div className="text-muted-foreground">Meets growth projections</div>
         </CardFooter>
       </Card>
-    </div>
     </main>
   );
 }

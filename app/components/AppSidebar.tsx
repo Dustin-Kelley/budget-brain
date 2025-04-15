@@ -1,4 +1,4 @@
-import { BarChart, Home, LogOut,  Settings, CreditCard, NotebookPen, TrendingDown, User } from "lucide-react"
+import { BarChart, Home, LogOut,  Settings, NotebookPen, User } from "lucide-react"
 
 import {
   Sidebar,
@@ -23,16 +23,6 @@ const items = [
     title: "Plan",
     url: "/plan",
     icon: NotebookPen,
-  },
-  {
-    title: "Transactions",
-    url: "/transactions",
-    icon: CreditCard,
-  },
-  {
-    title: "Remaining",
-    url: "/remaining",
-    icon: TrendingDown,
   },
   {
     title: "Insights",

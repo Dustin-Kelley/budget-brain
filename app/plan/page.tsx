@@ -1,7 +1,214 @@
-import React from 'react'
+import { CalendarIcon, CreditCard, DollarSign, LineChart, PieChart, Plus, Wallet } from "lucide-react"
+import Link from "next/link"
 
-export default function page() {
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Progress } from "@/components/ui/progress"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+// Sample data - replace with your actual data
+const budgetData = {
+  summary: {
+    planned: 3000,
+    spent: 1850,
+    remaining: 1150,
+  },
+  categories: [
+    { name: "Housing", planned: 1200, spent: 1200, remaining: 0, color: "bg-blue-500" },
+    { name: "Food", planned: 500, spent: 320, remaining: 180, color: "bg-green-500" },
+    { name: "Transportation", planned: 300, spent: 150, remaining: 150, color: "bg-yellow-500" },
+    { name: "Entertainment", planned: 200, spent: 180, remaining: 20, color: "bg-purple-500" },
+    { name: "Utilities", planned: 400, spent: 0, remaining: 400, color: "bg-red-500" },
+    { name: "Savings", planned: 400, spent: 0, remaining: 400, color: "bg-teal-500" },
+  ],
+  recentTransactions: [
+    { id: 1, date: "2024-04-12", description: "Grocery Store", category: "Food", amount: 85.42 },
+    { id: 2, date: "2024-04-10", description: "Monthly Rent", category: "Housing", amount: 1200 },
+    { id: 3, date: "2024-04-08", description: "Gas Station", category: "Transportation", amount: 45.3 },
+    { id: 4, date: "2024-04-05", description: "Movie Tickets", category: "Entertainment", amount: 32.5 },
+    { id: 5, date: "2024-04-03", description: "Restaurant", category: "Food", amount: 68.25 },
+  ],
+}
+
+export default function BudgetPage() {
+  const { planned, spent, remaining } = budgetData.summary
+  const percentSpent = Math.round((spent / planned) * 100)
+
   return (
-    <div>Plan</div>
+    <main className="flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Budget Dashboard</h1>
+          <p className="text-muted-foreground">Track and manage your monthly budget</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm">
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            April 2024
+          </Button>
+          <Button size="sm">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Expense
+          </Button>
+        </div>
+      </div>
+
+      {/* Budget Summary Cards */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Planned Budget</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">${planned.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">Total budget for this month</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Spent</CardTitle>
+            <CreditCard className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">${spent.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">{percentSpent}% of your budget used</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Remaining</CardTitle>
+            <Wallet className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">${remaining.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">{100 - percentSpent}% of your budget left</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Overall Budget Progress */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Overall Budget Progress</CardTitle>
+          <CardDescription>Your spending progress for this month</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <div>Spent: ${spent.toLocaleString()}</div>
+              <div>{percentSpent}%</div>
+            </div>
+            <Progress value={percentSpent} className="h-2" />
+            <div className="flex items-center justify-between text-sm text-muted-foreground">
+              <div>$0</div>
+              <div>${planned.toLocaleString()}</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Budget Details */}
+      <Tabs defaultValue="categories" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="categories">Categories</TabsTrigger>
+          <TabsTrigger value="transactions">Transactions</TabsTrigger>
+          <TabsTrigger value="insights">Insights</TabsTrigger>
+        </TabsList>
+
+        {/* Categories Tab */}
+        <TabsContent value="categories" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {budgetData.categories.map((category) => {
+              const percentSpent = Math.round((category.spent / category.planned) * 100)
+              return (
+                <Card key={category.name}>
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-sm font-medium">{category.name}</CardTitle>
+                      <div className={`h-3 w-3 rounded-full ${category.color}`}></div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pb-2">
+                    <div className="flex items-center justify-between text-sm mb-1">
+                      <span>Spent: ${category.spent}</span>
+                      <span>{percentSpent}%</span>
+                    </div>
+                    <Progress value={percentSpent} className={`h-2`} />
+                  </CardContent>
+                  <CardFooter className="pt-0">
+                    <div className="flex w-full justify-between text-xs text-muted-foreground">
+                      <span>Budget: ${category.planned}</span>
+                      <span>Remaining: ${category.remaining}</span>
+                    </div>
+                  </CardFooter>
+                </Card>
+              )
+            })}
+          </div>
+        </TabsContent>
+
+        {/* Transactions Tab */}
+        <TabsContent value="transactions">
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Transactions</CardTitle>
+              <CardDescription>Your latest spending activities</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-8">
+                {budgetData.recentTransactions.map((transaction) => (
+                  <div key={transaction.id} className="flex items-center">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium leading-none">{transaction.description}</p>
+                      <p className="text-sm text-muted-foreground">{transaction.date}</p>
+                    </div>
+                    <div className="ml-auto flex items-center gap-2">
+                      <div className="rounded-full px-2 py-1 text-xs bg-muted">{transaction.category}</div>
+                      <div className="font-medium">-${transaction.amount.toFixed(2)}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 flex justify-center">
+                <Button variant="outline" size="sm" asChild>
+                  <Link href="#">View All Transactions</Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Insights Tab */}
+        <TabsContent value="insights">
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Spending by Category</CardTitle>
+                <CardDescription>How your money is being spent</CardDescription>
+              </CardHeader>
+              <CardContent className="flex justify-center">
+                <div className="h-60 w-60 flex items-center justify-center">
+                  <PieChart className="h-40 w-40 text-muted-foreground" />
+                  <div className="absolute text-center">
+                    <div className="text-xl font-bold">${spent}</div>
+                    <div className="text-xs text-muted-foreground">Total Spent</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Monthly Trend</CardTitle>
+                <CardDescription>Your spending over time</CardDescription>
+              </CardHeader>
+              <CardContent className="flex h-60 items-center justify-center">
+                <LineChart className="h-40 w-40 text-muted-foreground" />
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </main>
   )
 }
