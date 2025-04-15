@@ -1,4 +1,4 @@
-import { CalendarIcon, CreditCard, DollarSign, LineChart, PieChart, Plus, Wallet } from "lucide-react"
+import { CalendarIcon, Plus } from "lucide-react"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 // Sample data - replace with your actual data
-const budgetData = {
+ const budgetData = {
   summary: {
     planned: 3000,
     spent: 1850,
@@ -31,15 +31,14 @@ const budgetData = {
 }
 
 export default function BudgetPage() {
-  const { planned, spent, remaining } = budgetData.summary
-  const percentSpent = Math.round((spent / planned) * 100)
+
 
   return (
     <main className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Budget Dashboard</h1>
-          <p className="text-muted-foreground">Track and manage your monthly budget</p>
+          <h1 className="text-2xl font-bold tracking-tight">Plan</h1>
+          <p className="text-muted-foreground">Plan your budget</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm">
@@ -53,72 +52,17 @@ export default function BudgetPage() {
         </div>
       </div>
 
-      {/* Budget Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Planned Budget</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${planned.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">Total budget for this month</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Spent</CardTitle>
-            <CreditCard className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${spent.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">{percentSpent}% of your budget used</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Remaining</CardTitle>
-            <Wallet className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${remaining.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">{100 - percentSpent}% of your budget left</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Overall Budget Progress */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Overall Budget Progress</CardTitle>
-          <CardDescription>Your spending progress for this month</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
-              <div>Spent: ${spent.toLocaleString()}</div>
-              <div>{percentSpent}%</div>
-            </div>
-            <Progress value={percentSpent} className="h-2" />
-            <div className="flex items-center justify-between text-sm text-muted-foreground">
-              <div>$0</div>
-              <div>${planned.toLocaleString()}</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Budget Details */}
-      <Tabs defaultValue="categories" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="categories">Categories</TabsTrigger>
+      {/* Budget Details */}  
+      <Tabs defaultValue="planned">
+        <TabsList className="grid grid-cols-3">
+          <TabsTrigger value="planned">Planned</TabsTrigger>
+          <TabsTrigger value="remaining">Remaining</TabsTrigger>
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
-          <TabsTrigger value="insights">Insights</TabsTrigger>
         </TabsList>
 
         {/* Categories Tab */}
-        <TabsContent value="categories" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <TabsContent value="planned" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
             {budgetData.categories.map((category) => {
               const percentSpent = Math.round((category.spent / category.planned) * 100)
               return (
@@ -149,6 +93,37 @@ export default function BudgetPage() {
         </TabsContent>
 
         {/* Transactions Tab */}
+        <TabsContent value="remaining" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
+            {budgetData.categories.map((category) => {
+              const percentSpent = Math.round((category.spent / category.planned) * 100)
+              return (
+                <Card key={category.name}>
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-sm font-medium">{category.name}</CardTitle>
+                      <div className={`h-3 w-3 rounded-full ${category.color}`}></div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pb-2">
+                    <div className="flex items-center justify-between text-sm mb-1">
+                      <span>Spent: ${category.spent}</span>
+                      <span>{percentSpent}%</span>
+                    </div>
+                    <Progress value={percentSpent} className={`h-2`} />
+                  </CardContent>
+                  <CardFooter className="pt-0">
+                    <div className="flex w-full justify-between text-xs text-muted-foreground">
+                      <span>Budget: ${category.planned}</span>
+                      <span>Remaining: ${category.remaining}</span>
+                    </div>
+                  </CardFooter>
+                </Card>
+              )
+            })}
+          </div>
+        </TabsContent>
+
         <TabsContent value="transactions">
           <Card>
             <CardHeader>
@@ -177,36 +152,6 @@ export default function BudgetPage() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-
-        {/* Insights Tab */}
-        <TabsContent value="insights">
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Spending by Category</CardTitle>
-                <CardDescription>How your money is being spent</CardDescription>
-              </CardHeader>
-              <CardContent className="flex justify-center">
-                <div className="h-60 w-60 flex items-center justify-center">
-                  <PieChart className="h-40 w-40 text-muted-foreground" />
-                  <div className="absolute text-center">
-                    <div className="text-xl font-bold">${spent}</div>
-                    <div className="text-xs text-muted-foreground">Total Spent</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Monthly Trend</CardTitle>
-                <CardDescription>Your spending over time</CardDescription>
-              </CardHeader>
-              <CardContent className="flex h-60 items-center justify-center">
-                <LineChart className="h-40 w-40 text-muted-foreground" />
-              </CardContent>
-            </Card>
-          </div>
         </TabsContent>
       </Tabs>
     </main>

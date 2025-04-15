@@ -29,11 +29,6 @@ const items = [
     url: "/insights",
     icon: BarChart,
   },
-  {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
-  },
 ]
 
 export function AppSidebar() {
@@ -67,7 +62,15 @@ export function AppSidebar() {
                       <span>Profile</span>
                     </Link>
                   </SidebarMenuButton>
-                </SidebarMenuItem>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link href="/settings">
+                      <Settings />
+                      <span>Settings</span>
+                    </Link>
+                  </SidebarMenuButton>
+            </SidebarMenuItem>
             <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <a href="#">

@@ -1,8 +1,33 @@
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import {  TrendingUpIcon, TrendingDownIcon, Plus, CalendarIcon } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {  Plus, CalendarIcon, Wallet, CreditCard, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+
+const budgetData = {
+  summary: {
+    planned: 3000,
+    spent: 1850,
+    remaining: 1150,
+  },
+  categories: [
+    { name: "Housing", planned: 1200, spent: 1200, remaining: 0, color: "bg-blue-500" },
+    { name: "Food", planned: 500, spent: 320, remaining: 180, color: "bg-green-500" },
+    { name: "Transportation", planned: 300, spent: 150, remaining: 150, color: "bg-yellow-500" },
+    { name: "Entertainment", planned: 200, spent: 180, remaining: 20, color: "bg-purple-500" },
+    { name: "Utilities", planned: 400, spent: 0, remaining: 400, color: "bg-red-500" },
+    { name: "Savings", planned: 400, spent: 0, remaining: 400, color: "bg-teal-500" },
+  ],
+  recentTransactions: [
+    { id: 1, date: "2024-04-12", description: "Grocery Store", category: "Food", amount: 85.42 },
+    { id: 2, date: "2024-04-10", description: "Monthly Rent", category: "Housing", amount: 1200 },
+    { id: 3, date: "2024-04-08", description: "Gas Station", category: "Transportation", amount: 45.3 },
+    { id: 4, date: "2024-04-05", description: "Movie Tickets", category: "Entertainment", amount: 32.5 },
+    { id: 5, date: "2024-04-03", description: "Restaurant", category: "Food", amount: 68.25 },
+  ],
+}
 export default function Home() {
+  const { planned, spent, remaining } = budgetData.summary
+  const percentSpent = Math.round((spent / planned) * 100)
   return (
     <main className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -22,90 +47,65 @@ export default function Home() {
         </div>
       </div>
 
-      <Card className="@container/card">
-        <CardHeader className="relative">
-          <CardDescription>Total Revenue</CardDescription>
-          <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-            $1,250.00
-          </CardTitle>
-          <div className="absolute right-4 top-4">
-            <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
-              <TrendingUpIcon className="size-3" />
-              +12.5%
-            </Badge>
-          </div>
+          {/* Overall Budget Progress */}
+          <Card>
+        <CardHeader>
+          <CardTitle>Overall Budget Progress</CardTitle>
+          <CardDescription>Your spending progress for this month</CardDescription>
         </CardHeader>
-        <CardFooter className="flex-col items-start gap-1 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Trending up this month <TrendingUpIcon className="size-4" />
+        <CardContent>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <div>Spent: ${spent.toLocaleString()}</div>
+              <div>{percentSpent}%</div>
+            </div>
+            <Progress value={percentSpent} className="h-2" />
+            <div className="flex items-center justify-between text-sm text-muted-foreground">
+              <div>$0</div>
+              <div>${planned.toLocaleString()}</div>
+            </div>
           </div>
-          <div className="text-muted-foreground">
-            Visitors for the last 6 months
-          </div>
-        </CardFooter>
+        </CardContent>
       </Card>
-      <Card className="@container/card">
-        <CardHeader className="relative">
-          <CardDescription>New Customers</CardDescription>
-          <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-            1,234
-          </CardTitle>
-          <div className="absolute right-4 top-4">
-            <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
-              <TrendingDownIcon className="size-3" />
-              -20%
-            </Badge>
-          </div>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Down 20% this period <TrendingDownIcon className="size-4" />
-          </div>
-          <div className="text-muted-foreground">
-            Acquisition needs attention
-          </div>
-        </CardFooter>
-      </Card>
-      <Card className="@container/card">
-        <CardHeader className="relative">
-          <CardDescription>Active Accounts</CardDescription>
-          <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-            45,678
-          </CardTitle>
-          <div className="absolute right-4 top-4">
-            <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
-              <TrendingUpIcon className="size-3" />
-              +12.5%
-            </Badge>
-          </div>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Strong user retention <TrendingUpIcon className="size-4" />
-          </div>
-          <div className="text-muted-foreground">Engagement exceed targets</div>
-        </CardFooter>
-      </Card>
-      <Card className="@container/card">
-        <CardHeader className="relative">
-          <CardDescription>Growth Rate</CardDescription>
-          <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-            4.5%
-          </CardTitle>
-          <div className="absolute right-4 top-4">
-            <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
-              <TrendingUpIcon className="size-3" />
-              +4.5%
-            </Badge>
-          </div>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Steady performance <TrendingUpIcon className="size-4" />
-          </div>
-          <div className="text-muted-foreground">Meets growth projections</div>
-        </CardFooter>
-      </Card>
+
+       {/* Budget Summary Cards */}
+       <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Planned Budget</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">${planned.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">Total budget for this month</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Spent</CardTitle>
+            <CreditCard className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">${spent.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">{percentSpent}% of your budget used</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Remaining</CardTitle>
+            <Wallet className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">${remaining.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">{100 - percentSpent}% of your budget left</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div>
+        pie chart breakdown
+      </div>
+   
     </main>
   );
 }
