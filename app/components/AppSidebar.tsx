@@ -10,7 +10,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { DarkModeToggle } from "./DarkModeToggle"
 import Link from "next/link"
 
 // Menu items.
@@ -55,7 +54,6 @@ export function AppSidebar() {
           <SidebarGroupLabel>Budget Brain</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="flex flex-col gap-2">
-              <DarkModeToggle />
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
