@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -31,6 +30,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { budgetData } from '../data';
+import { useState } from 'react';
 
 const formSchema = z.object({
   amount: z.coerce.number().positive('Amount must be positive'),
@@ -43,6 +43,8 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export const AddExpenseForm = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -59,12 +61,13 @@ export const AddExpenseForm = () => {
   const onSubmit = (values: FormValues) => {
     console.log(values);
     // TODO: Add expense to the database
+    setIsOpen(false);
   };
 
  
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button size='sm'>
           <Plus className='mr-2 h-4 w-4' />
@@ -198,14 +201,12 @@ export const AddExpenseForm = () => {
                 </FormItem>
               )}
             />
-            <DialogClose asChild>
               <Button
                 type='submit'
                 className='w-full'
               >
                 Save Expense
               </Button>
-            </DialogClose>
           </form>
         </Form>
       </DialogContent>
