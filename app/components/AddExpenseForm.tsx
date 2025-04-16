@@ -48,7 +48,7 @@ export const AddExpenseForm = () => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      amount: undefined,
+      amount: 0,
       description: '',
       categoryId: '',
       subcategoryId: '',
