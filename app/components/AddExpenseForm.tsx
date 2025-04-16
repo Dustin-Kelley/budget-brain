@@ -40,11 +40,13 @@ const formSchema = z.object({
   date: z.string().min(1, 'Date is required'),
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 export const AddExpenseForm = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      amount: 0,
+      amount: undefined,
       description: '',
       categoryId: '',
       subcategoryId: '',
@@ -54,10 +56,12 @@ export const AddExpenseForm = () => {
 
   const selectedCategoryId = form.watch('categoryId');
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: FormValues) => {
     console.log(values);
     // TODO: Add expense to the database
   };
+
+ 
 
   return (
     <Dialog>
@@ -86,11 +90,16 @@ export const AddExpenseForm = () => {
                 <FormItem>
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
-                    <Input
-                      type='number'
-                      step='1'
-                      {...field}
-                    />
+                    <div className='relative'>
+                      <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-500'>$</span>
+                      <Input
+                        {...field}
+                        type='number'
+                        inputMode='decimal'
+                        placeholder='0.00'
+                        className='pl-7'
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
