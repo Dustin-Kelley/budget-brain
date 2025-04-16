@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { budgetData } from "../data"
 
 
-export default function page() {
+export default function Page() {
   return (
     <main className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
