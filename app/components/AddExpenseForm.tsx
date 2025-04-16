@@ -1,5 +1,5 @@
 'use client';
-
+'use no memo';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -33,7 +34,7 @@ import { budgetData } from '../data';
 
 const formSchema = z.object({
   amount: z.coerce.number().positive('Amount must be positive'),
-  description: z.string().min(1, 'Description is required'),
+  description: z.string().optional(),
   categoryId: z.string().min(1, 'Category is required'),
   subcategoryId: z.string().min(1, 'Subcategory is required'),
   date: z.string().min(1, 'Date is required'),
@@ -61,12 +62,12 @@ export const AddExpenseForm = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size="sm">
-          <Plus className="mr-2 h-4 w-4" />
+        <Button size='sm'>
+          <Plus className='mr-2 h-4 w-4' />
           Add Expense
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
           <DialogTitle>Add New Expense</DialogTitle>
           <DialogDescription>
@@ -74,15 +75,22 @@ export const AddExpenseForm = () => {
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className='space-y-4'
+          >
             <FormField
               control={form.control}
-              name="amount"
+              name='amount'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
-                    <Input type="number" step="0.01" {...field} />
+                    <Input
+                      type='number'
+                      step='1'
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -90,7 +98,7 @@ export const AddExpenseForm = () => {
             />
             <FormField
               control={form.control}
-              name="description"
+              name='description'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description</FormLabel>
@@ -103,19 +111,25 @@ export const AddExpenseForm = () => {
             />
             <FormField
               control={form.control}
-              name="categoryId"
+              name='categoryId'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Category</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a category" />
+                        <SelectValue placeholder='Select a category' />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {budgetData.categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
+                        <SelectItem
+                          key={category.id}
+                          value={category.id}
+                        >
                           {category.name}
                         </SelectItem>
                       ))}
@@ -127,21 +141,29 @@ export const AddExpenseForm = () => {
             />
             <FormField
               control={form.control}
-              name="subcategoryId"
+              name='subcategoryId'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Subcategory</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a subcategory" />
+                        <SelectValue placeholder='Select a subcategory' />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {budgetData.lineItems
-                        .filter((item) => item.category_id === selectedCategoryId)
+                        .filter(
+                          (item) => item.category_id === selectedCategoryId
+                        )
                         .map((subcategory) => (
-                          <SelectItem key={subcategory.id} value={subcategory.id}>
+                          <SelectItem
+                            key={subcategory.id}
+                            value={subcategory.id}
+                          >
                             {subcategory.name}
                           </SelectItem>
                         ))}
@@ -153,20 +175,28 @@ export const AddExpenseForm = () => {
             />
             <FormField
               control={form.control}
-              name="date"
+              name='date'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Date</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <Input
+                      type='date'
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
-              Save Expense
-            </Button>
+            <DialogClose asChild>
+              <Button
+                type='submit'
+                className='w-full'
+              >
+                Save Expense
+              </Button>
+            </DialogClose>
           </form>
         </Form>
       </DialogContent>
