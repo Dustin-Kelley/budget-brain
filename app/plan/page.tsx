@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { budgetData } from "../data"
-
+import { AddExpenseForm } from "../components/AddExpenseForm"
 
 export default function Page() {
   return (
@@ -21,10 +21,7 @@ export default function Page() {
             <CalendarIcon className="mr-2 h-4 w-4" />
             April 2024
           </Button>
-          <Button size="sm">
-            <Plus className="mr-2 h-4 w-4" />
-            Add Expense
-          </Button>
+          <AddExpenseForm />
         </div>
       </div>
 
@@ -41,7 +38,7 @@ export default function Page() {
           <IncomeCard />
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
             {budgetData.categories.map((category) => {
-              const categorySubcategories = budgetData.subcategories.filter(
+              const categorySubcategories = budgetData.lineItems.filter(
                 sub => sub.category_id === category.id
               );
               return (
@@ -137,7 +134,7 @@ export default function Page() {
               <div className="space-y-8">
                 {budgetData.transactions.map((transaction) => {
                   const category = budgetData.categories.find(c => c.id === transaction.category_id);
-                  const lineItem = budgetData.subcategories.find(s => s.id === transaction.subcategory_id);
+                  const lineItem = budgetData.lineItems.find(s => s.id === transaction.subcategory_id);
                   return (
                     <div key={transaction.id} className="flex items-center">
                       <div className="space-y-1">

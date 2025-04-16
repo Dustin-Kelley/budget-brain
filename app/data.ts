@@ -109,7 +109,7 @@ export const budgetData = {
       updated_at: "2024-04-15T00:00:00Z"
     }
   ],
-  subcategories: [
+  lineItems: [
     {
       id: "sub-1",
       category_id: "cat-1",
