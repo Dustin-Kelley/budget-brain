@@ -45,7 +45,7 @@ export const budgetData = {
       id: "inc-2",
       household_id: "hh-1",
       name: "Freelance",
-      amount: 500,
+      amount: 1000,
       type: "variable",
       frequency: "monthly",
       month: 4,

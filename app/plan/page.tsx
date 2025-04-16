@@ -7,10 +7,6 @@ import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { budgetData } from "../data"
 
-// Sample data - replace with your actual data
-
-
-
 
 export default function page() {
   return (
@@ -141,7 +137,7 @@ export default function page() {
               <div className="space-y-8">
                 {budgetData.transactions.map((transaction) => {
                   const category = budgetData.categories.find(c => c.id === transaction.category_id);
-                  const subcategory = budgetData.subcategories.find(s => s.id === transaction.subcategory_id);
+                  const lineItem = budgetData.subcategories.find(s => s.id === transaction.subcategory_id);
                   return (
                     <div key={transaction.id} className="flex items-center">
                       <div className="space-y-1">
@@ -150,7 +146,7 @@ export default function page() {
                       </div>
                       <div className="ml-auto flex items-center gap-2">
                         <div className="rounded-full px-2 py-1 text-xs bg-muted">
-                          {category?.name} / {subcategory?.name}
+                          {category?.name} / {lineItem?.name}
                         </div>
                         <div className="font-medium">-${transaction.amount.toFixed(2)}</div>
                       </div>
