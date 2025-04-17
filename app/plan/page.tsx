@@ -51,7 +51,7 @@ export default async function Page({
           value='planned'
           className='flex flex-col gap-4'
         >
-          <IncomeCard />
+          <IncomeCard month={parsedMonth} />
           <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
             {budgetData.categories.map((category) => {
               const categorySubcategories = budgetData.lineItems.filter(
@@ -230,7 +230,7 @@ export default async function Page({
   );
 }
 
-const IncomeCard = () => {
+const IncomeCard = ({ month }: { month: string }) => {
   const totalIncome = budgetData.income.reduce(
     (total, income) => total + income.amount,
     0
@@ -247,7 +247,7 @@ const IncomeCard = () => {
         <div className='flex flex-col gap-4'>
           <div className='flex items-center justify-between'>
             <div className='space-y-1'>
-              <p className='text-sm font-medium'>Total Income for: Month </p>
+              <p className='text-sm font-medium'>Total Income for: {month}</p>
               <p className='text-2xl font-bold'>${totalIncome}</p>
             </div>
             <div className='rounded-full bg-muted p-3'>
@@ -292,13 +292,9 @@ const RemainingCard = () => {
     (total, income) => total + income.amount,
     0
   );
-  const totalPlanned = budgetData.categories.reduce(
-    (total, category) => total + category.planned_amount,
-    0
-  );
   const spent = budgetData.transactions.reduce((acc, transaction) => acc + transaction.amount, 0)
   const remaining = totalIncome - spent;
-  const percentSpent = Math.round((spent / totalPlanned) * 100)
+  const percentRemaining = Math.round((remaining / totalIncome) * 100)
 
   return (
     <Card>
@@ -308,8 +304,8 @@ const RemainingCard = () => {
     </CardHeader>
     <CardContent className="flex flex-col gap-2">
       <div className="text-2xl font-bold">${remaining.toLocaleString()}</div>
-      <p className="text-xs text-muted-foreground">{percentSpent}% of your budget spent</p>
-      <Progress value={percentSpent} className="h-2" />
+      <p className="text-xs text-muted-foreground">{percentRemaining}% of your budget remaining</p>
+      <Progress value={percentRemaining} className="h-2" />
     </CardContent>
   </Card>
   );
