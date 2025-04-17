@@ -21,14 +21,14 @@ export default function Page({
   searchParams: { month?: string };
 }) {
   const currentMonth =
-    searchParams.month ||
+    searchParams.month?.split('-')[0] ||
     new Date().toLocaleString('default', { month: 'long' });
 
   return (
     <main className='flex flex-col gap-4'>
       <div className='flex items-center justify-between'>
         <div>
-          <h1 className='text-2xl font-bold text-primary tracking-tight'>
+          <h1 className='text-3xl font-bold text-primary tracking-tight'>
             {currentMonth}
           </h1>
           <p className='text-muted-foreground'>Plan your budget</p>

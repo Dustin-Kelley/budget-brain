@@ -37,10 +37,15 @@ export function MonthSelector({ currentMonth }: MonthSelectorProps) {
           <CalendarIcon className="mr-2 h-4 w-4" />
           <SelectValue placeholder="Select month" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="max-h-[300px]">
           {months.map((month) => (
-            <SelectItem key={month} value={month}>
+            <SelectItem key={`${month}-${currentYear}`} value={`${month}-${currentYear}`}>
               {month} {currentYear}
+            </SelectItem>
+          ))}
+          {months.map((month) => (
+            <SelectItem key={`${month}-${currentYear + 1}`} value={`${month}-${currentYear + 1}`}>
+              {month} {currentYear + 1}
             </SelectItem>
           ))}
         </SelectContent>
