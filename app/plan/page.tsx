@@ -30,7 +30,7 @@ export default async function Page({
           <h1 className='text-3xl font-bold text-primary tracking-tight'>
             {parsedMonth}
           </h1>
-          <p className='text-muted-foreground'>Plan your budget</p>
+          <p className='text-muted-foreground'>Track and manage your budget</p>
         </div>
         <div className='flex items-center gap-2'>
           <MonthSelector selectedMonth={month} />
