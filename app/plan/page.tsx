@@ -21,19 +21,19 @@ export default async function Page({
   searchParams: Promise<{ month?: string }>;
 }) {
   const { month } = await searchParams;
-  const currentMonth = month?.split('-')[0] || new Date().toLocaleString('default', { month: 'long' });
+  const parsedMonth = month?.split('-')[0] || new Date().toLocaleString('default', { month: 'long' });
 
   return (
     <main className='flex flex-col gap-4'>
       <div className='flex items-center justify-between'>
         <div>
           <h1 className='text-3xl font-bold text-primary tracking-tight'>
-            {currentMonth}
+            {parsedMonth}
           </h1>
           <p className='text-muted-foreground'>Plan your budget</p>
         </div>
         <div className='flex items-center gap-2'>
-          <MonthSelector currentMonth={currentMonth} />
+          <MonthSelector selectedMonth={month} />
           <AddExpenseForm />
         </div>
       </div>

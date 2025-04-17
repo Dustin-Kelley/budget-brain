@@ -15,7 +15,7 @@ const months = [
   "July", "August", "September", "October", "November", "December"
 ]
 
-export function MonthSelector({ currentMonth }: { currentMonth: string }) {
+export function MonthSelector({ selectedMonth }: { selectedMonth: string | undefined }) {
   const router = useRouter()
   const params = useSearchParams()
   const currentYear = new Date().getFullYear()
@@ -30,10 +30,10 @@ export function MonthSelector({ currentMonth }: { currentMonth: string }) {
 
   return (
     <div className="flex flex-col gap-1">
-      <Select defaultValue={thisMonth} onValueChange={handleMonthSelect}>
-        <SelectTrigger className="w-[180px]">
+      <Select defaultValue={selectedMonth} onValueChange={handleMonthSelect}>
+        <SelectTrigger >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          <SelectValue className="text-black" placeholder="Select month" />
+          <SelectValue className="w-[180px] text-black" placeholder={thisMonth} />
         </SelectTrigger>
         <SelectContent className="max-h-[300px]">
           {months.map((month) => (
