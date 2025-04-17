@@ -18,7 +18,7 @@ import { AddExpenseForm } from '../components/AddExpenseForm';
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { month?: string };
+  searchParams: Promise<{ month?: string }>;
 }) {
   const { month } = await searchParams;
   const currentMonth = month?.split('-')[0] || new Date().toLocaleString('default', { month: 'long' });
