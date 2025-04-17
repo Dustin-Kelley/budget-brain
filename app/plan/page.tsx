@@ -1,4 +1,4 @@
-import { Plus, DollarSign } from 'lucide-react';
+import { Plus, DollarSign, Wallet } from 'lucide-react';
 import Link from 'next/link';
 import { MonthSelector } from '../components/MonthSelector';
 import { Button } from '@/components/ui/button';
@@ -131,6 +131,7 @@ export default function Page({
           value='remaining'
           className='space-y-4'
         >
+          <RemainingCard />
           <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
             {budgetData.categories.map((category) => {
               const percentSpent = Math.round(
@@ -284,5 +285,33 @@ const IncomeCard = () => {
         </div>
       </CardContent>
     </Card>
+  );
+};
+
+const RemainingCard = () => {
+  const totalIncome = budgetData.income.reduce(
+    (total, income) => total + income.amount,
+    0
+  );
+  const totalPlanned = budgetData.categories.reduce(
+    (total, category) => total + category.planned_amount,
+    0
+  );
+  const spent = budgetData.transactions.reduce((acc, transaction) => acc + transaction.amount, 0)
+  const remaining = totalIncome - spent;
+  const percentSpent = Math.round((spent / totalPlanned) * 100)
+
+  return (
+    <Card>
+    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <CardTitle className="text-sm font-medium">Remaining</CardTitle>
+      <Wallet className="h-4 w-4 text-muted-foreground" />
+    </CardHeader>
+    <CardContent className="flex flex-col gap-2">
+      <div className="text-2xl font-bold">${remaining.toLocaleString()}</div>
+      <p className="text-xs text-muted-foreground">{percentSpent}% of your budget spent</p>
+      <Progress value={percentSpent} className="h-2" />
+    </CardContent>
+  </Card>
   );
 };
