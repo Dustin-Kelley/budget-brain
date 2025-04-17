@@ -35,8 +35,8 @@ export function AppSidebar() {
   return (
     <Sidebar variant="inset"  collapsible="icon">
       <SidebarContent>
-        <SidebarGroup className="h-full">
-          <SidebarGroupLabel>Budget Brain</SidebarGroupLabel>
+        <SidebarGroup className="h-full  flex flex-col gap-4">
+          <SidebarGroupLabel className="text-1xl text-background font-bold">Budget Brain 🧠</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="flex flex-col gap-2">
               {items.map((item) => (
