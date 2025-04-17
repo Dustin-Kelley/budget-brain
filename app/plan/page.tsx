@@ -20,9 +20,8 @@ export default async function Page({
 }: {
   searchParams: { month?: string };
 }) {
-  const currentMonth =
-   await searchParams.month?.split('-')[0] ||
-    new Date().toLocaleString('default', { month: 'long' });
+  const { month } = await searchParams;
+  const currentMonth = month?.split('-')[0] || new Date().toLocaleString('default', { month: 'long' });
 
   return (
     <main className='flex flex-col gap-4'>
