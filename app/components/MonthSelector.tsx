@@ -15,14 +15,12 @@ const months = [
   "July", "August", "September", "October", "November", "December"
 ]
 
-interface MonthSelectorProps {
-  currentMonth: string
-}
-
-export function MonthSelector({ currentMonth }: MonthSelectorProps) {
+export function MonthSelector({ currentMonth }: { currentMonth: string }) {
   const router = useRouter()
   const params = useSearchParams()
   const currentYear = new Date().getFullYear()
+  const thisMonth = new Date().toLocaleString('default', { month: 'long' })
+
 
   const handleMonthSelect = (month: string) => {
     const newParams = new URLSearchParams(params)
@@ -32,10 +30,10 @@ export function MonthSelector({ currentMonth }: MonthSelectorProps) {
 
   return (
     <div className="flex flex-col gap-1">
-      <Select defaultValue={currentMonth} onValueChange={handleMonthSelect}>
+      <Select defaultValue={thisMonth} onValueChange={handleMonthSelect}>
         <SelectTrigger className="w-[180px]">
           <CalendarIcon className="mr-2 h-4 w-4" />
-          <SelectValue placeholder="Select month" />
+          <SelectValue className="text-black" placeholder="Select month" />
         </SelectTrigger>
         <SelectContent className="max-h-[300px]">
           {months.map((month) => (
