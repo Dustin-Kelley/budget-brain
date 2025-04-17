@@ -22,6 +22,7 @@ export default async function Page({
 }) {
   const { month } = await searchParams;
   const parsedMonth = month?.split('-')[0] || new Date().toLocaleString('default', { month: 'long' });
+  const totalIncome = budgetData.income.reduce((total, income) => total + income.amount, 0);
 
   return (
     <main className='flex flex-col gap-4'>
@@ -97,6 +98,7 @@ export default async function Page({
                   <CardFooter className='pt-0'>
                     <div className='flex w-full justify-between text-xs text-muted-foreground'>
                       <span>Total Budget: ${category.planned_amount}</span>
+                      <span>{Math.round((category.planned_amount / totalIncome) * 100)}%</span>
                     </div>
                   </CardFooter>
                 </Card>
