@@ -1,4 +1,4 @@
-import { BarChart, Home, LogOut,  Settings, NotebookPen, User } from "lucide-react"
+import { BarChart, Home, LogOut,  Settings, NotebookPen } from "lucide-react"
 
 import {
   Sidebar,
@@ -57,17 +57,9 @@ export function AppSidebar() {
             <SidebarMenu>
             <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <Link href="/profile">
-                      <User />
-                      <span>Profile</span>
-                    </Link>
-                  </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
                     <Link href="/settings">
                       <Settings />
-                      <span>Settings</span>
+                      <span>Profile & Settings</span>
                     </Link>
                   </SidebarMenuButton>
             </SidebarMenuItem>
