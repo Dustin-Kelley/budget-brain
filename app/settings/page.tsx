@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
+import { UserPlus, UserMinus } from "lucide-react"
 
 export default function SettingsPage() {
   return (
@@ -83,6 +84,51 @@ export default function SettingsPage() {
               </div>
             </div>
             <Button className="mt-4">Update Password</Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Household Members</CardTitle>
+                <CardDescription>
+                  Manage members of your household
+                </CardDescription>
+              </div>
+              <Button>
+                <UserPlus className="mr-2 h-4 w-4" />
+                Add Member
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <h3 className="font-medium">John Smith</h3>
+                  <p className="text-sm text-muted-foreground">john.smith@example.com</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Admin</span>
+                  <Button variant="ghost" size="icon">
+                    <UserMinus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <h3 className="font-medium">Jane Smith</h3>
+                  <p className="text-sm text-muted-foreground">jane.smith@example.com</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Admin</span>
+                  <Button variant="ghost" size="icon">
+                    <UserMinus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
