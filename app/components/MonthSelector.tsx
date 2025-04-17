@@ -33,7 +33,7 @@ export function MonthSelector({ selectedMonth }: { selectedMonth: string | undef
       <Select defaultValue={selectedMonth} onValueChange={handleMonthSelect}>
         <SelectTrigger >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          <SelectValue className="w-[180px] text-black" placeholder={thisMonth} />
+          <SelectValue className="w-[180px] text-black" placeholder={`${thisMonth} ${currentYear}`} />
         </SelectTrigger>
         <SelectContent className="max-h-[300px]">
           {months.map((month) => (
