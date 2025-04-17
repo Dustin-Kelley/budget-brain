@@ -1,4 +1,4 @@
-import { Plus, DollarSign, Wallet } from 'lucide-react';
+import { Plus, DollarSign } from 'lucide-react';
 import Link from 'next/link';
 import { MonthSelector } from '../components/MonthSelector';
 import { Button } from '@/components/ui/button';
@@ -10,10 +10,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { budgetData } from '../data';
 import { AddExpenseForm } from '../components/AddExpenseForm';
+import { RemainingSpentTab } from './components/RemainingSpentTab';
 
 export default async function Page({
   searchParams,
@@ -132,49 +132,8 @@ export default async function Page({
           value='remaining'
           className='space-y-4'
         >
-          <RemainingCard />
-          <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
-            {budgetData.categories.map((category) => {
-              const percentSpent = Math.round(
-                (category.spent_amount / category.planned_amount) * 100
-              );
-              return (
-                <Card key={category.id}>
-                  <CardHeader className='pb-2'>
-                    <div className='flex items-center justify-between'>
-                      <CardTitle className='text-sm font-medium'>
-                        {category.name}
-                      </CardTitle>
-                      <div
-                        className={`h-3 w-3 rounded-full ${category.color}`}
-                      ></div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className='pb-2'>
-                    <div className='flex items-center justify-between text-sm mb-1'>
-                      <span>Spent: ${category.spent_amount}</span>
-                      <span>{percentSpent}%</span>
-                    </div>
-                    <Progress
-                      value={percentSpent}
-                      className={`h-2`}
-                    />
-                  </CardContent>
-                  <CardFooter className='pt-0'>
-                    <div className='flex w-full justify-between text-xs text-muted-foreground'>
-                      <span>Budget: ${category.planned_amount}</span>
-                      <span>
-                        Remaining: $
-                        {category.planned_amount - category.spent_amount}
-                      </span>
-                    </div>
-                  </CardFooter>
-                </Card>
-              );
-            })}
-          </div>
+        <RemainingSpentTab />
         </TabsContent>
-
         <TabsContent value='transactions'>
           <Card>
             <CardHeader>
@@ -289,26 +248,4 @@ const IncomeCard = ({ month }: { month: string }) => {
   );
 };
 
-const RemainingCard = () => {
-  const totalIncome = budgetData.income.reduce(
-    (total, income) => total + income.amount,
-    0
-  );
-  const spent = budgetData.transactions.reduce((acc, transaction) => acc + transaction.amount, 0)
-  const remaining = totalIncome - spent;
-  const percentRemaining = Math.round((remaining / totalIncome) * 100)
 
-  return (
-    <Card>
-    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-      <CardTitle className="text-sm font-medium">Remaining</CardTitle>
-      <Wallet className="h-4 w-4 text-muted-foreground" />
-    </CardHeader>
-    <CardContent className="flex flex-col gap-2">
-      <div className="text-2xl font-bold">${remaining.toLocaleString()}</div>
-      <p className="text-xs text-muted-foreground">{percentRemaining}% of your budget remaining</p>
-      <Progress value={percentRemaining} className="h-2" />
-    </CardContent>
-  </Card>
-  );
-};
