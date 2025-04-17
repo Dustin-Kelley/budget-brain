@@ -1,4 +1,4 @@
-import { CalendarIcon, Plus, DollarSign } from "lucide-react"
+import { Plus, DollarSign } from "lucide-react"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
@@ -8,19 +8,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { budgetData } from "../data"
 import { AddExpenseForm } from "../components/AddExpenseForm"
 
-export default function Page() {
+export default function Page({
+  searchParams,
+}: {
+  searchParams: { month?: string }
+}) {
+  const currentMonth = searchParams.month || new Date().toLocaleString('default', { month: 'long' })
+
   return (
     <main className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Plan</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{currentMonth}</h1>
           <p className="text-muted-foreground">Plan your budget</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            April 2024
-          </Button>
           <AddExpenseForm />
         </div>
       </div>
