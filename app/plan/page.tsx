@@ -15,13 +15,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { budgetData } from '../data';
 import { AddExpenseForm } from '../components/AddExpenseForm';
 
-export default function Page({
+export default async function Page({
   searchParams,
 }: {
   searchParams: { month?: string };
 }) {
   const currentMonth =
-    searchParams.month?.split('-')[0] ||
+   await searchParams.month?.split('-')[0] ||
     new Date().toLocaleString('default', { month: 'long' });
 
   return (
