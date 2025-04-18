@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { UserPlus, UserMinus } from 'lucide-react';
 import { DarkModeToggle } from '../components/DarkModeToggle';
+import LogoutButton from '../components/LogoutButton';
 
 export default function SettingsPage() {
   return (
@@ -152,6 +153,8 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+        <LogoutButton />
+
       </div>
     </div>
   );

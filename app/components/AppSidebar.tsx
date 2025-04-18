@@ -1,4 +1,4 @@
-import { BarChart, Home, Settings, NotebookPen } from 'lucide-react';
+import { BarChart, Home, Settings, NotebookPen, Brain } from 'lucide-react';
 
 import {
   Sidebar,
@@ -11,12 +11,11 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
-import LogoutButton from './LogoutButton';
 
 // Menu items.
 const items = [
   {
-    title: 'Dashboard',
+    title: 'Overview',
     url: '/',
     icon: Home,
   },
@@ -39,10 +38,13 @@ export function AppSidebar() {
       collapsible='icon'
     >
       <SidebarContent>
-        <SidebarGroup className='h-full  flex flex-col gap-8'>
-          <SidebarGroupLabel className='text-1xl text-gray-800 font-bold'>
-            Budget Brain 🧠
+        <SidebarGroup className='h-full  flex flex-col gap-4'>
+          <div className='flex justify-center items-center gap-2'>
+          <SidebarGroupLabel className='text-2xl text-foreground font-bold flex justify-center items-center gap-2'>
+            Budget Brain
           </SidebarGroupLabel>
+            <Brain className='text-primary ' />
+          </div>
           <SidebarGroupContent>
             <SidebarMenu className='flex flex-col gap-4'>
               {items.map((item) => (
@@ -66,21 +68,13 @@ export function AppSidebar() {
             <SidebarMenu className='flex flex-col gap-4'>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  className='text-xl'
+                  className='text-lg font-light'
                   asChild
                 >
                   <Link href='/settings'>
                     <Settings />
                     <span>Profile & Settings</span>
                   </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  className='text-xl'
-                  asChild
-                >
-                  <LogoutButton />
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
