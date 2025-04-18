@@ -68,12 +68,12 @@
   --chart-3: #9BA3B9;
   --chart-4: #E5989B;
   --chart-5: #C7B7A3;
-  --sidebar: #52555a;
-  --sidebar-foreground: #F7F7FA;
+  --sidebar: #EAEAEC;
+  --sidebar-foreground: #2D2D2D;
   --sidebar-primary: #7FB7A3;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F5F5F7;
-  --sidebar-accent-foreground: #2D2D2D;
+  --sidebar-accent: #7FB7A3;
+  --sidebar-accent-foreground: #FFFFFF;
   --sidebar-border: rgba(255, 255, 255, 0.1);
   --sidebar-ring: rgba(255, 255, 255, 0.2);
 }

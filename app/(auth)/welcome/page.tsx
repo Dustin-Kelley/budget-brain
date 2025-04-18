@@ -730,7 +730,7 @@ export default function LandingPage() {
               className='flex flex-col items-center justify-center space-y-6 text-center'
             >
               <h2 className='text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight'>
-                Ready to Transform Your Family&apos;s Finances?
+                Ready to Transform Your Finances?
               </h2>
               <p className='mx-auto max-w-[700px] text-primary-foreground/80 md:text-xl'>
                 Join thousands of families who have taken control of their

@@ -40,7 +40,7 @@ export function AppSidebar() {
     >
       <SidebarContent>
         <SidebarGroup className='h-full  flex flex-col gap-8'>
-          <SidebarGroupLabel className='text-1xl text-white font-bold'>
+          <SidebarGroupLabel className='text-1xl text-gray-800 font-bold'>
             Budget Brain 🧠
           </SidebarGroupLabel>
           <SidebarGroupContent>
