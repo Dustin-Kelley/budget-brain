@@ -54,10 +54,10 @@ export const updateSession = async (request: NextRequest) => {
     }
 
     // If user is authenticated and trying to access a public route
-    if (user && isPublicRoute && request.nextUrl.pathname !== '/auth/callback') {
-      const redirectUrl = new URL('/', request.url);
-      return NextResponse.redirect(redirectUrl);
-    }
+    // if (user && isPublicRoute && request.nextUrl.pathname !== '/auth/callback') {
+    //   const redirectUrl = new URL('/', request.url);
+    //   return NextResponse.redirect(redirectUrl);
+    // }
 
     return response;
   } catch {
