@@ -9,7 +9,7 @@ export function SidebarWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   
   // Define routes where sidebar should be hidden
-  const hideSidebarRoutes = ['/login', '/welcome', '/sign-up'];
+  const hideSidebarRoutes = ['/login', '/welcome', '/sign-up', '/error'];
   const shouldHideSidebar = hideSidebarRoutes.some(route => pathname.startsWith(route));
 
   if (shouldHideSidebar) {
