@@ -18,6 +18,7 @@ import {
   Users,
   BarChart,
   Layers,
+  Brain,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -111,12 +112,15 @@ export default function LandingPage() {
         }`}
       >
         <div className='container flex h-16 items-center justify-between'>
-          <div className='flex items-center gap-2 font-bold'>
-            <div className='size-8 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground'>
-              B
+          <Link
+            href='/welcome'
+            className='flex items-center gap-2 font-medium'
+          >
+            <div className='flex h-10 w-10 items-center justify-center rounded-md bg-primary text-primary-foreground'>
+              <Brain className='size-6' />
             </div>
-            <span>Budget Brain</span>
-          </div>
+            Budget Brain
+          </Link>
           <nav className='hidden md:flex gap-8'>
             <Link
               href='#features'
