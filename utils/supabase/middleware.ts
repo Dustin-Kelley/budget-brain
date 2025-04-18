@@ -37,31 +37,27 @@ export const updateSession = async (request: NextRequest) => {
 
     // This will refresh session if expired - required for Server Components
     // https://supabase.com/docs/guides/auth/server-side/nextjs
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await supabase.auth.getUser();
 
-    // Define public routes that don't require authentication
-    const publicRoutes = ['/sign-in', '/sign-up', '/landing', '/auth/callback', '/forgot-password'];
-    
-    // Check if the current route is public
-    const isPublicRoute = publicRoutes.some(route => 
-      request.nextUrl.pathname.startsWith(route)
-    );
-
-    // If user is not authenticated and trying to access a protected route
-    if (!user && !isPublicRoute) {
-      const redirectUrl = new URL('/sign-in', request.url);
-      return NextResponse.redirect(redirectUrl);
+    // protected routes
+    if (request.nextUrl.pathname.startsWith("/protected") && user.error) {
+      return NextResponse.redirect(new URL("/sign-in", request.url));
     }
 
-    // If user is authenticated and trying to access a public route
-    if (user && isPublicRoute && request.nextUrl.pathname !== '/auth/callback') {
-      const redirectUrl = new URL('/', request.url);
-      return NextResponse.redirect(redirectUrl);
+    if (request.nextUrl.pathname === "/" && !user.error) {
+      return NextResponse.redirect(new URL("/", request.url));
     }
 
     return response;
-  } catch {
-    // If there's an error, redirect to landing page
-    return NextResponse.redirect(new URL('/sign-in', request.url));
+  } catch (e) {
+    // If you are here, a Supabase client could not be created!
+    // This is likely because you have not set up environment variables.
+    // Check out http://localhost:3000 for Next Steps.
+    console.error(e);
+    return NextResponse.next({
+      request: {
+        headers: request.headers,
+      },
+    });
   }
 };
