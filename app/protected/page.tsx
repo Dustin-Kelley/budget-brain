@@ -8,11 +8,12 @@ export default async function ProtectedPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
+  
   if (!user) {
     return redirect("/sign-in");
   }
-
+  
+  console.log("🚀 ~ ProtectedPage ~ user:", user)
   return (
     <div className="flex-1 w-full flex flex-col gap-12">
       <div className="w-full">

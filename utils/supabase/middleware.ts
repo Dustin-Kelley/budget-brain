@@ -37,26 +37,29 @@ export const updateSession = async (request: NextRequest) => {
 
     // This will refresh session if expired - required for Server Components
     // https://supabase.com/docs/guides/auth/server-side/nextjs
-    const user = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
 
-    // protected routes
-    if (request.nextUrl.pathname.startsWith("/protected") && user.error) {
-      return NextResponse.redirect(new URL("/sign-in", request.url));
+    // Define public routes that don't require authentication
+    const publicRoutes = ['/sign-in', '/sign-up', '/landing'];
+    
+    // Check if the current route is public
+    const isPublicRoute = publicRoutes.some(route => 
+      request.nextUrl.pathname.startsWith(route)
+    );
+
+    // If user is not authenticated and trying to access a protected route
+    if (!user && !isPublicRoute) {
+      return NextResponse.redirect(new URL('/landing', request.url));
     }
 
-    if (request.nextUrl.pathname === "/" && !user.error) {
-      return NextResponse.redirect(new URL("/protected", request.url));
+    // If user is authenticated and trying to access a public route
+    if (user && isPublicRoute) {
+      return NextResponse.redirect(new URL('/', request.url));
     }
 
     return response;
-  } catch (e) {
-    // If you are here, a Supabase client could not be created!
-    // This is likely because you have not set up environment variables.
-    // Check out http://localhost:3000 for Next Steps.
-    return NextResponse.next({
-      request: {
-        headers: request.headers,
-      },
-    });
+  } catch {
+    // If there's an error, redirect to landing page
+    return NextResponse.redirect(new URL('/landing', request.url));
   }
 };
