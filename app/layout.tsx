@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   title: 'Budget Brain',
   description: 'Budget Brain is a tool that helps you manage your money',
   icons: {
-    icon: 'https://gsilpsppthrhhqcuwzjw.supabase.co/storage/v1/object/public/logos//budget-brain-transparent.png',
+    icon: 'https://gsilpsppthrhhqcuwzjw.supabase.co/storage/v1/object/public/logos//budget_brain_favicon.ico',
   },
 };
 
