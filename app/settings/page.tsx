@@ -4,11 +4,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { UserPlus, UserMinus } from "lucide-react"
+import { DarkModeToggle } from "../components/DarkModeToggle"
 
 export default function SettingsPage() {
   return (
     <div className="container mx-auto py-8">
       <div className="space-y-6">
+        <DarkModeToggle />
         <div>
           <h1 className="text-3xl font-bold">Profile & Settings</h1>
           <p className="text-muted-foreground">

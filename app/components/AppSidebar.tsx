@@ -36,12 +36,12 @@ export function AppSidebar() {
     <Sidebar variant="inset"  collapsible="icon">
       <SidebarContent>
         <SidebarGroup className="h-full  flex flex-col gap-8">
-          <SidebarGroupLabel className="text-1xl text-background font-bold">Budget Brain 🧠</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-1xl text-white font-bold">Budget Brain 🧠</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="flex flex-col gap-4">
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton className="text-xl font-medium" asChild>
+                  <SidebarMenuButton className="text-xl font-light" asChild>
                     <Link href={item.url}>
                       <item.icon  />
                       <span>{item.title}</span>
