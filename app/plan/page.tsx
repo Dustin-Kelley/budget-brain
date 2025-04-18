@@ -1,6 +1,5 @@
 import { Plus, DollarSign } from 'lucide-react';
 import Link from 'next/link';
-import { MonthSelector } from '../components/MonthSelector';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -12,8 +11,8 @@ import {
 } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { budgetData } from '../data';
-import { AddExpenseForm } from '../components/AddExpenseForm';
 import { RemainingSpentTab } from './components/RemainingSpentTab';
+import { BudgetHeader } from '../components/BudgetHeader';
 
 export default async function Page({
   searchParams,
@@ -26,18 +25,7 @@ export default async function Page({
 
   return (
     <main className='flex flex-col gap-4'>
-      <div className='flex items-center justify-between'>
-        <div>
-          <h1 className='text-3xl font-bold text-primary tracking-tight'>
-            {parsedMonth}
-          </h1>
-          <p className='text-muted-foreground'>Track and manage your budget</p>
-        </div>
-        <div className='flex items-center gap-2'>
-          <MonthSelector selectedMonth={month} />
-          <AddExpenseForm />
-        </div>
-      </div>
+      <BudgetHeader month={parsedMonth} />
 
       {/* Budget Details */}
       <Tabs defaultValue='planned'>
