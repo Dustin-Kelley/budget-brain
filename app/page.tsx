@@ -9,14 +9,11 @@ export default async function Page({
   searchParams: Promise<{ month?: string }>;
 }) {
   const { month } = await searchParams;
-  const parsedMonth =
-    month?.split('-')[0] ||
-    new Date().toLocaleString('default', { month: 'long' });
+ 
 
   return (
     <main className='flex flex-col gap-4'>
-      <BudgetHeader month={parsedMonth} />
-
+      <BudgetHeader month={month} />
       <Suspense fallback={<div>Loading...</div>}>
         <MonthlyBudgetProgress />
       </Suspense>
