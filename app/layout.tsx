@@ -19,6 +19,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'Budget Brain',
   description: 'Budget Brain is a tool that helps you manage your money',
+  icons: {
+    icon: 'https://gsilpsppthrhhqcuwzjw.supabase.co/storage/v1/object/public/logos//budget-brain-transparent.png',
+  },
 };
 
 export default async function RootLayout({

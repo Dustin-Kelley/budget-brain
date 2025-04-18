@@ -1,4 +1,4 @@
-import { BarChart, Home, Settings, NotebookPen, Brain } from 'lucide-react';
+import { BarChart, Home, Settings, NotebookPen } from 'lucide-react';
 
 import {
   Sidebar,
@@ -11,7 +11,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
-
+import { Logo } from '@/components/ui/logo';  
 // Menu items.
 const items = [
   {
@@ -39,11 +39,11 @@ export function AppSidebar() {
     >
       <SidebarContent>
         <SidebarGroup className='h-full  flex flex-col gap-4'>
-          <div className='flex justify-center items-center gap-2'>
-          <SidebarGroupLabel className='text-2xl text-foreground font-bold flex justify-center items-center gap-2'>
+          <div className='flex justify-center items-center'>
+            <Logo />
+          <SidebarGroupLabel className='text-2xl text-foreground font-bold flex justify-center items-center'>
             Budget Brain
           </SidebarGroupLabel>
-            <Brain className='text-primary ' />
           </div>
           <SidebarGroupContent>
             <SidebarMenu className='flex flex-col gap-4'>
