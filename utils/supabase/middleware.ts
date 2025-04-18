@@ -35,32 +35,37 @@ export const updateSession = async (request: NextRequest) => {
       },
     );
 
-    // This will refresh session if expired - required for Server Components
-    // https://supabase.com/docs/guides/auth/server-side/nextjs
-    const { data: { user }, error } = await supabase.auth.getUser();
-    console.log("🚀 ~ updateSession ~ user:", user?.id)
-    console.log("🚀 ~ updateSession ~ error:", error)
-
     // Define public routes
     const publicRoutes = ['/sign-in', '/sign-up', '/landing'];
     const isPublicRoute = publicRoutes.includes(request.nextUrl.pathname);
 
-    // If user is not authenticated and trying to access a protected route
-    if (!user && !isPublicRoute) {
-      return NextResponse.redirect(new URL('/sign-in', request.url));
-    }
+    try {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      
+      // If there's an auth error and we're not on a public route, redirect to sign-in
+      if (error && !isPublicRoute) {
+        return NextResponse.redirect(new URL('/sign-in', request.url));
+      }
 
-    // If user is authenticated and trying to access auth pages
-    if (user && (request.nextUrl.pathname === '/sign-in' || request.nextUrl.pathname === '/sign-up')) {
-      return NextResponse.redirect(new URL('/', request.url));
-    }
+      // If user is authenticated and trying to access auth pages
+      if (user && (request.nextUrl.pathname === '/sign-in' || request.nextUrl.pathname === '/sign-up')) {
+        return NextResponse.redirect(new URL('/', request.url));
+      }
 
-    return response;
+      return response;
+    } catch (authError) {
+      console.log("🚀 ~ updateSession ~ authError:", authError)
+      // If there's an auth error and we're not on a public route, redirect to sign-in
+      if (!isPublicRoute) {
+        return NextResponse.redirect(new URL('/sign-in', request.url));
+      }
+      return response;
+    }
   } catch (e) {
     // If you are here, a Supabase client could not be created!
     // This is likely because you have not set up environment variables.
     // Check out http://localhost:3000 for Next Steps.
-    console.log("🚀 ~ updateSession ~ error:", e)
+    console.error("Middleware error:", e)
     return NextResponse.next({
       request: {
         headers: request.headers,
