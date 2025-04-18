@@ -49,19 +49,19 @@ export const updateSession = async (request: NextRequest) => {
 
     // If user is not authenticated and trying to access a protected route
     if (!user && !isPublicRoute) {
-      const redirectUrl = new URL('/landing', request.url);
+      const redirectUrl = new URL('/sign-in', request.url);
       return NextResponse.redirect(redirectUrl);
     }
 
     // If user is authenticated and trying to access a public route
-    // if (user && isPublicRoute && request.nextUrl.pathname !== '/auth/callback') {
-    //   const redirectUrl = new URL('/', request.url);
-    //   return NextResponse.redirect(redirectUrl);
-    // }
+    if (user && isPublicRoute && request.nextUrl.pathname !== '/auth/callback') {
+      const redirectUrl = new URL('/', request.url);
+      return NextResponse.redirect(redirectUrl);
+    }
 
     return response;
   } catch {
     // If there's an error, redirect to landing page
-    return NextResponse.redirect(new URL('/landing', request.url));
+    return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 };
