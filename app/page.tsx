@@ -2,7 +2,7 @@ import { MonthlyBudgetProgress } from './components/MonthlyBudgetProgress';
 import { Suspense } from 'react';
 import { BudgetSummary } from './components/BudgetSummary';
 import { BudgetHeader } from './components/BudgetHeader';
-import { getData } from './queries/getData';
+
 
 export default async function Page({
   searchParams,
@@ -11,8 +11,7 @@ export default async function Page({
 }) {
   const { month } = await searchParams;
  
-  const data = await getData()
-  console.log("🚀 ~ data:", data)
+ 
 
   return (
     <main className='flex flex-col gap-4'>
