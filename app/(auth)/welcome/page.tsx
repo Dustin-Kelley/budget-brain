@@ -125,22 +125,10 @@ export default function LandingPage() {
               Features
             </Link>
             <Link
-              href='#testimonials'
-              className='text-sm font-medium text-muted-foreground transition-colors hover:text-foreground'
-            >
-              Testimonials
-            </Link>
-            <Link
               href='#pricing'
               className='text-sm font-medium text-muted-foreground transition-colors hover:text-foreground'
             >
               Pricing
-            </Link>
-            <Link
-              href='#faq'
-              className='text-sm font-medium text-muted-foreground transition-colors hover:text-foreground'
-            >
-              FAQ
             </Link>
           </nav>
           <div className='hidden md:flex gap-4 items-center'>
@@ -158,15 +146,17 @@ export default function LandingPage() {
               <span className='sr-only'>Toggle theme</span>
             </Button>
             <Link
-              href='#'
+              href='/login'
               className='text-sm font-medium text-muted-foreground transition-colors hover:text-foreground'
             >
               Log in
             </Link>
-            <Button className='rounded-full'>
-              Get Started
-              <ChevronRight className='ml-1 size-4' />
-            </Button>
+            <Link href='/sign-up'>
+              <Button className='rounded-full'>
+                Get Started
+                <ChevronRight className='ml-1 size-4' />
+              </Button>
+            </Link>
           </div>
           <div className='flex items-center gap-4 md:hidden'>
             <Button
