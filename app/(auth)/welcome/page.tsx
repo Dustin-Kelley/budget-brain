@@ -18,14 +18,13 @@ import {
   Users,
   BarChart,
   Layers,
-  Brain,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTheme } from 'next-themes';
-
+import { Logo } from '@/components/ui/logo';
 export default function LandingPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -116,9 +115,7 @@ export default function LandingPage() {
             href='/welcome'
             className='flex items-center gap-2 font-medium'
           >
-            <div className='flex h-10 w-10 items-center justify-center rounded-md bg-primary text-primary-foreground'>
-              <Brain className='size-6' />
-            </div>
+         <Logo />
             Budget Brain
           </Link>
           <nav className='hidden md:flex gap-8'>
