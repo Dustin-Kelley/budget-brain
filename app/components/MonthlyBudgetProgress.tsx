@@ -2,10 +2,12 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Progress } from "@/components/ui/progress"
 import { getMonthlyBudgetProgress } from "../queries/getMonthlyBudgetProgress";
 
-export const MonthlyBudgetProgress = async () => {
+export const MonthlyBudgetProgress = async ({date}: {date: string | undefined}) => {
+  const currentDate = date || `${new Date().toLocaleString('default', { month: 'long' })}-${new Date().getFullYear()}`;
+  const [month, year] = currentDate.split('-');
+  const monthIndex = (new Date(`${month} 1, ${year}`).getMonth() + 1).toString();
 
-  const {planned, spent, percentSpent} = await getMonthlyBudgetProgress();
-
+  const {planned, spent, percentSpent} = await getMonthlyBudgetProgress({month: monthIndex, year});
 
   return (
           <Card>

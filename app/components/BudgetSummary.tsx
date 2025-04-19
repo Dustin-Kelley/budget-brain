@@ -4,13 +4,16 @@ import { CreditCard, DollarSign, Wallet } from 'lucide-react';
 import React from 'react';
 import { getBudgetSummary } from '../queries/getBudgetSummary';
 
-export const BudgetSummary = async () => {
-  const { income, transactions } = await getBudgetSummary();
+export const BudgetSummary = async ({date}: {date: string | undefined}) => {
+  const currentDate = date || `${new Date().toLocaleString('default', { month: 'long' })}-${new Date().getFullYear()}`;
+  const [month, year] = currentDate.split('-');
+  const monthIndex = (new Date(`${month} 1, ${year}`).getMonth() + 1).toString();
+
+  const { income, transactions } = await getBudgetSummary({month: monthIndex, year});
 
   if (!income || !transactions) {
     return null;
   }
-
 
   const planned = income.reduce((acc, income) => acc + (income.amount || 0), 0);
   const spent = transactions.reduce(

@@ -11,6 +11,7 @@ export default async function Page({
   searchParams: Promise<{ month?: string }>;
 }) {
   const { month } = await searchParams;
+  console.log("🚀 ~ month:", month)
 
   const { currentUser } = await getCurrentUser();
 
@@ -22,11 +23,11 @@ export default async function Page({
     <main className='flex flex-col gap-4'>
       <BudgetHeader month={month} />
       <Suspense fallback={<div>Loading...</div>}>
-        <MonthlyBudgetProgress />
+        <MonthlyBudgetProgress date={month} />
       </Suspense>
 
       <Suspense fallback={<div>Loading...</div>}>
-        <BudgetSummary />
+        <BudgetSummary date={month} />
       </Suspense>
 
       <div>pie chart breakdown</div>

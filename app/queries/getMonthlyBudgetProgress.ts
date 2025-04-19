@@ -2,9 +2,9 @@ import { getBudgetSummary } from "./getBudgetSummary";
 import { getCurrentUser } from "./getCurrentUser";
 import { cache } from 'react';
 
-export const getMonthlyBudgetProgress = cache(async () => {
+export const getMonthlyBudgetProgress = cache(async ({month, year}: {month: string, year: string}) => {
   const { currentUser } = await getCurrentUser();
-  const { income, transactions, incomeError, transactionsError } = await getBudgetSummary();
+  const { income, transactions, incomeError, transactionsError } = await getBudgetSummary({month, year});
 
   if (!currentUser || !income || !transactions) {
     return {
