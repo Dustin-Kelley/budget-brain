@@ -1,14 +1,12 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import { budgetData } from "../data";
+import { getMonthlyBudgetProgress } from "../queries/getMonthlyBudgetProgress";
 
-export const MonthlyBudgetProgress = () => {
-//TODO: get the month and year from the url
-//TODO: Query data from the database
-  const planned = budgetData.income.reduce((acc, income) => acc + income.amount, 0)
-  const spent = budgetData.transactions.reduce((acc, transaction) => acc + transaction.amount, 0)
+export const MonthlyBudgetProgress = async () => {
 
-  const percentSpent = Math.round((spent / planned) * 100)
+  const {planned, spent, percentSpent} = await getMonthlyBudgetProgress();
+
+
   return (
           <Card>
         <CardHeader>
