@@ -1,6 +1,6 @@
 import React from 'react'
 import { MonthSelector } from './MonthSelector'
-import { AddExpenseForm } from './AddExpenseForm'
+import { AddExpenseForm } from './AddExpenseForm';
 
 export function BudgetHeader({ month }: { month: string | undefined }) {
   const parsedMonth =

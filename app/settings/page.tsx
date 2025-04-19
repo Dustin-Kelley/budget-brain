@@ -10,8 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { UserPlus, UserMinus } from 'lucide-react';
-import { DarkModeToggle } from '../components/DarkModeToggle';
-import LogoutButton from '../components/LogoutButton';
+import { DarkModeToggle } from '../../components/app/DarkModeToggle';
+import LogoutButton from '@/components/app/LogoutButton';
 
 export default function SettingsPage() {
   return (
