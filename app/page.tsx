@@ -2,7 +2,8 @@ import { MonthlyBudgetProgress } from './components/MonthlyBudgetProgress';
 import { Suspense } from 'react';
 import { BudgetSummary } from './components/BudgetSummary';
 import { BudgetHeader } from './components/BudgetHeader';
-
+import { getCurrentUser } from './queries/getCurrentUser';
+import { redirect } from 'next/navigation';
 
 export default async function Page({
   searchParams,
@@ -10,8 +11,12 @@ export default async function Page({
   searchParams: Promise<{ month?: string }>;
 }) {
   const { month } = await searchParams;
- 
- 
+
+  const { currentUser } = await getCurrentUser();
+
+  if (!currentUser) {
+    redirect('/login');
+  }
 
   return (
     <main className='flex flex-col gap-4'>
