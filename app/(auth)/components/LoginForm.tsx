@@ -123,7 +123,7 @@ export function LoginForm({
                   )}
                 />
                 <Button type="submit" className="w-full">
-                  Login
+                  {form.formState.isSubmitting ? 'Logging in...' : 'Login' }
                 </Button>
               </div>
               <div className="text-center text-sm">
