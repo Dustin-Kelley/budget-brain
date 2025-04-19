@@ -9,7 +9,7 @@ export const BudgetSummary = async ({date}: {date: string | undefined}) => {
   const [month, year] = currentDate.split('-');
   const monthIndex = (new Date(`${month} 1, ${year}`).getMonth() + 1).toString();
 
-  const { income, transactions } = await getBudgetSummary({month: monthIndex, year});
+  const { income, transactions } = await getBudgetSummary({monthIndex: Number(monthIndex), year: Number(year)});
 
   if (!income || !transactions) {
     return null;

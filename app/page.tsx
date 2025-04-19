@@ -11,7 +11,6 @@ export default async function Page({
   searchParams: Promise<{ month?: string }>;
 }) {
   const { month } = await searchParams;
-  console.log("🚀 ~ month:", month)
 
   const { currentUser } = await getCurrentUser();
 

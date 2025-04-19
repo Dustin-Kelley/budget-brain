@@ -1,27 +1,21 @@
 import { createClient } from "@/utils/supabase/server";
 import { getCurrentUser } from "./getCurrentUser";
 
-export const getBudgetSummary = async ({month, year}: {month: string, year: string}) => {
+export const getBudgetSummary = async ({monthIndex, year}: {monthIndex: number, year: number}) => {
   const { currentUser } = await getCurrentUser();
 const supabase = await createClient();
-
-console.log("🚀 ~ month:", month)
-console.log("🚀 ~ year:", year) 
 
 if (!currentUser) {
   throw new Error('User not found');
 }
-
-const monthNumber = Number(month);
-const yearNumber = Number(year);
 
 const { data: income, error: incomeError } = await supabase
   .from('income')
   .select('*')
   .eq('household_id', currentUser.household_id)
   .eq('created_by', currentUser.id)
-  .eq('month', monthNumber)
-  .eq('year', yearNumber);
+  .eq('month', monthIndex)
+  .eq('year', year);
 
 
   const { data: transactions, error: transactionsError } = await supabase
@@ -29,8 +23,8 @@ const { data: income, error: incomeError } = await supabase
   .select('*')
   .eq('household_id', currentUser.household_id)
   .eq('created_by', currentUser.id)
-  .eq('month', monthNumber)
-  .eq('year', yearNumber);
+  .eq('month', monthIndex)
+  .eq('year', year);
   
   return {
     income,
