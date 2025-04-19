@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { toast } from "sonner"
+import { Spinner } from "@/app/components/Spinner"
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
@@ -123,7 +124,7 @@ export function LoginForm({
                   )}
                 />
                 <Button type="submit" className="w-full">
-                  {form.formState.isSubmitting ? 'Logging in...' : 'Login' }
+                  {form.formState.isSubmitting ? <Spinner/> : 'Login' }
                 </Button>
               </div>
               <div className="text-center text-sm">
