@@ -12,12 +12,16 @@ if (!currentUser) {
 const { data: income } = await supabase
   .from('income')
   .select('*')
-  .eq('household_id', currentUser.household_id);
+  .eq('household_id', currentUser.household_id)
+  .eq('created_by', currentUser.id);
+
+
 
   const { data: transactions } = await supabase
   .from('transactions')
   .select('*')
-  .eq('household_id', currentUser.household_id);
+  .eq('household_id', currentUser.household_id)
+  .eq('created_by', currentUser.id);
   
   return {
     income,
