@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-
+import { toast } from "sonner"
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
@@ -37,7 +37,11 @@ export function LoginForm({
   })
 
   const onSubmit = async (data: LoginFormValues) => {
-    await login(data)
+   const { error } = await login(data)
+   
+   if (error) {
+    toast.error('Invalid login credentials')
+   }
   }
 
   return (

@@ -10,12 +10,15 @@ export async function login(data: { email: string; password: string }) {
 
   const { error } = await supabase.auth.signInWithPassword(data)
 
-  if (error) {
-    redirect('/error')
+  console.log("🚀 ~ login ~ error:", error)
+ 
+
+  if (!error) {
+    revalidatePath('/', 'layout')
+    redirect('/')
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/')
+  return {error}
 }
 
 export async function signup(data: { email: string; password: string }) {
