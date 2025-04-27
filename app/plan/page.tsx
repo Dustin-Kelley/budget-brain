@@ -1,11 +1,9 @@
-import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -14,6 +12,7 @@ import { budgetData } from '../data';
 import { RemainingSpentTab } from './components/RemainingSpentTab';
 import { BudgetHeader } from '../components/BudgetHeader';
 import { IncomeCard } from './components/IncomeCard';
+import { CategoryCards } from './components/CategoryCards';
 
 export default async function Page({
   searchParams,
@@ -22,7 +21,6 @@ export default async function Page({
 }) {
   const { month } = await searchParams;
   const parsedMonth = month?.split('-')[0] || new Date().toLocaleString('default', { month: 'long' });
-  const totalIncome = budgetData.income.reduce((total, income) => total + income.amount, 0);
 
   return (
     <main className='flex flex-col gap-4'>
@@ -42,78 +40,7 @@ export default async function Page({
           className='flex flex-col gap-4'
         >
           <IncomeCard month={parsedMonth} />
-          <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
-            {budgetData.categories.map((category) => {
-              const categorySubcategories = budgetData.lineItems.filter(
-                (sub) => sub.category_id === category.id
-              );
-              return (
-                <Card key={category.id}>
-                  <CardHeader className='pb-2'>
-                    <div className='flex items-center justify-between'>
-                      <CardTitle className='text-sm font-medium'>
-                        {category.name}
-                      </CardTitle>
-                      <div
-                        className={`h-3 w-3 rounded-full ${category.color}`}
-                      ></div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className='pb-2'>
-                    <div className='space-y-2'>
-                      {categorySubcategories.map((subcategory) => (
-                        <div
-                          key={subcategory.id}
-                          className='flex items-center justify-between text-sm'
-                        >
-                          <span className='text-muted-foreground'>
-                            {subcategory.name}
-                          </span>
-                          <span className='font-medium'>
-                            ${subcategory.planned_amount}
-                          </span>
-                        </div>
-                      ))}
-                      <Button
-                        variant='ghost'
-                        size='sm'
-                        className='w-full justify-start text-muted-foreground'
-                      >
-                        <Plus className='mr-2 h-4 w-4' />
-                        Add New Item
-                      </Button>
-                    </div>
-                  </CardContent>
-                  <CardFooter className='pt-0'>
-                    <div className='flex w-full justify-between text-xs text-muted-foreground'>
-                      <span>Total Budget: ${category.planned_amount}</span>
-                      <span>{Math.round((category.planned_amount / totalIncome) * 100)}%</span>
-                    </div>
-                  </CardFooter>
-                </Card>
-              );
-            })}
-            <Card className='border-dashed opacity-50'>
-              <CardHeader className='pb-2'>
-                <div className='flex items-center justify-between'>
-                  <CardTitle className='text-sm font-medium'>
-                    Add New Category
-                  </CardTitle>
-                  <div className='h-3 w-3 rounded-full bg-muted'></div>
-                </div>
-              </CardHeader>
-              <CardContent className='pb-2'>
-                <div className='flex items-center justify-center h-24'>
-                  <Plus className='h-8 w-8 text-muted-foreground' />
-                </div>
-              </CardContent>
-              <CardFooter className='pt-0'>
-                <div className='flex w-full justify-between text-xs text-muted-foreground'>
-                  <span>Total Budget: $0</span>
-                </div>
-              </CardFooter>
-            </Card>
-          </div>
+          <CategoryCards />
         </TabsContent>
 
         {/* Remaining Tab */}
