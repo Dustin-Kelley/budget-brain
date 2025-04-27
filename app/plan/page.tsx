@@ -1,4 +1,4 @@
-import { Plus, DollarSign } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { budgetData } from '../data';
 import { RemainingSpentTab } from './components/RemainingSpentTab';
 import { BudgetHeader } from '../components/BudgetHeader';
+import { IncomeCard } from './components/IncomeCard';
 
 export default async function Page({
   searchParams,
@@ -179,61 +180,6 @@ export default async function Page({
   );
 }
 
-const IncomeCard = ({ month }: { month: string }) => {
-  const totalIncome = budgetData.income.reduce(
-    (total, income) => total + income.amount,
-    0
-  );
-  const totalPlanned = budgetData.categories.reduce(
-    (total, category) => total + category.planned_amount,
-    0
-  );
-  const remaining = totalIncome - totalPlanned;
 
-  return (
-    <Card>
-      <CardContent>
-        <div className='flex flex-col gap-4'>
-          <div className='flex items-center justify-between'>
-            <div className='space-y-1'>
-              <p className='text-sm font-medium'>Total Income for: {month}</p>
-              <p className='text-2xl font-bold'>${totalIncome}</p>
-            </div>
-            <div className='rounded-full bg-muted p-3'>
-              <DollarSign className='h-6 w-6 text-muted-foreground' />
-            </div>
-          </div>
-          <div className='flex flex-col gap-2'>
-            {budgetData.income.map((income) => (
-              <div
-                key={income.id}
-                className='flex items-center justify-between text-sm'
-              >
-                <span className='font-medium'>{income.name}</span>
-                <span className='font-medium'>${income.amount}</span>
-              </div>
-            ))}
-            <Button
-              variant='ghost'
-              size='sm'
-              className='w-full justify-start text-muted-foreground'
-            >
-              <Plus className='mr-2 h-4 w-4' />
-              Add Income Source
-            </Button>
-          </div>
-          <div className='flex items-center pt-2 border-t'>
-            <div className='flex items-center gap-2'>
-              <p className='text-2xl font-bold text-muted-foreground'>
-                ${remaining}
-              </p>
-              <span className='text-xs'>left to budget</span>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
 
 
