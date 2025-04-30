@@ -11,13 +11,13 @@ import React from 'react';
 import { AddNewItem } from './AddNewItem';
 import { LineItems } from './LineItems';
 import { AddNewCategory } from './AddNewCategory';
+import { EditCategories } from './EditCategories';
 
 export async function CategoryCards({ month }: { month: string | undefined }) {
   const { data } = await getTotalIncome();
   const { data: categories } = await getCategories();
   const totalIncome =
     data?.reduce((total, income) => total + (income?.amount || 0), 0) || 0;
-  console.log(month);
 
   return (
     <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
@@ -35,7 +35,7 @@ export async function CategoryCards({ month }: { month: string | undefined }) {
                 <CardTitle className='text-sm font-medium'>
                   {category.name}
                 </CardTitle>
-                <div className={`h-3 w-3 rounded-full bg-blue-400`} />
+                <EditCategories categoryId={category.id} />
               </div>
             </CardHeader>
             <CardContent>
