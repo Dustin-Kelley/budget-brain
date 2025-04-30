@@ -2,9 +2,13 @@
 
 import { createClient } from '@/utils/supabase/server';
 
-export const deleteLineItem = async (lineItemId: string) => {
+export const deleteLineItem = async ({
+  lineItemId,
+}: {
+  lineItemId: string;
+}) => {
   const supabase = await createClient();
-  
+
   const { error } = await supabase
     .from('line_items')
     .delete()

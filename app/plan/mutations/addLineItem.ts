@@ -1,6 +1,7 @@
 'use server';
 
 import { getCurrentUser } from '@/app/queries/getCurrentUser';
+import { getMonthAndYearNumberFromDate } from '@/lib/utils';
 import { createClient } from '@/utils/supabase/server';
 
 export const addLineItem = async ({
@@ -17,13 +18,8 @@ export const addLineItem = async ({
   const { currentUser } = await getCurrentUser();
   const supabase = await createClient();
 
-  const currentDate = new Date();
-  const monthNumber = date 
-    ? new Date(date).getMonth() + 1 
-    : currentDate.getMonth() + 1;
-  const yearNumber = date 
-    ? new Date(date).getFullYear() 
-    : currentDate.getFullYear();
+  const { monthNumber, yearNumber } = getMonthAndYearNumberFromDate(date);
+ 
 
   const { error } = await supabase.from('line_items').insert({
     name: lineItemName,

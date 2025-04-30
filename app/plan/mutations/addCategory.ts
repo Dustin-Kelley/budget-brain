@@ -1,11 +1,16 @@
 'use server';
 
-import { getCurrentUser } from "@/app/queries/getCurrentUser";
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
-
-export const addCategory = async ({categoryName, date}: {categoryName: string, date: string | undefined}) => {
-
+import { getCurrentUser } from '@/app/queries/getCurrentUser';
+import { createClient } from '@/utils/supabase/server';
+import { redirect } from 'next/navigation';
+import { getMonthAndYearNumberFromDate } from '@/lib/utils';
+export const addCategory = async ({
+  categoryName,
+  date,
+}: {
+  categoryName: string;
+  date: string | undefined;
+}) => {
   const { currentUser } = await getCurrentUser();
 
   if (!currentUser) {
@@ -14,13 +19,7 @@ export const addCategory = async ({categoryName, date}: {categoryName: string, d
 
   const supabase = await createClient();
 
-  const currentDate = new Date();
-  const monthNumber = date 
-    ? new Date(date).getMonth() + 1 
-    : currentDate.getMonth() + 1;
-  const yearNumber = date 
-    ? new Date(date).getFullYear() 
-    : currentDate.getFullYear();
+  const { monthNumber, yearNumber } = getMonthAndYearNumberFromDate(date);
 
   const { data, error } = await supabase.from('categories').insert({
     name: categoryName,

@@ -13,7 +13,7 @@ export const DeleteItemButton = ({ lineItemId }: { lineItemId: string }) => {
   const router = useRouter();
   const handleDelete = async () => {
     setIsLoading(true);
-    const { error } = await deleteLineItem(lineItemId);
+    const { error } = await deleteLineItem({ lineItemId });
     if (error) {
       console.error('Failed to delete line item:', error);
       toast.error('Failed to delete line item');

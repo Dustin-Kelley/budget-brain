@@ -40,7 +40,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const AddNewCategory = ({ month }: { month: string | undefined }) => {
+export const AddNewCategoryForm = ({ month }: { month: string | undefined }) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 

@@ -34,7 +34,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const AddNewItem = ({ 
+export const AddNewItemForm = ({ 
   categoryId,
   month,
   categoryName,

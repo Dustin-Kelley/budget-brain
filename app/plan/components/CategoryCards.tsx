@@ -8,9 +8,9 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import React from 'react';
-import { AddNewItem } from './AddNewItem';
+import { AddNewItemForm } from './AddNewItemForm';
 import { LineItems } from './LineItems';
-import { AddNewCategory } from './AddNewCategory';
+import { AddNewCategoryForm } from './AddNewCategoryForm';
 import { EditCategories } from './EditCategories';
 
 export async function CategoryCards({ month }: { month: string | undefined }) {
@@ -45,7 +45,7 @@ export async function CategoryCards({ month }: { month: string | undefined }) {
                   lineItems={lineItems}
                 />
               ))}
-              <AddNewItem
+              <AddNewItemForm
                 categoryName={category.name}
                 categoryId={category.id}
                 month={month}
@@ -76,7 +76,7 @@ export async function CategoryCards({ month }: { month: string | undefined }) {
           </Card>
         );
       })}
-      <AddNewCategory month={month} />
+      <AddNewCategoryForm month={month} />
     </div>
   );
 }
