@@ -75,7 +75,7 @@ export const AddNewCategory = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Card className='border-dashed opacity-50 cursor-pointer hover:opacity-100 transition-opacity'>
+        <Card className='border-dashed justify-between opacity-50 cursor-pointer hover:opacity-100 transition-opacity'>
           <CardHeader className='pb-2'>
             <div className='flex items-center justify-between'>
               <CardTitle className='text-sm font-medium'>
