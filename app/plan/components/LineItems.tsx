@@ -9,6 +9,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
+import { EditLineItemForm } from './EditLineItemForm';
 
 type LineItems = {
     category_id: string;
@@ -45,8 +46,9 @@ export const LineItems = ({lineItems}: {lineItems: LineItems} ) => {
               <span className="sr-only">Open menu</span>
             </Button>
           </PopoverTrigger>
-          <PopoverContent>
+          <PopoverContent className='flex gap-2' >
             <DeleteItemButton lineItemId={lineItems.id} />
+            <EditLineItemForm lineItem={lineItems} />
           </PopoverContent>
         </Popover>
       </div>
