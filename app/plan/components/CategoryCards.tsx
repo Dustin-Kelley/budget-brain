@@ -11,15 +11,14 @@ import {
 import { Plus } from 'lucide-react';
 import React from 'react';
 
-export async function CategoryCards() {
+export async function CategoryCards({ month }: { month: string | undefined }) {
   const { data } = await getTotalIncome();
   const { data: categories } = await getCategories(); 
-
   const totalIncome = data?.reduce(
     (total, income) => total + (income?.amount || 0),
     0
   ) || 0;
-
+console.log(month)
   return (
     <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
       {categories?.map((category) => {
