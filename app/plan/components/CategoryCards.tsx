@@ -1,6 +1,5 @@
 import { getCategories } from '@/app/queries/getCategories';
 import { getTotalIncome } from '@/app/queries/getTotalIncome';
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -10,15 +9,15 @@ import {
 } from '@/components/ui/card';
 import { Plus } from 'lucide-react';
 import React from 'react';
+import { AddNewItem } from './AddNewItem';
 
 export async function CategoryCards({ month }: { month: string | undefined }) {
   const { data } = await getTotalIncome();
-  const { data: categories } = await getCategories(); 
-  const totalIncome = data?.reduce(
-    (total, income) => total + (income?.amount || 0),
-    0
-  ) || 0;
-console.log(month)
+  const { data: categories } = await getCategories();
+  const totalIncome =
+    data?.reduce((total, income) => total + (income?.amount || 0), 0) || 0;
+  console.log(month);
+
   return (
     <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
       {categories?.map((category) => {
@@ -32,7 +31,7 @@ console.log(month)
                 <CardTitle className='text-sm font-medium'>
                   {category.name}
                 </CardTitle>
-                <div className={`h-3 w-3 rounded-full bg-blue-400`}></div>
+                <div className={`h-3 w-3 rounded-full bg-blue-400`}/>
               </div>
             </CardHeader>
             <CardContent className='pb-2'>
@@ -50,21 +49,32 @@ console.log(month)
                     </span>
                   </div>
                 ))}
-                <Button
-                  variant='ghost'
-                  size='sm'
-                  className='w-full justify-start text-muted-foreground'
-                >
-                  <Plus className='mr-2 h-4 w-4' />
-                  Add New Item
-                </Button>
+                <AddNewItem
+                  categoryName={category.name}
+                  categoryId={category.id}
+                  month={month}
+                />
               </div>
             </CardContent>
             <CardFooter className='pt-0'>
               <div className='flex w-full justify-between text-xs text-muted-foreground'>
-                <span>Total Budget: ${category.line_items?.reduce((acc, item) => acc + (item?.planned_amount || 0), 0)}</span>
                 <span>
-                  {Math.round((category.line_items?.reduce((acc, item) => acc + (item?.planned_amount || 0), 0) / totalIncome) * 100)}%
+                  Total Category Budget: $
+                  {category.line_items?.reduce(
+                    (acc, item) => acc + (item?.planned_amount || 0),
+                    0
+                  )}
+                </span>
+                <span>
+                  {Math.round(
+                    (category.line_items?.reduce(
+                      (acc, item) => acc + (item?.planned_amount || 0),
+                      0
+                    ) /
+                      totalIncome) *
+                      100
+                  )}
+                  %
                 </span>
               </div>
             </CardFooter>
