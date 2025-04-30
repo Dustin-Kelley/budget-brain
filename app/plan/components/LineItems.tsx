@@ -11,7 +11,6 @@ import {
 import { Button } from '@/components/ui/button';
 
 type LineItems = {
- 
     category_id: string;
     created_at: string;
     created_by: string | null;
@@ -22,7 +21,6 @@ type LineItems = {
     spent_amount: number | null;
     updated_at: string | null;
     year: number | null;
-
 }
 
 export const LineItems = ({lineItems}: {lineItems: LineItems} ) => {
