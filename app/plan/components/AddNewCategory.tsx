@@ -26,7 +26,13 @@ import { useState } from 'react';
 import { addCategory } from '../mutations/addCategory';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 const formSchema = z.object({
   categoryName: z.string().min(1, 'Name is required'),
@@ -34,11 +40,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const AddNewCategory = ({ 
-  month,
-}: { 
-  month: string | undefined;
-}) => {
+export const AddNewCategory = ({ month }: { month: string | undefined }) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
@@ -50,30 +52,28 @@ export const AddNewCategory = ({
   });
 
   const onSubmit = async (values: FormValues) => {
-    try {
-      const { error } = await addCategory({
-        categoryName: values.categoryName,
-        date: month,
-      });
+    const { error } = await addCategory({
+      categoryName: values.categoryName,
+      date: month,
+    });
 
-      if (error) {
-        console.error('Failed to add category:', error);
-        toast.error('Failed to add category');
-        return;
-      }
-
-      setIsOpen(false);
-      toast.success('Category added successfully');
-      form.reset();
-      router.refresh();
-    } catch (error) {
+    if (error) {
       console.error('Failed to add category:', error);
       toast.error('Failed to add category');
+      return;
     }
+
+    setIsOpen(false);
+    toast.success('Category added successfully');
+    form.reset();
+    router.refresh();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={setIsOpen}
+    >
       <DialogTrigger asChild>
         <Card className='border-dashed justify-between opacity-50 cursor-pointer hover:opacity-100 transition-opacity'>
           <CardHeader className='pb-2'>
@@ -115,7 +115,10 @@ export const AddNewCategory = ({
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder='e.g., Housing, Transportation, etc.' />
+                    <Input
+                      {...field}
+                      placeholder='e.g., Housing, Transportation, etc.'
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
