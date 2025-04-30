@@ -10,6 +10,7 @@ import {
 import { Plus } from 'lucide-react';
 import React from 'react';
 import { AddNewItem } from './AddNewItem';
+import { LineItems } from './LineItems';
 
 export async function CategoryCards({ month }: { month: string | undefined }) {
   const { data } = await getTotalIncome();
@@ -21,7 +22,7 @@ export async function CategoryCards({ month }: { month: string | undefined }) {
   return (
     <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
       {categories?.map((category) => {
-        const categorySubcategories = category.line_items?.filter(
+        const categoryLineItems = category.line_items?.filter(
           (sub) => sub.category_id === category.id
         );
         return (
@@ -31,23 +32,13 @@ export async function CategoryCards({ month }: { month: string | undefined }) {
                 <CardTitle className='text-sm font-medium'>
                   {category.name}
                 </CardTitle>
-                <div className={`h-3 w-3 rounded-full bg-blue-400`}/>
+                <div className={`h-3 w-3 rounded-full bg-blue-400`} />
               </div>
             </CardHeader>
             <CardContent className='pb-2'>
               <div className='space-y-2'>
-                {categorySubcategories.map((subcategory) => (
-                  <div
-                    key={subcategory.id}
-                    className='flex items-center justify-between text-sm'
-                  >
-                    <span className='text-muted-foreground'>
-                      {subcategory.name}
-                    </span>
-                    <span className='font-medium'>
-                      ${subcategory.planned_amount}
-                    </span>
-                  </div>
+                {categoryLineItems.map((lineItems) => (
+                  <LineItems key={lineItems.id} lineItems={lineItems} />
                 ))}
                 <AddNewItem
                   categoryName={category.name}
