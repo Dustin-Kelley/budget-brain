@@ -25,7 +25,7 @@ export const addLineItem = async ({
     ? new Date(date).getFullYear() 
     : currentDate.getFullYear();
 
-  const { data, error } = await supabase.from('line_items').insert({
+  const { error } = await supabase.from('line_items').insert({
     name: lineItemName,
     category_id: categoryId,
     created_by: currentUser?.id,
@@ -34,8 +34,5 @@ export const addLineItem = async ({
     year: yearNumber,
   });
 
-  if (error) {
-    throw new Error(error.message);
-  }
-  return data;
+  return { error };
 };

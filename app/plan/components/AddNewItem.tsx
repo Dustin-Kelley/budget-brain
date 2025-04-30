@@ -25,6 +25,7 @@ import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { addLineItem } from '../mutations/addLineItem';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 const formSchema = z.object({
   lineItemName: z.string().min(1, 'Name is required'),
@@ -54,19 +55,22 @@ export const AddNewItem = ({
   });
 
   const onSubmit = async (values: FormValues) => {
-    try {
-      await addLineItem({
+    
+     const {error} = await addLineItem({
         lineItemName: values.lineItemName,
         categoryId,
         plannedAmount: values.plannedAmount,
         date: month,
       });
+
+      if (error) {
+        console.error('Failed to add line item:', error);
+        toast.error('Failed to add line item');
+      }
       setIsOpen(false);
+      toast.success('Item added successfully');
       form.reset();
       router.refresh();
-    } catch (error) {
-      console.error('Failed to add line item:', error);
-    }
   };
 
   return (
