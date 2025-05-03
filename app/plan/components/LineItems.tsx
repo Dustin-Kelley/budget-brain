@@ -46,7 +46,7 @@ export const LineItems = ({lineItems}: {lineItems: LineItems} ) => {
               <span className="sr-only">Open menu</span>
             </Button>
           </PopoverTrigger>
-          <PopoverContent className='flex gap-2' >
+          <PopoverContent className='flex gap-2 flex-col' >
             <DeleteItemButton lineItemId={lineItems.id} />
             <EditLineItemForm lineItem={lineItems} />
           </PopoverContent>

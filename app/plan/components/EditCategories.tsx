@@ -12,8 +12,9 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Spinner } from '@/components/app/Spinner';
+import { EditCategoriesForm } from './EditCategoriesForm';
 
-export const EditCategories = ({ categoryId }: { categoryId: string }) => {
+export const EditCategories = ({ categoryId, categoryName }: { categoryId: string, categoryName: string | null }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
@@ -42,15 +43,14 @@ export const EditCategories = ({ categoryId }: { categoryId: string }) => {
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon">
           <MoreHorizontal className="h-4 w-4" />
-          <span className="sr-only">Open menu</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-40 p-2" align="end">
+      <PopoverContent className="w-40 p-2 flex flex-col gap-2" align="end">
         <Button
           variant='destructive'
           onClick={handleDelete}
           disabled={isLoading}
-          className="w-full justify-start"
+       
         >
           {isLoading ? <Spinner /> : (
             <div className='flex items-center gap-2'>
@@ -59,6 +59,7 @@ export const EditCategories = ({ categoryId }: { categoryId: string }) => {
             </div>
           )}
         </Button>
+        <EditCategoriesForm categoryId={categoryId} categoryName={categoryName} />
       </PopoverContent>
     </Popover>
   );
