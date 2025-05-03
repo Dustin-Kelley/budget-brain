@@ -3,6 +3,8 @@ import { DollarSign } from 'lucide-react';
 import { getTotalIncomePerMonth } from '@/app/queries/getTotalIncome';
 import { getCategories } from '@/app/queries/getCategories';
 import { AddIncomeForm } from './AddIncomeForm';
+import { EditIncome } from './EditIncome';
+
 export async function IncomeCard({ month }: { month: string | undefined }) {
   const parsedMonth =
     month?.split('-')[0] ||
@@ -46,7 +48,10 @@ export async function IncomeCard({ month }: { month: string | undefined }) {
                 className='flex items-center justify-between text-sm'
               >
                 <span className='font-medium'>{income.name}</span>
-                <span className='font-medium'>${income.amount}</span>
+                <div>
+                  <span className='font-medium'>${income.amount}</span>
+                  <EditIncome incomeId={income.id} />
+                </div>
               </div>
             ))}
             <AddIncomeForm month={month} />
