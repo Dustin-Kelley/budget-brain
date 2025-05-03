@@ -6,7 +6,7 @@ import { getCategories } from "@/app/queries/getCategories";
 export async function IncomeCard({ month }: { month: string }) {
 
   const { income, totalIncome } = await getTotalIncomePerMonth({ date: month });
-  const { data: categories } = await getCategories({ date: month });
+  const { categories } = await getCategories({ date: month });
 
   if (!income) {
     return 'No income found';

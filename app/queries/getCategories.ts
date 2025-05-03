@@ -25,5 +25,6 @@ export const getCategories = cache(async ({ date }: { date: string | undefined }
     console.error(error);
   }
 
-  return { data, error };
+
+  return { categories: data, error };
 });

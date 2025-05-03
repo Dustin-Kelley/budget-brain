@@ -4,7 +4,7 @@ import { getTotalIncomePerMonth } from '@/app/queries/getTotalIncome';
 
 export const RemainingSpentTab = async ({ month }: { month: string | undefined }) => {
   const { totalIncome } = await getTotalIncomePerMonth({ date: month });
-  const { data: categories } = await getCategories({ date: month });
+  const { categories } = await getCategories({ date: month });
 
   const spent =
     categories?.reduce(
