@@ -12,8 +12,17 @@ import {
 } from '@/components/ui/popover';
 import { Spinner } from '@/components/app/Spinner';
 import { deleteIncome } from '../mutations/deleteIncome';
+import { EditIncomeForm } from './EditIncomeForm';
 
-export const EditIncome = ({ incomeId }: { incomeId: string }) => {
+export const EditIncome = ({
+  incomeId,
+  incomeName,
+  incomeAmount,
+}: {
+  incomeId: string;
+  incomeName: string | null;
+  incomeAmount: number | null;
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
@@ -38,26 +47,41 @@ export const EditIncome = ({ incomeId }: { incomeId: string }) => {
   };
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <Popover
+      open={isOpen}
+      onOpenChange={setIsOpen}
+    >
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <MoreHorizontal className="h-4 w-4" />
+        <Button
+          variant='ghost'
+          size='icon'
+        >
+          <MoreHorizontal className='h-4 w-4' />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-40 p-2" align="end">
+      <PopoverContent
+        className='w-40 p-2 flex flex-col gap-2'
+        align='end'
+      >
         <Button
           variant='destructive'
           onClick={handleDelete}
           disabled={isLoading}
-          className="w-full justify-start"
         >
-          {isLoading ? <Spinner /> : (
+          {isLoading ? (
+            <Spinner />
+          ) : (
             <div className='flex items-center gap-2'>
               <Trash className='h-4 w-4' />
               Delete
             </div>
           )}
         </Button>
+        <EditIncomeForm
+          incomeId={incomeId}
+          incomeName={incomeName}
+          incomeAmount={incomeAmount}
+        />
       </PopoverContent>
     </Popover>
   );

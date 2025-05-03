@@ -50,7 +50,7 @@ export async function IncomeCard({ month }: { month: string | undefined }) {
                 <span className='font-medium'>{income.name}</span>
                 <div className='flex items-center gap-2'>
                   <span className='font-medium'>${income.amount}</span>
-                  <EditIncome incomeId={income.id} />
+                  <EditIncome incomeId={income.id} incomeName={income.name} incomeAmount={income.amount} />
                 </div>
               </div>
             ))}
