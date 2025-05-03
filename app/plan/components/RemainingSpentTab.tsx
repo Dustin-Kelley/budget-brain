@@ -12,6 +12,7 @@ export const RemainingSpentTab = async ({ month }: { month: string | undefined }
         acc + (category.line_items?.reduce((sum, item) => sum + (item.spent_amount || 0), 0) || 0),
       0
     ) || 0;
+
   const remaining = totalIncome - spent;
   const percentRemaining = totalIncome > 0 ? Math.round((remaining / totalIncome) * 100) : 0;
   const percentSpent = totalIncome > 0 ? Math.round((spent / totalIncome) * 100) : 0;

@@ -8,9 +8,7 @@ export async function IncomeCard({ month }: { month: string }) {
   const { income, totalIncome } = await getTotalIncomePerMonth({ date: month });
   const { categories } = await getCategories({ date: month });
 
-  if (!income) {
-    return 'No income found';
-  }
+ 
 
   const totalPlanned = categories?.reduce(
     (total, category) => total + (category.line_items?.reduce(
@@ -36,7 +34,7 @@ export async function IncomeCard({ month }: { month: string }) {
             </div>
           </div>
           <div className='flex flex-col gap-2'>
-            {income.map((income) => (
+            {income?.map((income) => (
               <div
                 key={income.id}
                 className='flex items-center justify-between text-sm'
