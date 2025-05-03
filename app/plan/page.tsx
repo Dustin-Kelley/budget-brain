@@ -20,7 +20,6 @@ export default async function Page({
   searchParams: Promise<{ month?: string }>;
 }) {
   const { month } = await searchParams;
-  const parsedMonth = month?.split('-')[0] || new Date().toLocaleString('default', { month: 'long' });
 
   return (
     <main className='flex flex-col gap-4'>
@@ -39,7 +38,7 @@ export default async function Page({
           value='planned'
           className='flex flex-col gap-4'
         >
-          <IncomeCard month={parsedMonth} />
+          <IncomeCard month={month} />
           <CategoryCards month={month} />
         </TabsContent>
 

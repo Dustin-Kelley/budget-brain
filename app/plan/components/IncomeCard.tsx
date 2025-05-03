@@ -3,22 +3,22 @@ import { DollarSign, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getTotalIncomePerMonth } from "@/app/queries/getTotalIncome";
 import { getCategories } from "@/app/queries/getCategories";
-export async function IncomeCard({ month }: { month: string }) {
+export async function IncomeCard({ month }: { month: string | undefined }) {
+  const parsedMonth = month?.split('-')[0] || new Date().toLocaleString('default', { month: 'long' });
 
   const { income, totalIncome } = await getTotalIncomePerMonth({ date: month });
   const { categories } = await getCategories({ date: month });
 
  
-
   const totalPlanned = categories?.reduce(
     (total, category) => total + (category.line_items?.reduce(
       (total, lineItem) => total + (lineItem.planned_amount || 0),
       0
     ) || 0),
     0
-  );
+  ) || 0;
 
-  const remaining = totalIncome - (totalPlanned ?? 0);
+  const remaining = totalIncome - totalPlanned;
 
   return (
     <Card>
@@ -26,7 +26,7 @@ export async function IncomeCard({ month }: { month: string }) {
         <div className='flex flex-col gap-4'>
           <div className='flex items-center justify-between'>
             <div className='space-y-1'>
-              <p className='text-sm font-medium'>Total Income for: {month}</p>
+              <p className='text-sm font-medium'>Total Income for: {parsedMonth}</p>
               <p className='text-2xl font-bold'>${totalIncome}</p>
             </div>
             <div className='rounded-full bg-muted p-3'>
