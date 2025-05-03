@@ -48,7 +48,7 @@ export async function IncomeCard({ month }: { month: string | undefined }) {
                 className='flex items-center justify-between text-sm'
               >
                 <span className='font-medium'>{income.name}</span>
-                <div>
+                <div className='flex items-center gap-2'>
                   <span className='font-medium'>${income.amount}</span>
                   <EditIncome incomeId={income.id} />
                 </div>
