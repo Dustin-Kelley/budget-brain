@@ -1,5 +1,5 @@
 import { getCategories } from '@/app/queries/getCategories';
-import { getTotalIncome } from '@/app/queries/getTotalIncome';
+import { getTotalIncomePerMonth } from '@/app/queries/getTotalIncome';
 import {
   Card,
   CardContent,
@@ -15,11 +15,9 @@ import { EditCategories } from './EditCategories';
 
 export async function CategoryCards({ month }: { month: string | undefined }) {
 
-  const { data } = await getTotalIncome();
+  const { totalIncome } = await getTotalIncomePerMonth({ date: month });
   const { data: categories } = await getCategories({ date: month });
-  const totalIncome =
-    data?.reduce((total, income) => total + (income?.amount || 0), 0) || 0;
-
+ 
   return (
     <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
       {categories?.map((category) => {

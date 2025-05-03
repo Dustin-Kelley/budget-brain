@@ -1,17 +1,16 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { DollarSign, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getTotalIncome } from "@/app/queries/getTotalIncome";
+import { getTotalIncomePerMonth } from "@/app/queries/getTotalIncome";
 import { getCategories } from "@/app/queries/getCategories";
 export async function IncomeCard({ month }: { month: string }) {
 
-  const { data } = await getTotalIncome();
+  const { income, totalIncome } = await getTotalIncomePerMonth({ date: month });
   const { data: categories } = await getCategories({ date: month });
 
-  const totalIncome = data?.reduce(
-    (total, income) => total + (income?.amount || 0),
-    0
-  );
+  if (!income) {
+    return 'No income found';
+  }
 
   const totalPlanned = categories?.reduce(
     (total, category) => total + (category.line_items?.reduce(
@@ -21,7 +20,7 @@ export async function IncomeCard({ month }: { month: string }) {
     0
   );
 
-  const remaining = (totalIncome ?? 0) - (totalPlanned ?? 0);
+  const remaining = totalIncome - (totalPlanned ?? 0);
 
   return (
     <Card>
@@ -37,7 +36,7 @@ export async function IncomeCard({ month }: { month: string }) {
             </div>
           </div>
           <div className='flex flex-col gap-2'>
-            {data?.map((income) => (
+            {income.map((income) => (
               <div
                 key={income.id}
                 className='flex items-center justify-between text-sm'
