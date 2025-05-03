@@ -2,7 +2,9 @@ import { createClient } from '@/utils/supabase/server';
 import { getCurrentUser } from './getCurrentUser';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
-export const getCategories = cache(async () => {
+import { getMonthAndYearNumberFromDate } from '@/lib/utils';
+
+export const getCategories = cache(async ({ date }: { date: string | undefined }) => {
   const supabase = await createClient();
   const { currentUser } = await getCurrentUser();
 
@@ -10,10 +12,14 @@ export const getCategories = cache(async () => {
     redirect('/login');
   }
 
+  const { monthNumber, yearNumber } = getMonthAndYearNumberFromDate(date);
+
   const { data, error } = await supabase
     .from('categories')
     .select('*, line_items(*)')
-    .eq('household_id', currentUser.household_id);
+    .eq('household_id', currentUser.household_id)
+    .eq('year', yearNumber)
+    .eq('month', monthNumber);
 
   if (error) {
     console.error(error);

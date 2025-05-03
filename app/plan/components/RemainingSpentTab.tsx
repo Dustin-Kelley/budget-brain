@@ -2,9 +2,9 @@ import { getCategories } from '@/app/queries/getCategories';
 import { RemainingSpentCards } from './RemainingSpentCards';
 import { getTotalIncome } from '@/app/queries/getTotalIncome';
 
-export const RemainingSpentTab = async () => {
+export const RemainingSpentTab = async ({ month }: { month: string | undefined }) => {
   const { data } = await getTotalIncome();
-  const { data: categories } = await getCategories();
+  const { data: categories } = await getCategories({ date: month });
 
   const totalIncome =
     data?.reduce((total, income) => total + (income.amount || 0), 0) || 0;

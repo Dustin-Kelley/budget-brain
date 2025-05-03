@@ -6,7 +6,7 @@ import { getCategories } from "@/app/queries/getCategories";
 export async function IncomeCard({ month }: { month: string }) {
 
   const { data } = await getTotalIncome();
-  const { data: categories } = await getCategories(); 
+  const { data: categories } = await getCategories({ date: month });
 
   const totalIncome = data?.reduce(
     (total, income) => total + (income?.amount || 0),

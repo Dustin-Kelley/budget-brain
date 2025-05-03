@@ -14,8 +14,9 @@ import { AddNewCategoryForm } from './AddNewCategoryForm';
 import { EditCategories } from './EditCategories';
 
 export async function CategoryCards({ month }: { month: string | undefined }) {
+
   const { data } = await getTotalIncome();
-  const { data: categories } = await getCategories();
+  const { data: categories } = await getCategories({ date: month });
   const totalIncome =
     data?.reduce((total, income) => total + (income?.amount || 0), 0) || 0;
 

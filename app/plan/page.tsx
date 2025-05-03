@@ -48,7 +48,7 @@ export default async function Page({
           value='remaining'
           className='space-y-4'
         >
-        <RemainingSpentTab />
+        <RemainingSpentTab month={month} />
         </TabsContent>
         <TabsContent value='transactions'>
           <Card>
