@@ -124,6 +124,11 @@ export const AddIncomeForm = ({ month }: { month: string | undefined }) => {
                         inputMode='decimal'
                         placeholder='0.00'
                         className='pl-7'
+                        value={
+                          field.value === undefined || field.value === null
+                            ? ''
+                            : field.value
+                        }
                       />
                     </div>
                   </FormControl>
