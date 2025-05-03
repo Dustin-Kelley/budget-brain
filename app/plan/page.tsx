@@ -49,6 +49,8 @@ export default async function Page({
         >
         <RemainingSpentTab month={month} />
         </TabsContent>
+
+        {/* Transactions Tab */}
         <TabsContent value='transactions'>
           <Card>
             <CardHeader>

@@ -1,22 +1,26 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { DollarSign, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { getTotalIncomePerMonth } from "@/app/queries/getTotalIncome";
-import { getCategories } from "@/app/queries/getCategories";
+import { Card, CardContent } from '@/components/ui/card';
+import { DollarSign } from 'lucide-react';
+import { getTotalIncomePerMonth } from '@/app/queries/getTotalIncome';
+import { getCategories } from '@/app/queries/getCategories';
+import { AddIncomeForm } from './AddIncomeForm';
 export async function IncomeCard({ month }: { month: string | undefined }) {
-  const parsedMonth = month?.split('-')[0] || new Date().toLocaleString('default', { month: 'long' });
+  const parsedMonth =
+    month?.split('-')[0] ||
+    new Date().toLocaleString('default', { month: 'long' });
 
   const { income, totalIncome } = await getTotalIncomePerMonth({ date: month });
   const { categories } = await getCategories({ date: month });
 
- 
-  const totalPlanned = categories?.reduce(
-    (total, category) => total + (category.line_items?.reduce(
-      (total, lineItem) => total + (lineItem.planned_amount || 0),
+  const totalPlanned =
+    categories?.reduce(
+      (total, category) =>
+        total +
+        (category.line_items?.reduce(
+          (total, lineItem) => total + (lineItem.planned_amount || 0),
+          0
+        ) || 0),
       0
-    ) || 0),
-    0
-  ) || 0;
+    ) || 0;
 
   const remaining = totalIncome - totalPlanned;
 
@@ -26,7 +30,9 @@ export async function IncomeCard({ month }: { month: string | undefined }) {
         <div className='flex flex-col gap-4'>
           <div className='flex items-center justify-between'>
             <div className='space-y-1'>
-              <p className='text-sm font-medium'>Total Income for: {parsedMonth}</p>
+              <p className='text-sm font-medium'>
+                Total Income for: {parsedMonth}
+              </p>
               <p className='text-2xl font-bold'>${totalIncome}</p>
             </div>
             <div className='rounded-full bg-muted p-3'>
@@ -43,14 +49,7 @@ export async function IncomeCard({ month }: { month: string | undefined }) {
                 <span className='font-medium'>${income.amount}</span>
               </div>
             ))}
-            <Button
-              variant='ghost'
-              size='sm'
-              className='w-full justify-start text-muted-foreground'
-            >
-              <Plus className='mr-2 h-4 w-4' />
-              Add Income Source
-            </Button>
+            <AddIncomeForm month={month} />
           </div>
           <div className='flex items-center pt-2 border-t'>
             <div className='flex items-center gap-2'>
@@ -64,4 +63,4 @@ export async function IncomeCard({ month }: { month: string | undefined }) {
       </CardContent>
     </Card>
   );
-};
+}
