@@ -1,3 +1,5 @@
+'use server';
+
 import { createClient } from '@/utils/supabase/server';
 import { getCurrentUser } from '../queries/getCurrentUser';
 import { redirect } from 'next/navigation';
