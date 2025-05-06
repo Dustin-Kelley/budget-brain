@@ -13,7 +13,7 @@ export const addTransaction = async ({
   dateOfInput
 }: {
   amount: number;
-  description: string;
+  description: string | undefined;
   lineItemId: string;
   dateOfTransaction: string;
   dateOfInput: string | undefined;

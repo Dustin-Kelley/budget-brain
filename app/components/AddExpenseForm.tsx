@@ -58,11 +58,9 @@ export const AddExpenseForm = ({ categories }: { categories: Category[] | null }
 
 
   const onSubmit = async (values: FormValues) => {
-    console.log(values);
-    // TODO: Add expense to the database, now using values.lineItemId
    const {error} = await  addTransaction({
       amount: values.amount,
-      description: values.description || '',
+      description: values.description,
       lineItemId: values.lineItemId,
       dateOfTransaction: values.date,
       dateOfInput: undefined,
