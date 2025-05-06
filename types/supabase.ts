@@ -150,7 +150,6 @@ export type Database = {
           month: number | null
           name: string | null
           planned_amount: number | null
-          spent_amount: number | null
           updated_at: string | null
           year: number | null
         }
@@ -162,7 +161,6 @@ export type Database = {
           month?: number | null
           name?: string | null
           planned_amount?: number | null
-          spent_amount?: number | null
           updated_at?: string | null
           year?: number | null
         }
@@ -174,7 +172,6 @@ export type Database = {
           month?: number | null
           name?: string | null
           planned_amount?: number | null
-          spent_amount?: number | null
           updated_at?: string | null
           year?: number | null
         }
