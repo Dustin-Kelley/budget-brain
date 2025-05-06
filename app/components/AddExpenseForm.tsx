@@ -29,20 +29,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { budgetData } from '../data';
 import { useState } from 'react';
+import { Category } from '../plan/components/RemainingSpentCards';
+import { addTransaction } from '../mutations/addTransaction';
+import { toast } from 'sonner';
 
 const formSchema = z.object({
   amount: z.coerce.number().positive('Amount must be positive'),
   description: z.string().optional(),
-  categoryId: z.string().min(1, 'Category is required'),
-  subcategoryId: z.string().min(1, 'Subcategory is required'),
+  lineItemId: z.string().min(1, 'Budget item is required'),
   date: z.string().min(1, 'Date is required'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const AddExpenseForm = () => {
+export const AddExpenseForm = ({ categories }: { categories: Category[] | null }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const form = useForm<FormValues>({
@@ -50,17 +51,25 @@ export const AddExpenseForm = () => {
     defaultValues: {
       amount: 0,
       description: '',
-      categoryId: '',
-      subcategoryId: '',
+      lineItemId: '',
       date: new Date().toISOString().split('T')[0],
     },
   });
 
-  const selectedCategoryId = form.watch('categoryId');
 
-  const onSubmit = (values: FormValues) => {
+  const onSubmit = async (values: FormValues) => {
     console.log(values);
-    // TODO: Add expense to the database
+    // TODO: Add expense to the database, now using values.lineItemId
+   const {error} = await  addTransaction({
+      amount: values.amount,
+      description: values.description || '',
+      lineItemId: values.lineItemId,
+      dateOfTransaction: values.date,
+      dateOfInput: undefined,
+    });
+    if (error) {
+     toast.error(error.message);
+    }
     setIsOpen(false);
   };
 
@@ -123,27 +132,28 @@ export const AddExpenseForm = () => {
             />
             <FormField
               control={form.control}
-              name='categoryId'
+              name='lineItemId'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <FormLabel>Budget Item</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder='Select a category' />
+                        <SelectValue placeholder='Select a budget item' />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {budgetData.categories.map((category) => (
-                        <SelectItem
-                          key={category.id}
-                          value={category.id}
-                        >
-                          {category.name}
-                        </SelectItem>
+                      {categories?.map((category) => (
+                        <div key={category.id}>
+                          <div className="px-3 py-1 text-xs font-semibold text-muted-foreground">
+                            {category.name}
+                          </div>
+                          {category.line_items.map((item) => (
+                            <SelectItem key={item.id} value={item.id}>
+                              {item.name}
+                            </SelectItem>
+                          ))}
+                        </div>
                       ))}
                     </SelectContent>
                   </Select>
@@ -151,40 +161,7 @@ export const AddExpenseForm = () => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name='subcategoryId'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Subcategory</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder='Select a subcategory' />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {budgetData.lineItems
-                        .filter(
-                          (item) => item.category_id === selectedCategoryId
-                        )
-                        .map((subcategory) => (
-                          <SelectItem
-                            key={subcategory.id}
-                            value={subcategory.id}
-                          >
-                            {subcategory.name}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+         
             <FormField
               control={form.control}
               name='date'

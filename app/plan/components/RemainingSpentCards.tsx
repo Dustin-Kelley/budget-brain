@@ -27,7 +27,7 @@ type LineItem = {
   updated_at: string | null;
 };
 
-type Category = {
+export type Category = {
   id: string;
   household_id: string;
   name: string | null;
