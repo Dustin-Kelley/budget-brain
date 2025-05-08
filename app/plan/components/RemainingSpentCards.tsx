@@ -12,7 +12,6 @@ import {
 import { Progress } from '@/components/ui/progress';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { budgetData } from '../../data';
 
 type LineItem = {
   id: string;
@@ -42,19 +41,31 @@ export type Category = {
 };
 
 export const RemainingSpentCards = ({
-  spent,
-  remaining,
-  percentSpent,
-  percentRemaining,
+  spentByLineItem,
   categories,
+  totalIncome,
 }: {
-  spent: number;
-  remaining: number;
-  percentSpent: number;
-  percentRemaining: number;
-  categories: Category[] | null ;
+  spentByLineItem: { line_item_id: string; spent: number }[];
+  categories: Category[] | null;
+  totalIncome: number;
 }) => {
   const [showSpent, setShowSpent] = useState(false);
+
+  function getSpentForLineItem(lineItemId: string) {
+    return spentByLineItem.find(s => s.line_item_id === lineItemId)?.spent ?? 0;
+  }
+
+  function getSpentForCategory(category: Category) {
+    return category.line_items.reduce(
+      (sum, item) => sum + getSpentForLineItem(item.id),
+      0
+    );
+  }
+
+  const totalSpent = spentByLineItem.reduce((sum, s) => sum + s.spent, 0);
+  const totalRemaining = totalIncome - totalSpent;
+  const percentSpent = totalIncome > 0 ? Math.round((totalSpent / totalIncome) * 100) : 0;
+  const percentRemaining = totalIncome > 0 ? Math.round((totalRemaining / totalIncome) * 100) : 0;
 
   return (
     <>
@@ -77,7 +88,7 @@ export const RemainingSpentCards = ({
         </CardHeader>
         <CardContent className='flex flex-col gap-2'>
           <div className='text-2xl font-bold'>
-            ${showSpent ? spent : remaining}
+            ${showSpent ? totalSpent : totalRemaining}
           </div>
           <p className='text-xs text-muted-foreground'>
             {showSpent ? percentSpent : percentRemaining}% of your budget{' '}
@@ -94,13 +105,10 @@ export const RemainingSpentCards = ({
       <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
         {categories?.map((category) => {
           const planned = category.line_items?.reduce((sum, item) => sum + (item.planned_amount ?? 0), 0) || 0;
-          const spentAmt = category.line_items?.reduce((sum, item) => sum + (item.spent_amount ?? 0), 0) || 0;
+          const spentAmt = getSpentForCategory(category);
           const remaining = planned - spentAmt;
           const percentRemaining = planned > 0 ? Math.round((remaining / planned) * 100) : 0;
           const percentSpent = planned > 0 ? Math.round((spentAmt / planned) * 100) : 0;
-          const categorySubcategories = budgetData.lineItems.filter(
-            (sub) => sub.category_id === category.id
-          );
 
           return (
             <Card key={category.id}>
@@ -127,43 +135,31 @@ export const RemainingSpentCards = ({
                   className='h-2'
                 />
                 <div className='space-y-2 mt-4'>
-                  {categorySubcategories.map((subcategory) => {
-                    const subcategoryTransactions =
-                      budgetData.transactions.filter(
-                        (t) => t.subcategory_id === subcategory.id
-                      );
-                    const subcategorySpent = subcategoryTransactions.reduce(
-                      (acc, t) => acc + t.amount,
-                      0
-                    );
-                    const subcategoryRemaining =
-                      subcategory.planned_amount - subcategorySpent;
-                    const subcategoryPercentRemaining = Math.round(
-                      (subcategoryRemaining / subcategory.planned_amount) * 100
-                    );
-                    const subcategoryPercentSpent = Math.round(
-                      (subcategorySpent / subcategory.planned_amount) * 100
-                    );
-
+                  {category.line_items.map((item) => {
+                    const itemSpent = getSpentForLineItem(item.id);
+                    const itemPlanned = item.planned_amount ?? 0;
+                    const itemRemaining = itemPlanned - itemSpent;
+                    const itemPercentRemaining = itemPlanned > 0 ? Math.round((itemRemaining / itemPlanned) * 100) : 0;
+                    const itemPercentSpent = itemPlanned > 0 ? Math.round((itemSpent / itemPlanned) * 100) : 0;
                     return (
                       <div
-                        key={subcategory.id}
+                        key={item.id}
                         className='flex items-center justify-between text-sm'
                       >
                         <span className='text-muted-foreground'>
-                          {subcategory.name}
+                          {item.name}
                         </span>
                         <div className='flex items-center gap-2'>
                           <span className='font-medium'>
                             $
                             {showSpent
-                              ? subcategorySpent
-                              : subcategoryRemaining}
+                              ? itemSpent
+                              : itemRemaining}
                           </span>
                           <span className='text-xs text-muted-foreground'>
                             {showSpent
-                              ? subcategoryPercentSpent
-                              : subcategoryPercentRemaining}
+                              ? itemPercentSpent
+                              : itemPercentRemaining}
                             %
                           </span>
                         </div>
@@ -174,7 +170,7 @@ export const RemainingSpentCards = ({
               </CardContent>
               <CardFooter className='pt-0'>
                 <div className='flex w-full justify-between text-xs text-muted-foreground'>
-                  <span>Budget: ${category.planned_amount}</span>
+                  <span>Budget: ${planned}</span>
                   <span>
                     {showSpent ? 'Spent' : 'Remaining'}: $
                     {showSpent ? spentAmt : remaining}

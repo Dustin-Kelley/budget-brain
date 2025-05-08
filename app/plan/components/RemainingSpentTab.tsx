@@ -1,29 +1,24 @@
 import { getCategories } from '@/app/queries/getCategories';
 import { RemainingSpentCards } from './RemainingSpentCards';
 import { getTotalIncomePerMonth } from '@/app/queries/getTotalIncome';
+import { getSpentAmount } from '@/app/queries/getSpentAmount';
 
 export const RemainingSpentTab = async ({ month }: { month: string | undefined }) => {
   const { totalIncome } = await getTotalIncomePerMonth({ date: month });
   const { categories } = await getCategories({ date: month });
 
-  const spent =
-    categories?.reduce(
-      (acc, category) =>
-        acc + (category.line_items?.reduce((sum, item) => sum + (item.spent_amount || 0), 0) || 0),
-      0
-    ) || 0;
+  const { data: spent } = await getSpentAmount({ date: month });
 
-  const remaining = totalIncome - spent;
-  const percentRemaining = totalIncome > 0 ? Math.round((remaining / totalIncome) * 100) : 0;
-  const percentSpent = totalIncome > 0 ? Math.round((spent / totalIncome) * 100) : 0;
+  const spentByLineItem = spent?.map((s) => ({
+    line_item_id: s.id,
+    spent: s.amount ?? 0,
+  })) ?? [];
 
   return (
     <RemainingSpentCards
+      spentByLineItem={spentByLineItem}
       categories={categories}
-      remaining={remaining}
-      spent={spent}
-      percentRemaining={percentRemaining}
-      percentSpent={percentSpent}
+      totalIncome={totalIncome}
     />
   );
 };
