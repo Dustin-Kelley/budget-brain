@@ -17,6 +17,6 @@ export const getSpentAmount = cache(async ({ date }: { date: string | undefined 
     console.error(error);
   }
 
-  return { data, error };
+  return { transactions: data, error };
 });
 

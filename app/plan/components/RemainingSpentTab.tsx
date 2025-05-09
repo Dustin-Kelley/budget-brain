@@ -6,10 +6,9 @@ import { getSpentAmount } from '@/app/queries/getSpentAmount';
 export const RemainingSpentTab = async ({ month }: { month: string | undefined }) => {
   const { totalIncome } = await getTotalIncomePerMonth({ date: month });
   const { categories } = await getCategories({ date: month });
+  const { transactions } = await getSpentAmount({ date: month });
 
-  const { data: spent } = await getSpentAmount({ date: month });
-
-  const spentByLineItem = spent?.map((item) => ({
+  const spentByLineItem = transactions?.map((item) => ({
     line_item_id: item.line_item_id ?? '',
     spent: item.amount ?? 0,
   })) ?? [];

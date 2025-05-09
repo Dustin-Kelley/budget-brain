@@ -30,9 +30,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useState } from 'react';
-import { Category } from '../plan/components/RemainingSpentCards';
 import { addTransaction } from '../mutations/addTransaction';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { CategoryWithLineItems } from '@/types/types';
 
 const formSchema = z.object({
   amount: z.coerce.number().positive('Amount must be positive'),
@@ -43,8 +44,9 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const AddExpenseForm = ({ categories }: { categories: Category[] | null }) => {
+export const AddExpenseForm = ({ categories }: { categories: CategoryWithLineItems[] | null }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -69,6 +71,7 @@ export const AddExpenseForm = ({ categories }: { categories: Category[] | null }
      toast.error(error.message);
     }
     setIsOpen(false);
+    router.refresh();
   };
 
  
