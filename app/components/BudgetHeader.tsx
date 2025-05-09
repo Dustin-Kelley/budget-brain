@@ -1,11 +1,12 @@
-import React from 'react';
 import { MonthSelector } from './MonthSelector';
 import { AddExpenseForm } from './AddExpenseForm';
 import { getCategories } from '../queries/getCategories';
+import { ResetBudgetButton } from './ResetBudgetButton';
 
 export async function BudgetHeader({ month }: { month: string | undefined }) {
-  const parsedMonth = month?.split('-')[0] || new Date().toLocaleString('default', { month: 'long' });
-
+  const parsedMonth =
+    month?.split('-')[0] ||
+    new Date().toLocaleString('default', { month: 'long' });
   const { categories } = await getCategories({ date: month });
 
   return (
@@ -16,9 +17,12 @@ export async function BudgetHeader({ month }: { month: string | undefined }) {
         </h1>
         <p className='text-muted-foreground'>Budget Overview</p>
       </div>
-      <div className='flex items-center gap-2'>
-        <MonthSelector selectedMonth={month} />
-        <AddExpenseForm categories={categories} />
+      <div className='flex flex-col items-end gap-2'>
+        <ResetBudgetButton month={month} />
+        <div className='flex flex-col md:flex-row items-center gap-2'>
+          <MonthSelector selectedMonth={month} />
+          <AddExpenseForm categories={categories} />
+        </div>
       </div>
     </div>
   );
