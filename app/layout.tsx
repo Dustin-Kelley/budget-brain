@@ -35,6 +35,17 @@ export default async function RootLayout({
       lang='en'
       suppressHydrationWarning
     >
+      <head>
+        <link rel='manifest' href='/manifest.json' />
+        <link
+          rel='apple-touch-icon'
+          href='/icons/budget-brain-transparent.png'
+        />
+        <link
+          rel='icon'
+          href='/icons/budget-brain-transparent.png'
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
