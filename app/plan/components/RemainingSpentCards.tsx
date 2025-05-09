@@ -92,9 +92,7 @@ export const RemainingSpentCards = ({
                   <CardTitle className='text-sm font-medium'>
                     {category.name}
                   </CardTitle>
-                  <div
-                    className={`h-3 w-3 rounded-full ${category.color}`}
-                  ></div>
+                
                 </div>
               </CardHeader>
               <CardContent className='pb-2'>

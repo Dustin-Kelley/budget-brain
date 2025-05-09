@@ -7,31 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          operationName?: string
-          query?: string
-          variables?: Json
-          extensions?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       categories: {
@@ -92,7 +67,7 @@ export type Database = {
       }
       income: {
         Row: {
-          amount: number | null
+          amount: number
           created_at: string
           created_by: string
           household_id: string
@@ -103,7 +78,7 @@ export type Database = {
           year: number | null
         }
         Insert: {
-          amount?: number | null
+          amount: number
           created_at?: string
           created_by?: string
           household_id: string
@@ -114,7 +89,7 @@ export type Database = {
           year?: number | null
         }
         Update: {
-          amount?: number | null
+          amount?: number
           created_at?: string
           created_by?: string
           household_id?: string
@@ -150,7 +125,6 @@ export type Database = {
           month: number | null
           name: string | null
           planned_amount: number | null
-          spent_amount: number | null
           updated_at: string | null
           year: number | null
         }
@@ -162,7 +136,6 @@ export type Database = {
           month?: number | null
           name?: string | null
           planned_amount?: number | null
-          spent_amount?: number | null
           updated_at?: string | null
           year?: number | null
         }
@@ -174,7 +147,6 @@ export type Database = {
           month?: number | null
           name?: string | null
           planned_amount?: number | null
-          spent_amount?: number | null
           updated_at?: string | null
           year?: number | null
         }
@@ -198,13 +170,13 @@ export type Database = {
       transactions: {
         Row: {
           amount: number | null
-          category_id: string | null
           created_at: string
           created_by: string | null
           date: string | null
           description: string | null
           household_id: string
           id: string
+          line_item_id: string | null
           month: number | null
           type: string | null
           updated_at: string | null
@@ -212,13 +184,13 @@ export type Database = {
         }
         Insert: {
           amount?: number | null
-          category_id?: string | null
           created_at?: string
           created_by?: string | null
           date?: string | null
           description?: string | null
           household_id: string
           id?: string
+          line_item_id?: string | null
           month?: number | null
           type?: string | null
           updated_at?: string | null
@@ -226,26 +198,19 @@ export type Database = {
         }
         Update: {
           amount?: number | null
-          category_id?: string | null
           created_at?: string
           created_by?: string | null
           date?: string | null
           description?: string | null
           household_id?: string
           id?: string
+          line_item_id?: string | null
           month?: number | null
           type?: string | null
           updated_at?: string | null
           year?: number | null
         }
         Relationships: [
-          {
-            foreignKeyName: "transactions_category_id_fkey"
-            columns: ["category_id"]
-            isOneToOne: false
-            referencedRelation: "categories"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "transactions_created_by_fkey"
             columns: ["created_by"]
@@ -258,6 +223,13 @@ export type Database = {
             columns: ["household_id"]
             isOneToOne: false
             referencedRelation: "household"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_line_item_id_fkey"
+            columns: ["line_item_id"]
+            isOneToOne: false
+            referencedRelation: "line_items"
             referencedColumns: ["id"]
           },
         ]
@@ -419,9 +391,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },
