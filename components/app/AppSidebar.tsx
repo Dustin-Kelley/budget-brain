@@ -12,7 +12,9 @@ import {
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
 import { Logo } from '@/components/ui/logo';  
-// Menu items.
+import { AppSidebarMenuItem } from './AppSidebarMenuItem';
+
+
 const items = [
   {
     title: 'Overview',
@@ -32,6 +34,8 @@ const items = [
 ];
 
 export function AppSidebar() {
+
+
   return (
     <Sidebar
       variant='inset'
@@ -48,17 +52,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu className='flex flex-col gap-4'>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    className='text-xl font-light'
-                    asChild
-                  >
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <AppSidebarMenuItem key={item.title} url={item.url} Icon={item.icon} title={item.title} />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
