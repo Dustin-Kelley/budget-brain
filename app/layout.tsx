@@ -39,11 +39,11 @@ export default async function RootLayout({
         <link rel='manifest' href='/manifest.json' />
         <link
           rel='apple-touch-icon'
-          href='/icons/budget-brain-transparent.png'
+          href='/icons/budget-brain-pwa-logo.png'
         />
         <link
           rel='icon'
-          href='/icons/budget-brain-transparent.png'
+          href='/icons/budget-brain-pwa-logo.png'
         />
       </head>
       <body
