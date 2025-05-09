@@ -99,7 +99,7 @@ export const RemainingSpentCards = ({
                 <div className='flex items-center justify-between text-sm mb-1'>
                   <span>
                     {showSpent ? 'Spent' : 'Remaining'}: $
-                    {showSpent ? spentAmt : remaining}
+                    {showSpent ? spentAmt : remaining} / ${planned}
                   </span>
                   <span>{showSpent ? percentSpent : percentRemaining}%</span>
                 </div>
@@ -109,7 +109,6 @@ export const RemainingSpentCards = ({
                 />
                 <div className='space-y-2 mt-4'>
                   {category.line_items.map((item) => {
-                    console.log("🚀 ~ {category.line_items.map ~ item:",)
                     const itemSpent = getSpentForLineItem(item.id);
                     const itemPlanned = item.planned_amount ?? 0;
                     const itemRemaining = itemPlanned - itemSpent;
