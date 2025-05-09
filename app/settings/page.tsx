@@ -12,8 +12,14 @@ import { Separator } from '@/components/ui/separator';
 import { UserPlus, UserMinus } from 'lucide-react';
 import { DarkModeToggle } from '../../components/app/DarkModeToggle';
 import LogoutButton from '@/components/app/LogoutButton';
+import { ResetBudgetButton } from '../components/ResetBudgetButton';
 
-export default function SettingsPage() {
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ month?: string }>;
+}) {
+  const { month } = await searchParams;
   return (
     <div className='container mx-auto py-8'>
       <div className='space-y-6'>
@@ -28,7 +34,7 @@ export default function SettingsPage() {
           <DarkModeToggle />
         </div>
         <Separator />
-
+        <ResetBudgetButton month={month} />
         <Card>
           <CardHeader>
             <CardTitle>Profile Information</CardTitle>
