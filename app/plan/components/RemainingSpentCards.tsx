@@ -12,33 +12,8 @@ import {
 import { Progress } from '@/components/ui/progress';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { CategoryWithLineItems } from '@/types/types';
 
-type LineItem = {
-  id: string;
-  category_id: string;
-  name: string | null;
-  month: number | null;
-  year: number | null;
-  planned_amount: number | null;
-  spent_amount: number | null;
-  created_by: string | null;
-  created_at: string;
-  updated_at: string | null;
-};
-
-export type Category = {
-  id: string;
-  household_id: string;
-  name: string | null;
-  created_at: string;
-  updated_at: string | null;
-  color?: string;
-  month?: number | null;
-  year?: number | null;
-  planned_amount?: number | null;
-  spent_amount?: number | null;
-  line_items: LineItem[];
-};
 
 export const RemainingSpentCards = ({
   spentByLineItem,
@@ -46,7 +21,7 @@ export const RemainingSpentCards = ({
   totalIncome,
 }: {
   spentByLineItem: { line_item_id: string; spent: number }[];
-  categories: Category[] | null;
+  categories: CategoryWithLineItems[] | null;
   totalIncome: number;
 }) => {
   const [showSpent, setShowSpent] = useState(false);
@@ -55,7 +30,7 @@ export const RemainingSpentCards = ({
     return spentByLineItem.find(s => s.line_item_id === lineItemId)?.spent ?? 0;
   }
 
-  function getSpentForCategory(category: Category) {
+  function getSpentForCategory(category: CategoryWithLineItems) {
     return category.line_items.reduce(
       (sum, item) => sum + getSpentForLineItem(item.id),
       0
@@ -136,6 +111,7 @@ export const RemainingSpentCards = ({
                 />
                 <div className='space-y-2 mt-4'>
                   {category.line_items.map((item) => {
+                    console.log("🚀 ~ {category.line_items.map ~ item:",)
                     const itemSpent = getSpentForLineItem(item.id);
                     const itemPlanned = item.planned_amount ?? 0;
                     const itemRemaining = itemPlanned - itemSpent;

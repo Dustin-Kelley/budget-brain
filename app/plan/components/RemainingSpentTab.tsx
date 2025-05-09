@@ -9,10 +9,11 @@ export const RemainingSpentTab = async ({ month }: { month: string | undefined }
 
   const { data: spent } = await getSpentAmount({ date: month });
 
-  const spentByLineItem = spent?.map((s) => ({
-    line_item_id: s.id,
-    spent: s.amount ?? 0,
+  const spentByLineItem = spent?.map((item) => ({
+    line_item_id: item.category_id ?? '',
+    spent: item.amount ?? 0,
   })) ?? [];
+  console.log("🚀 ~ RemainingSpentTab ~ spent:", spent)
 
   return (
     <RemainingSpentCards

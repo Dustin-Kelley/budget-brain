@@ -1,26 +1,12 @@
-type LineItem = {
-  id: string;
-  category_id: string;
-  name: string | null;
-  month: number | null;
-  year: number | null;
-  planned_amount: number | null;
-  spent_amount: number | null;
-  created_by: string | null;
-  created_at: string;
-  updated_at: string | null;
-};
+import { Database } from "@/types/supabase";
 
-export type Category = {
-  id: string;
-  household_id: string;
-  name: string | null;
-  created_at: string;
-  updated_at: string | null;
-  color?: string;
-  month?: number | null;
-  year?: number | null;
-  planned_amount?: number | null;
-  spent_amount?: number | null;
+// Example: type for a row in the transactions table
+export type Transaction = Database['public']['Tables']['transactions']['Row']; 
+
+export type LineItem = Database['public']['Tables']['line_items']['Row'];
+
+export type Category = Database['public']['Tables']['categories']['Row'];
+
+export type CategoryWithLineItems = Category & {
   line_items: LineItem[];
 };
