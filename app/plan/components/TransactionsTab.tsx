@@ -1,5 +1,4 @@
 import { getTransactions } from '@/app/queries/getTransactions';
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -7,7 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import Link from 'next/link';
 import { format } from 'date-fns';
 
 export async function TransactionsTab({ month }: { month: string | undefined }) {
@@ -49,15 +47,6 @@ export async function TransactionsTab({ month }: { month: string | undefined }) 
               </div>
             );
           })}
-        </div>
-        <div className='mt-4 flex justify-center'>
-          <Button
-            variant='outline'
-            size='sm'
-            asChild
-          >
-            <Link href='#'>View All Transactions</Link>
-          </Button>
         </div>
       </CardContent>
     </Card>
