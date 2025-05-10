@@ -13,17 +13,8 @@ export const MonthlyBudgetProgress = async ({
 }: {
   date: string | undefined;
 }) => {
-
-  const currentDate = date || `${new Date().toLocaleString('default', { month: 'long', })}-${new Date().getFullYear()}`;
-  const [month, year] = currentDate.split('-');
-
-  const monthIndex = (
-    new Date(`${month} 1, ${year}`).getMonth() + 1
-  ).toString();
-
   const { planned, spent, percentSpent } = await getMonthlyBudgetProgress({
-    month: monthIndex,
-    year,
+    date,
   });
 
   return (
@@ -44,7 +35,7 @@ export const MonthlyBudgetProgress = async ({
           />
           <div className='flex items-center justify-between text-sm text-muted-foreground'>
             <div>$0</div>
-            <div>${planned.toLocaleString()}</div>
+            <div>${planned}</div>
           </div>
         </div>
       </CardContent>

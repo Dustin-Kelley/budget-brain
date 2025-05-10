@@ -2,9 +2,9 @@ import { getBudgetSummary } from "./getBudgetSummary";
 import { getCurrentUser } from "./getCurrentUser";
 import { cache } from 'react';
 
-export const getMonthlyBudgetProgress = cache(async ({month, year}: {month: string, year: string}) => {
+export const getMonthlyBudgetProgress = cache(async ({date}: {date: string | undefined}) => {
   const { currentUser } = await getCurrentUser();
-  const { income, transactions, incomeError, transactionsError } = await getBudgetSummary({monthIndex: Number(month), year: Number(year)});
+  const { income, transactions, incomeError, transactionsError } = await getBudgetSummary({date});
 
   if (!currentUser || !income || !transactions) {
     return {
@@ -15,10 +15,10 @@ export const getMonthlyBudgetProgress = cache(async ({month, year}: {month: stri
     };
   }
 
-  const planned = income.reduce((acc, income) => acc + (income.amount || 0), 0);
-  const spent = transactions.reduce((acc, transaction) => acc + (transaction.amount || 0), 0);
+  const planned = income.reduce((acc, income) => acc + (income.amount || 0), 0) || 0;
+  const spent = transactions.reduce((acc, transaction) => acc + (transaction.amount || 0), 0) || 0;
 
-  const percentSpent = Math.round((spent / planned) * 100);
+  const percentSpent = Math.round((spent / planned) * 100) || 0;
 
   return {
     planned,

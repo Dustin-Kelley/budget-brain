@@ -5,24 +5,20 @@ import React from 'react';
 import { getBudgetSummary } from '../queries/getBudgetSummary';
 
 export const BudgetSummary = async ({date}: {date: string | undefined}) => {
-  const currentDate = date || `${new Date().toLocaleString('default', { month: 'long' })}-${new Date().getFullYear()}`;
-  const [month, year] = currentDate.split('-');
-  const monthIndex = (new Date(`${month} 1, ${year}`).getMonth() + 1).toString();
-
-  const { income, transactions } = await getBudgetSummary({monthIndex: Number(monthIndex), year: Number(year)});
+  const { income, transactions } = await getBudgetSummary({date});
 
   if (!income || !transactions) {
     return null;
   }
 
-  const planned = income.reduce((acc, income) => acc + (income.amount || 0), 0);
+  const planned = income.reduce((acc, income) => acc + (income.amount || 0), 0) || 0;
   const spent = transactions.reduce(
     (acc, transaction) => acc + (transaction.amount || 0),
     0
-  );
+  ) || 0;
   const remaining = planned - spent;
 
-  const percentSpent = Math.round((spent / planned) * 100);
+  const percentSpent = Math.round((spent / planned) * 100) || 0;
 
   return (
     <div className='grid gap-4 md:grid-cols-3'>
