@@ -2,12 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { login } from '../login/actions';
@@ -24,6 +19,7 @@ import {
 } from '@/components/ui/form';
 import { toast } from 'sonner';
 import { Spinner } from '@/components/app/Spinner';
+
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
@@ -88,15 +84,8 @@ export function LoginForm({
                   name='password'
                   render={({ field }) => (
                     <FormItem>
-                      <div className='flex items-center'>
-                        <FormLabel>Password</FormLabel>
-                        <a
-                          href='#'
-                          className='ml-auto text-sm underline-offset-4 hover:underline'
-                        >
-                          Forgot your password?
-                        </a>
-                      </div>
+                      <FormLabel>Password</FormLabel>
+
                       <FormControl>
                         <Input
                           type='password'
@@ -123,6 +112,14 @@ export function LoginForm({
                   Sign up
                 </Link>
               </div>
+     
+                <Link
+                  href='/reset-password'
+                  className='underline underline-offset-4 text-sm text-center'
+                >
+                  Forgot your password?
+                </Link>
+            
             </form>
           </Form>
         </CardContent>

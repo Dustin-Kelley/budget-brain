@@ -14,6 +14,7 @@ export function SidebarWrapper({ children }: { children: React.ReactNode }) {
     '/welcome',
     '/sign-up',
     '/error',
+    '/reset-password',
     '/verify-email',
   ];
   const shouldHideSidebar = hideSidebarRoutes.some((route) =>
