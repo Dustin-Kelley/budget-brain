@@ -4,6 +4,7 @@ import { BudgetSummary } from './components/BudgetSummary';
 import { BudgetHeader } from './components/BudgetHeader';
 import { getCurrentUser } from './queries/getCurrentUser';
 import { redirect } from 'next/navigation';
+import { CategoryPieChart } from './components/CategoryPieChart';
 
 export default async function Page({
   searchParams,
@@ -18,6 +19,7 @@ export default async function Page({
     redirect('/login');
   }
 
+
   return (
     <main className='flex flex-col gap-4'>
       <BudgetHeader month={month} />
@@ -29,7 +31,7 @@ export default async function Page({
         <BudgetSummary date={month} />
       </Suspense>
 
-      <div>pie chart breakdown</div>
+      <CategoryPieChart />
     </main>
   );
 }
