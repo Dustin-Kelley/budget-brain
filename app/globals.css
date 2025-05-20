@@ -45,7 +45,7 @@
 
 :root {
   --radius: 0.625rem;
-  --background: #FDFDFF;
+  --background: #f5f5f5;
   --foreground: #2D2D2D;
   --card: #FDFDFF;
   --card-foreground: #2D2D2D;
@@ -68,7 +68,7 @@
   --chart-3: #9BA3B9;
   --chart-4: #E5989B;
   --chart-5: #C7B7A3;
-  --sidebar: #EAEAEC;
+  --sidebar: #FDFDFF;
   --sidebar-foreground: #2D2D2D;
   --sidebar-primary: #7FB7A3;
   --sidebar-primary-foreground: #FFFFFF;
