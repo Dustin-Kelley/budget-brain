@@ -59,7 +59,7 @@ export function AppSidebar() {
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu className='flex flex-col gap-4'>
+            <SidebarMenu className='flex flex-col pb-4 gap-4'>
               <SidebarMenuItem>
                 <SidebarMenuButton
                   className='text-lg font-light'
