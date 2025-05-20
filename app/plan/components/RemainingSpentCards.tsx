@@ -14,7 +14,6 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { CategoryWithLineItems } from '@/types/types';
 
-
 export const RemainingSpentCards = ({
   spentByLineItem,
   categories,
@@ -27,7 +26,9 @@ export const RemainingSpentCards = ({
   const [showSpent, setShowSpent] = useState(false);
 
   function getSpentForLineItem(lineItemId: string) {
-    return spentByLineItem.find(s => s.line_item_id === lineItemId)?.spent ?? 0;
+    return (
+      spentByLineItem.find((s) => s.line_item_id === lineItemId)?.spent ?? 0
+    );
   }
 
   function getSpentForCategory(category: CategoryWithLineItems) {
@@ -39,51 +40,62 @@ export const RemainingSpentCards = ({
 
   const totalSpent = spentByLineItem.reduce((sum, s) => sum + s.spent, 0);
   const totalRemaining = totalIncome - totalSpent;
-  const percentSpent = totalIncome > 0 ? Math.round((totalSpent / totalIncome) * 100) : 0;
-  const percentRemaining = totalIncome > 0 ? Math.round((totalRemaining / totalIncome) * 100) : 0;
+  const percentSpent =
+    totalIncome > 0 ? Math.round((totalSpent / totalIncome) * 100) : 0;
+  const percentRemaining =
+    totalIncome > 0 ? Math.round((totalRemaining / totalIncome) * 100) : 0;
 
   return (
     <>
-      <div className='flex items-center justify-end gap-2'>
-        <Label htmlFor='view-mode'>Show Spent</Label>
-        <Switch
-          id='view-mode'
-          checked={showSpent}
-          onCheckedChange={setShowSpent}
-        />
-      </div>
-
-      {/* Summary Card */}
-      <Card>
-        <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-          <CardTitle className='text-sm font-medium'>
-            {showSpent ? 'Spent' : 'Remaining'}
-          </CardTitle>
-          <Wallet className='h-4 w-4 text-muted-foreground' />
-        </CardHeader>
-        <CardContent className='flex flex-col gap-2'>
-          <div className='text-2xl font-bold'>
-            ${showSpent ? totalSpent : totalRemaining}
-          </div>
-          <p className='text-xs text-muted-foreground'>
-            {showSpent ? percentSpent : percentRemaining}% of your budget{' '}
-            {showSpent ? 'spent' : 'remaining'}
-          </p>
-          <Progress
-            value={showSpent ? percentSpent : percentRemaining}
-            className='h-2'
+      <div className='flex flex-col py-4 gap-2'>
+        <div className='flex items-center justify-end gap-2'>
+          <Label htmlFor='view-mode'>Show Spent</Label>
+          <Switch
+            className='scale-125'
+            id='view-mode'
+            checked={showSpent}
+            onCheckedChange={setShowSpent}
           />
-        </CardContent>
-      </Card>
+        </div>
+
+        {/* Summary Card */}
+        <Card>
+          <CardHeader className='flex flex-row items-center justify-between pb-2'>
+            <CardTitle className='text-sm font-medium'>
+              {showSpent ? 'Spent' : 'Remaining'}
+            </CardTitle>
+            <Wallet className='h-4 w-4 text-muted-foreground' />
+          </CardHeader>
+          <CardContent className='flex flex-col gap-2'>
+            <div className='text-2xl font-bold'>
+              ${showSpent ? totalSpent : totalRemaining}
+            </div>
+            <p className='text-xs text-muted-foreground'>
+              {showSpent ? percentSpent : percentRemaining}% of your budget{' '}
+              {showSpent ? 'spent' : 'remaining'}
+            </p>
+            <Progress
+              value={showSpent ? percentSpent : percentRemaining}
+              className='h-2'
+            />
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Category Cards */}
       <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
         {categories?.map((category) => {
-          const planned = category.line_items?.reduce((sum, item) => sum + (item.planned_amount ?? 0), 0) || 0;
+          const planned =
+            category.line_items?.reduce(
+              (sum, item) => sum + (item.planned_amount ?? 0),
+              0
+            ) || 0;
           const spentAmt = getSpentForCategory(category);
           const remaining = planned - spentAmt;
-          const percentRemaining = planned > 0 ? Math.round((remaining / planned) * 100) : 0;
-          const percentSpent = planned > 0 ? Math.round((spentAmt / planned) * 100) : 0;
+          const percentRemaining =
+            planned > 0 ? Math.round((remaining / planned) * 100) : 0;
+          const percentSpent =
+            planned > 0 ? Math.round((spentAmt / planned) * 100) : 0;
 
           return (
             <Card key={category.id}>
@@ -92,7 +104,6 @@ export const RemainingSpentCards = ({
                   <CardTitle className='text-sm font-medium'>
                     {category.name}
                   </CardTitle>
-                
                 </div>
               </CardHeader>
               <CardContent className='pb-2'>
@@ -112,8 +123,14 @@ export const RemainingSpentCards = ({
                     const itemSpent = getSpentForLineItem(item.id);
                     const itemPlanned = item.planned_amount ?? 0;
                     const itemRemaining = itemPlanned - itemSpent;
-                    const itemPercentRemaining = itemPlanned > 0 ? Math.round((itemRemaining / itemPlanned) * 100) : 0;
-                    const itemPercentSpent = itemPlanned > 0 ? Math.round((itemSpent / itemPlanned) * 100) : 0;
+                    const itemPercentRemaining =
+                      itemPlanned > 0
+                        ? Math.round((itemRemaining / itemPlanned) * 100)
+                        : 0;
+                    const itemPercentSpent =
+                      itemPlanned > 0
+                        ? Math.round((itemSpent / itemPlanned) * 100)
+                        : 0;
                     return (
                       <div
                         key={item.id}
@@ -124,10 +141,7 @@ export const RemainingSpentCards = ({
                         </span>
                         <div className='flex items-center gap-2'>
                           <span className='font-medium'>
-                            $
-                            {showSpent
-                              ? itemSpent
-                              : itemRemaining}
+                            ${showSpent ? itemSpent : itemRemaining}
                           </span>
                           <span className='text-xs text-muted-foreground'>
                             {showSpent

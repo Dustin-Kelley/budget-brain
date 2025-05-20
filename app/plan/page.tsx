@@ -36,7 +36,7 @@ export default async function Page({
         {/* Remaining Tab */}
         <TabsContent
           value='remaining'
-          className='space-y-4'
+          className='flex flex-col gap-4'
         >
         <RemainingSpentTab month={month} />
         </TabsContent>
