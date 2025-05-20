@@ -79,7 +79,7 @@ export const AddExpenseForm = ({ categories }: { categories: CategoryWithLineIte
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button size='sm' className="w-full md:w-auto">
+        <Button size='sm' className="w-full md:w-auto rounded-lg">
           <Plus className='mr-2 h-4 w-4' />
           Add Expense
         </Button>
