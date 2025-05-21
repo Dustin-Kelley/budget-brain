@@ -1,13 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Wallet } from 'lucide-react';
+import { PlusIcon, Wallet } from 'lucide-react';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-  CardFooter,
 } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Switch } from '@/components/ui/switch';
@@ -15,6 +14,7 @@ import { Label } from '@/components/ui/label';
 import { CategoryWithLineItems } from '@/types/types';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 export const RemainingSpentCards = ({
   spentByLineItem,
@@ -51,13 +51,17 @@ export const RemainingSpentCards = ({
     <>
       <div className='flex flex-col gap-2'>
         <div className='flex p-4 justify-end items-center gap-4'>
-          <Label htmlFor='view-mode'>Show Spent</Label>
+          <div className='flex border rounded-2xl p-4 items-center gap-4 font-medium'>
+
+          <Label htmlFor='view-mode'>{showSpent ? 'Showing Spent' : 'Showing Remaining'}</Label>
           <Switch
             className='scale-150'
             id='view-mode'
             checked={showSpent}
             onCheckedChange={setShowSpent}
           />
+
+          </div>
         </div>
 
         {/* Summary Card */}
@@ -107,36 +111,46 @@ export const RemainingSpentCards = ({
                     {category.name}
                   </CardTitle>
                   <div className='flex items-center justify-between text-sm mb-1'>
-                    <Badge variant='outline' className='font-medium'>
+                    <Badge
+                      variant='outline'
+                      className='font-medium'
+                    >
                       {showSpent ? 'Spent' : 'Remaining'}: $
                       {showSpent ? spentAmt : remaining} / ${planned}
                     </Badge>
-                    <Badge variant='outline' className='font-medium'>{showSpent ? percentSpent : percentRemaining}%</Badge>
+                    <Badge
+                      variant='outline'
+                      className='font-medium'
+                    >
+                      {showSpent ? percentSpent : percentRemaining}%
+                    </Badge>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className='pb-2'>
-             
-                  <Separator />
-                  {category.line_items.map((item) => {
-                    const itemSpent = getSpentForLineItem(item.id);
-                    const itemPlanned = item.planned_amount ?? 0;
-                    const itemRemaining = itemPlanned - itemSpent;
-                    const itemPercentRemaining =
-                      itemPlanned > 0
-                        ? Math.round((itemRemaining / itemPlanned) * 100)
-                        : 0;
-                    const itemPercentSpent =
-                      itemPlanned > 0
-                        ? Math.round((itemSpent / itemPlanned) * 100)
-                        : 0;
-                    return (
-                      <>
-                        <div
-                          key={item.id}
-                          className='flex items-center py-4 justify-between text-sm'
-                        >
-                          <span className='font-medium'>{item.name}</span>
+                <Separator />
+                {category.line_items.map((item) => {
+                  const itemSpent = getSpentForLineItem(item.id);
+                  const itemPlanned = item.planned_amount ?? 0;
+                  const itemRemaining = itemPlanned - itemSpent;
+                  const itemPercentRemaining =
+                    itemPlanned > 0
+                      ? Math.round((itemRemaining / itemPlanned) * 100)
+                      : 0;
+                  const itemPercentSpent =
+                    itemPlanned > 0
+                      ? Math.round((itemSpent / itemPlanned) * 100)
+                      : 0;
+                  return (
+                    <>
+                      <div
+                        key={item.id}
+                        className='flex items-center py-4 justify-between text-sm'
+                      >
+                        <div>
+                          <span className='font-medium text-md'>
+                            {item.name}
+                          </span>
                           <div className='flex items-center gap-2'>
                             <span className='font-medium'>
                               ${showSpent ? itemSpent : itemRemaining}
@@ -149,25 +163,23 @@ export const RemainingSpentCards = ({
                             </span>
                           </div>
                         </div>
-                        <Progress
-                          value={showSpent ? itemPercentSpent : itemPercentRemaining}
-                          className='h-2'
-                        />
-                        <Separator />
-                      </>
-                    );
-                  })}
-               
+                        <Button
+                          variant='outline'
+                          size='icon'
+                        >
+                          <PlusIcon className='h-4 w-4' />
+                        </Button>
+                      </div>
+                      <Progress
+                        value={
+                          showSpent ? itemPercentSpent : itemPercentRemaining
+                        }
+                        className='h-2'
+                      />
+                    </>
+                  );
+                })}
               </CardContent>
-              <CardFooter className='pt-0'>
-                <div className='flex w-full justify-between text-xs text-muted-foreground'>
-                  <span>Budget: ${planned}</span>
-                  <span>
-                    {showSpent ? 'Spent' : 'Remaining'}: $
-                    {showSpent ? spentAmt : remaining}
-                  </span>
-                </div>
-              </CardFooter>
             </Card>
           );
         })}
