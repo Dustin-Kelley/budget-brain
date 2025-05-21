@@ -11,7 +11,7 @@ export async function BudgetHeader({ month }: { month: string | undefined }) {
   return (
     <div className='flex md:flex-row gap-2 items-end justify-between'>
       <div>
-        <h1 className='text-3xl font-bold text-primary tracking-tight'>
+        <h1 className='text-3xl font-bold text-secondary tracking-tight'>
           {parsedMonth}
         </h1>
         <p className='text-muted-foreground'>Budget Overview</p>

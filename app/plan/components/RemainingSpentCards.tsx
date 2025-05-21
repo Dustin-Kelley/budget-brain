@@ -47,11 +47,11 @@ export const RemainingSpentCards = ({
 
   return (
     <>
-      <div className='flex flex-col py-4 gap-2'>
-        <div className='flex items-center justify-end gap-2'>
+      <div className='flex flex-col gap-2'>
+        <div className='flex p-4 justify-end items-center gap-4'>
           <Label htmlFor='view-mode'>Show Spent</Label>
           <Switch
-            className='scale-125'
+            className='scale-150'
             id='view-mode'
             checked={showSpent}
             onCheckedChange={setShowSpent}
