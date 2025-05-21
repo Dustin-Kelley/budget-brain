@@ -1,0 +1,48 @@
+'use server';
+
+import { createClient } from '@/utils/supabase/server';
+import { redirect } from 'next/navigation';
+import { getMonthAndYearNumberFromDate } from '@/lib/utils';
+import { getCurrentUser } from '@/app/queries/getCurrentUser';
+export const addLineItemExpense = async ({
+  amount,
+  description,
+  lineItemId,
+  dateOfTransaction,
+  dateOfInput,
+}: {
+  amount: number;
+  description: string | undefined;
+  lineItemId: string;
+  dateOfTransaction: string;
+  dateOfInput: string | undefined;
+}) => {
+  const supabase = await createClient();
+
+  const { currentUser } = await getCurrentUser();
+
+  if (!currentUser) {
+    redirect('/login');
+  }
+
+  const { monthNumber, yearNumber } = getMonthAndYearNumberFromDate(dateOfInput);
+
+  const { error } = await supabase
+    .from('transactions')
+    .insert({
+      amount,
+      description,
+      date: dateOfTransaction,
+      line_item_id: lineItemId,
+      year: yearNumber,
+      month: monthNumber,
+      household_id: currentUser.household_id,
+      created_by: currentUser.id,
+    })
+
+  if (error) {
+    console.error(error);
+  }
+
+  return { error };
+};

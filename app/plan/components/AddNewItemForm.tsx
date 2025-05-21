@@ -26,6 +26,7 @@ import { useState } from 'react';
 import { addLineItem } from '../mutations/addLineItem';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { Spinner } from '@/components/app/Spinner';
 
 const formSchema = z.object({
   lineItemName: z.string().min(1, 'Name is required'),
@@ -132,11 +133,12 @@ export const AddNewItemForm = ({
                 </FormItem>
               )}
             />
-            <Button
+               <Button
+              disabled={form.formState.isSubmitting}
               type='submit'
               className='w-full'
             >
-              Save Item
+              {form.formState.isSubmitting ? <Spinner /> : 'Save Item'}
             </Button>
           </form>
         </Form>

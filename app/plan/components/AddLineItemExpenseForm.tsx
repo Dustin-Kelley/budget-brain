@@ -1,10 +1,10 @@
 'use client';
-
+'use no memo';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { PlusIcon } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -24,43 +24,50 @@ import {
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { addLineItemExpense } from '../mutations/addLineItemExpense';
 import { toast } from 'sonner';
-import { addIncome } from '../mutations/addIncome';
 import { Spinner } from '@/components/app/Spinner';
 
 const formSchema = z.object({
-  incomeName: z.string().min(1, 'Name is required'),
-  incomeAmount: z.coerce.number().positive('Amount must be positive'),
+  amount: z.coerce.number().positive('Amount must be positive'),
+  description: z.string().optional(),
+  date: z.string().min(1, 'Date is required'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const AddIncomeForm = ({ month }: { month: string | undefined }) => {
+export const AddLineItemExpenseForm = ({
+  lineItemName,
+  lineItemId,
+}: {
+  lineItemName: string | null;
+  lineItemId: string;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      incomeName: '',
-      incomeAmount: 0,
+      amount: 0,
+      description: '',  
+      date: new Date().toISOString().split('T')[0],
     },
   });
 
   const onSubmit = async (values: FormValues) => {
-    const { error } = await addIncome({
-      incomeName: values.incomeName,
-      incomeAmount: values.incomeAmount,
-      date: month,
+    console.log(values);
+    const { error } = await addLineItemExpense({
+      amount: values.amount,
+      description: values.description,
+      lineItemId,
+      dateOfTransaction: values.date,
+      dateOfInput: undefined, //pass in undefined to get the current month and year
     });
-
     if (error) {
-      console.error('Failed to add income source:', error);
-      toast.error('Failed to add income source');
+      toast.error(error.message);
     }
     setIsOpen(false);
-    toast.success('Income source added successfully');
-    form.reset();
     router.refresh();
   };
 
@@ -71,49 +78,30 @@ export const AddIncomeForm = ({ month }: { month: string | undefined }) => {
     >
       <DialogTrigger asChild>
         <Button
-          variant='ghost'
-          size='sm'
-          className='w-full justify-start text-muted-foreground'
+          variant='outline'
+          size='icon'
         >
-          <Plus className='mr-2 h-4 w-4' />
-          Add New Income Source
+          <PlusIcon className='h-4 w-4' />
         </Button>
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
-          <DialogTitle>Add New Income Source</DialogTitle>
+          <DialogTitle>Add New Expense</DialogTitle>
           <DialogDescription>
-            Add a new income source to your budget. Click save when you&apos;re
-            done.
+          {lineItemName && `Line Item: ${lineItemName}`}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className='space-y-4'
+            className='flex flex-col gap-4'
           >
             <FormField
               control={form.control}
-              name='incomeName'
+              name='amount'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder='e.g., Salary, Contract Work, etc.'
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='incomeAmount'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Income Amount</FormLabel>
+                  <FormLabel>Amount</FormLabel>
                   <FormControl>
                     <div className='relative'>
                       <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-500'>
@@ -125,13 +113,39 @@ export const AddIncomeForm = ({ month }: { month: string | undefined }) => {
                         inputMode='decimal'
                         placeholder='0.00'
                         className='pl-7'
-                        value={
-                          field.value === undefined || field.value === null
-                            ? ''
-                            : field.value
-                        }
                       />
                     </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='description'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          
+
+            <FormField
+              control={form.control}
+              name='date'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Date</FormLabel>
+                  <FormControl>
+                    <Input
+                      type='date'
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -142,7 +156,7 @@ export const AddIncomeForm = ({ month }: { month: string | undefined }) => {
               type='submit'
               className='w-full'
             >
-              {form.formState.isSubmitting ? <Spinner /> : 'Save Income'}
+              {form.formState.isSubmitting ? <Spinner /> : 'Save Expense'}
             </Button>
           </form>
         </Form>

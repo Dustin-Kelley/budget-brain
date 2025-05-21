@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { PlusIcon, Wallet } from 'lucide-react';
+import { Wallet } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import { CategoryWithLineItems } from '@/types/types';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { AddLineItemExpenseForm } from './AddLineItemExpenseForm';
 
 export const RemainingSpentCards = ({
   spentByLineItem,
@@ -163,12 +163,7 @@ export const RemainingSpentCards = ({
                             </span>
                           </div>
                         </div>
-                        <Button
-                          variant='outline'
-                          size='icon'
-                        >
-                          <PlusIcon className='h-4 w-4' />
-                        </Button>
+                        <AddLineItemExpenseForm lineItemName={item.name} lineItemId={item.id} />
                       </div>
                       <Progress
                         value={

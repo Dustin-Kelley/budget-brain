@@ -33,6 +33,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Spinner } from '@/components/app/Spinner';
 
 const formSchema = z.object({
   categoryName: z.string().min(1, 'Name is required'),
@@ -124,11 +125,12 @@ export const AddNewCategoryForm = ({ month }: { month: string | undefined }) => 
                 </FormItem>
               )}
             />
-            <Button
+               <Button
+              disabled={form.formState.isSubmitting}
               type='submit'
               className='w-full'
             >
-              Save Category
+              {form.formState.isSubmitting ? <Spinner /> : 'Save Category'}
             </Button>
           </form>
         </Form>
