@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { PlusIcon } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -44,7 +44,11 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const AddExpenseForm = ({ categories }: { categories: CategoryWithLineItems[] | null }) => {
+export const AddExpenseForm = ({
+  categories,
+}: {
+  categories: CategoryWithLineItems[] | null;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
@@ -58,9 +62,8 @@ export const AddExpenseForm = ({ categories }: { categories: CategoryWithLineIte
     },
   });
 
-
   const onSubmit = async (values: FormValues) => {
-   const {error} = await  addTransaction({
+    const { error } = await addTransaction({
       amount: values.amount,
       description: values.description,
       lineItemId: values.lineItemId,
@@ -68,20 +71,23 @@ export const AddExpenseForm = ({ categories }: { categories: CategoryWithLineIte
       dateOfInput: undefined,
     });
     if (error) {
-     toast.error(error.message);
+      toast.error(error.message);
     }
     setIsOpen(false);
     router.refresh();
   };
 
- 
-
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={setIsOpen}
+    >
       <DialogTrigger asChild>
-        <Button size='sm' className="w-full md:w-auto rounded-lg">
-          <Plus className='mr-2 h-4 w-4' />
-          Add Expense
+        <Button
+          className='fixed bottom-6 right-6 z-50 bg-primary text-white rounded-full shadow-lg w-14 h-14 flex items-center justify-center text-3xl hover:bg-primary/90 transition-colors'
+          aria-label='Add'
+        >
+          <PlusIcon className='size-6' />
         </Button>
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
@@ -104,7 +110,9 @@ export const AddExpenseForm = ({ categories }: { categories: CategoryWithLineIte
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
                     <div className='relative'>
-                      <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-500'>$</span>
+                      <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-500'>
+                        $
+                      </span>
                       <Input
                         {...field}
                         type='number'
@@ -137,7 +145,10 @@ export const AddExpenseForm = ({ categories }: { categories: CategoryWithLineIte
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Budget Item</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder='Select a budget item' />
@@ -146,11 +157,14 @@ export const AddExpenseForm = ({ categories }: { categories: CategoryWithLineIte
                     <SelectContent>
                       {categories?.map((category) => (
                         <div key={category.id}>
-                          <div className="px-3 py-1 text-xs font-semibold text-muted-foreground">
+                          <div className='px-3 py-1 text-xs font-semibold text-muted-foreground'>
                             {category.name}
                           </div>
                           {category.line_items.map((item) => (
-                            <SelectItem key={item.id} value={item.id}>
+                            <SelectItem
+                              key={item.id}
+                              value={item.id}
+                            >
                               {item.name}
                             </SelectItem>
                           ))}
@@ -162,7 +176,7 @@ export const AddExpenseForm = ({ categories }: { categories: CategoryWithLineIte
                 </FormItem>
               )}
             />
-         
+
             <FormField
               control={form.control}
               name='date'
@@ -179,12 +193,12 @@ export const AddExpenseForm = ({ categories }: { categories: CategoryWithLineIte
                 </FormItem>
               )}
             />
-              <Button
-                type='submit'
-                className='w-full'
-              >
-                Save Expense
-              </Button>
+            <Button
+              type='submit'
+              className='w-full'
+            >
+              Save Expense
+            </Button>
           </form>
         </Form>
       </DialogContent>
