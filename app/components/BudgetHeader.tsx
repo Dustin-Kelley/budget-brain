@@ -9,13 +9,11 @@ export async function BudgetHeader({ month }: { month: string | undefined }) {
   const { categories } = await getCategories({ date: month });
 
   return (
-    <div className='flex md:flex-row gap-2 pb-4 items-end justify-between'>
-      <div>
-        <h1 className='text-3xl font-bold text-secondary tracking-tight'>
-          {parsedMonth}
-        </h1>
-        <p className='text-muted-foreground'>Budget Overview</p>
-      </div>
+    <div className='flex md:flex-row gap-2 items-end justify-between'>
+      <h1 className='text-3xl font-bold text-secondary tracking-tight'>
+        {parsedMonth}
+      </h1>
+
       <div className='flex flex-col md:flex-row items-end gap-2'>
         <MonthSelector selectedMonth={month} />
         <AddExpenseForm categories={categories} />

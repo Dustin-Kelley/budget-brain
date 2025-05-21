@@ -14,7 +14,10 @@ export default async function Page({
 
   return (
     <main className='flex flex-col gap-4'>
-      <BudgetHeader month={month} />
+      <div className='flex flex-col'>
+        <BudgetHeader month={month} />
+        <p className='text-muted-foreground'>Plan your budget</p>
+      </div>
 
       {/* Budget Details */}
       <Tabs defaultValue='planned'>
