@@ -6,6 +6,8 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from 'sonner';
 import { SidebarWrapper } from '@/components/app/SidebarWrapper';
+import { Button } from '@/components/ui/button';
+import { PlusIcon } from 'lucide-react';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -36,7 +38,10 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link rel='manifest' href='/manifest.json' />
+        <link
+          rel='manifest'
+          href='/manifest.json'
+        />
         <link
           rel='apple-touch-icon'
           href='/icons/budget-brain-pwa-logo.png'
@@ -58,6 +63,13 @@ export default async function RootLayout({
           <SidebarProvider>
             <SidebarWrapper>
               {children}
+              {/* Floating Plus Button */}
+              <Button
+                className='fixed bottom-6 right-6 z-50 bg-primary text-white rounded-full shadow-lg w-14 h-14 flex items-center justify-center text-3xl hover:bg-primary/90 transition-colors'
+                aria-label='Add'
+              >
+                <PlusIcon className='size-6' />
+              </Button>
               <Toaster richColors />
             </SidebarWrapper>
           </SidebarProvider>
