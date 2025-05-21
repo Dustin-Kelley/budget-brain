@@ -25,7 +25,7 @@ export const RemainingSpentCards = ({
   categories: CategoryWithLineItems[] | null;
   totalIncome: number;
 }) => {
-  const [showSpent, setShowSpent] = useState(false);
+  const [showSpent, setShowSpent] = useState(true);
 
   function getSpentForLineItem(lineItemId: string) {
     return (
@@ -142,7 +142,7 @@ export const RemainingSpentCards = ({
                       ? Math.round((itemSpent / itemPlanned) * 100)
                       : 0;
                   return (
-                    <>
+                    <div key={item.id}>
                       <div
                         key={item.id}
                         className='flex items-center py-4 justify-between text-sm'
@@ -176,7 +176,7 @@ export const RemainingSpentCards = ({
                         }
                         className='h-2'
                       />
-                    </>
+                    </div>
                   );
                 })}
               </CardContent>
