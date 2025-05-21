@@ -18,7 +18,7 @@ export function AppSidebarMenuItem({
   return (
     <SidebarMenuItem key={title}>
     <SidebarMenuButton
-      className='text-xl font-light'
+      className='text-lg font-medium'
       asChild
     >
       <Link onClick={() => setOpenMobile(false)} href={url}>

@@ -45,7 +45,7 @@ export function AppSidebar() {
         <SidebarGroup className='h-full  flex flex-col gap-4'>
           <div className='flex justify-center items-center'>
             <Logo />
-          <SidebarGroupLabel className='text-2xl text-foreground font-bold flex justify-center items-center'>
+          <SidebarGroupLabel className='text-2xl text-secondary font-bold flex justify-center items-center'>
             Budget Brain
           </SidebarGroupLabel>
           </div>
@@ -62,7 +62,7 @@ export function AppSidebar() {
             <SidebarMenu className='flex flex-col pb-4 gap-4'>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  className='text-lg font-light'
+                  className='text-lg font-medium'
                   asChild
                 >
                   <Link href='/settings'>
