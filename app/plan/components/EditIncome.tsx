@@ -53,7 +53,7 @@ export const EditIncome = ({
     >
       <PopoverTrigger asChild>
         <Button
-          variant='ghost'
+          variant='outline'
           size='icon'
         >
           <MoreHorizontal className='h-4 w-4' />

@@ -41,7 +41,7 @@ export const EditCategories = ({ categoryId, categoryName }: { categoryId: strin
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button variant="outline" size="icon">
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
