@@ -101,7 +101,7 @@ export const RemainingSpentCards = ({
             <Card key={category.id}>
               <CardHeader className='pb-2'>
                 <div className='flex items-center justify-between'>
-                  <CardTitle className='text-sm font-medium'>
+                  <CardTitle className='text-lg font-bold'>
                     {category.name}
                   </CardTitle>
                 </div>

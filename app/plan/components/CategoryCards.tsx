@@ -31,7 +31,7 @@ export async function CategoryCards({ month }: { month: string | undefined }) {
           >
             <CardHeader className='pb-2'>
               <div className='flex items-center justify-between'>
-                <CardTitle className='text-sm font-medium'>
+                <CardTitle className='font-bold text-lg'>
                   {category.name}
                 </CardTitle>
                 <EditCategories categoryId={category.id} categoryName={category.name} />
