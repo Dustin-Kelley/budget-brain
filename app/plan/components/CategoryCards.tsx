@@ -12,6 +12,7 @@ import { AddNewItemForm } from './AddNewItemForm';
 import { LineItems } from './LineItems';
 import { AddNewCategoryForm } from './AddNewCategoryForm';
 import { EditCategories } from './EditCategories';
+import { Separator } from '@/components/ui/separator';
 
 export async function CategoryCards({ month }: { month: string | undefined }) {
 
@@ -37,7 +38,8 @@ export async function CategoryCards({ month }: { month: string | undefined }) {
                 <EditCategories categoryId={category.id} categoryName={category.name} />
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className='flex flex-col gap-2'>
+              <Separator  />
               {categoryLineItems.map((lineItems) => (
                 <LineItems
                   key={lineItems.id}
