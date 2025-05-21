@@ -13,6 +13,8 @@ import { Progress } from '@/components/ui/progress';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { CategoryWithLineItems } from '@/types/types';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 
 export const RemainingSpentCards = ({
   spentByLineItem,
@@ -100,25 +102,22 @@ export const RemainingSpentCards = ({
           return (
             <Card key={category.id}>
               <CardHeader className='pb-2'>
-                <div className='flex items-center justify-between'>
+                <div className='flex flex-col gap-2'>
                   <CardTitle className='text-lg font-bold'>
                     {category.name}
                   </CardTitle>
+                  <div className='flex items-center justify-between text-sm mb-1'>
+                    <Badge variant='outline' className='font-medium'>
+                      {showSpent ? 'Spent' : 'Remaining'}: $
+                      {showSpent ? spentAmt : remaining} / ${planned}
+                    </Badge>
+                    <Badge variant='outline' className='font-medium'>{showSpent ? percentSpent : percentRemaining}%</Badge>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className='pb-2'>
-                <div className='flex items-center justify-between text-sm mb-1'>
-                  <span>
-                    {showSpent ? 'Spent' : 'Remaining'}: $
-                    {showSpent ? spentAmt : remaining} / ${planned}
-                  </span>
-                  <span>{showSpent ? percentSpent : percentRemaining}%</span>
-                </div>
-                <Progress
-                  value={showSpent ? percentSpent : percentRemaining}
-                  className='h-2'
-                />
-                <div className='space-y-2 mt-4'>
+             
+                  <Separator />
                   {category.line_items.map((item) => {
                     const itemSpent = getSpentForLineItem(item.id);
                     const itemPlanned = item.planned_amount ?? 0;
@@ -132,28 +131,33 @@ export const RemainingSpentCards = ({
                         ? Math.round((itemSpent / itemPlanned) * 100)
                         : 0;
                     return (
-                      <div
-                        key={item.id}
-                        className='flex items-center justify-between text-sm'
-                      >
-                        <span className='text-muted-foreground'>
-                          {item.name}
-                        </span>
-                        <div className='flex items-center gap-2'>
-                          <span className='font-medium'>
-                            ${showSpent ? itemSpent : itemRemaining}
-                          </span>
-                          <span className='text-xs text-muted-foreground'>
-                            {showSpent
-                              ? itemPercentSpent
-                              : itemPercentRemaining}
-                            %
-                          </span>
+                      <>
+                        <div
+                          key={item.id}
+                          className='flex items-center py-4 justify-between text-sm'
+                        >
+                          <span className='font-medium'>{item.name}</span>
+                          <div className='flex items-center gap-2'>
+                            <span className='font-medium'>
+                              ${showSpent ? itemSpent : itemRemaining}
+                            </span>
+                            <span className='text-xs text-muted-foreground'>
+                              {showSpent
+                                ? itemPercentSpent
+                                : itemPercentRemaining}
+                              %
+                            </span>
+                          </div>
                         </div>
-                      </div>
+                        <Progress
+                          value={showSpent ? itemPercentSpent : itemPercentRemaining}
+                          className='h-2'
+                        />
+                        <Separator />
+                      </>
                     );
                   })}
-                </div>
+               
               </CardContent>
               <CardFooter className='pt-0'>
                 <div className='flex w-full justify-between text-xs text-muted-foreground'>
