@@ -19,10 +19,9 @@ export default async function Page({
     redirect('/login');
   }
 
-
   return (
     <main className='flex flex-col gap-4'>
-       <div className='flex flex-col'>
+      <div className='flex flex-col'>
         <BudgetHeader month={month} />
         <p className='text-muted-foreground'>Budget Overview</p>
       </div>
@@ -34,7 +33,9 @@ export default async function Page({
         <BudgetSummary date={month} />
       </Suspense>
 
-      <Charts date={month} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Charts date={month} />
+      </Suspense>
     </main>
   );
 }

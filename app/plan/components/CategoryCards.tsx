@@ -20,14 +20,14 @@ export async function CategoryCards({ month }: { month: string | undefined }) {
   const { categories } = await getCategories({ date: month });
  
   return (
-    <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
+    <div className="columns-1 md:columns-2 lg:columns-2 space-y-4">
       {categories?.map((category) => {
         const categoryLineItems = category.line_items?.filter(
           (sub) => sub.category_id === category.id
         );
         return (
           <Card
-            className='flex flex-col justify-between'
+            className="mb-4 break-inside-avoid flex flex-col justify-between"
             key={category.id}
           >
             <CardHeader className='pb-2'>
