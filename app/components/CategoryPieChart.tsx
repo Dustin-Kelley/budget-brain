@@ -99,7 +99,7 @@ export function CategoryPieChart({
                           y={viewBox.cy}
                           className='fill-foreground text-3xl font-bold'
                         >
-                          {value.toLocaleString()}
+                          ${value.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
