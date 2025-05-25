@@ -56,7 +56,6 @@ export const AddLineItemExpenseForm = ({
   });
 
   const onSubmit = async (values: FormValues) => {
-    console.log(values);
     const { error } = await addLineItemExpense({
       amount: values.amount,
       description: values.description,
