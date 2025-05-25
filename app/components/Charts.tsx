@@ -6,8 +6,19 @@ import { CategoryPieChart } from './CategoryPieChart';
 export async function Charts({ date }: { date: string | undefined }) {
   const { categories } = await getCategories({ date: date });
   const { income } = await getTotalIncomePerMonth({ date: date });
+  console.log(categories);
 
   if (!categories) {
+    return null;
+  }
+
+  const hasPlannedAmounts = categories?.some(
+    (category) =>
+      category.line_items &&
+      category.line_items.some((item) => item?.planned_amount !== null)
+  );
+
+  if (!hasPlannedAmounts) {
     return null;
   }
 
@@ -28,11 +39,9 @@ export async function Charts({ date }: { date: string | undefined }) {
   }));
 
   return (
-    <div>
-      <CategoryPieChart
-        totalIncome={totalIncome}
-        chartData={chartData}
-      />
-    </div>
+    <CategoryPieChart
+      totalIncome={totalIncome}
+      chartData={chartData}
+    />
   );
 }
