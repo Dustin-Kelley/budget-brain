@@ -12,7 +12,6 @@ import { Progress } from '@/components/ui/progress';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { CategoryWithLineItems } from '@/types/types';
-import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { AddLineItemExpenseForm } from './AddLineItemExpenseForm';
 
@@ -89,7 +88,8 @@ export const RemainingSpentCards = ({
       </div>
 
       {/* Category Cards */}
-      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
+      <div className="columns-1 md:columns-2 lg:columns-2 space-y-4">
+
         {categories?.map((category) => {
           const planned =
             category.line_items?.reduce(
@@ -104,8 +104,10 @@ export const RemainingSpentCards = ({
             planned > 0 ? Math.round((spentAmt / planned) * 100) : 0;
 
           return (
-            <Card key={category.id}>
-              <CardHeader className='pb-2'>
+            <Card 
+            className="mb-4 break-inside-avoid flex flex-col justify-between"
+            key={category.id}>
+              <CardHeader >
                 <div className='flex flex-col gap-2'>
                   <CardTitle className='text-lg font-bold'>
                     {category.name}
@@ -128,7 +130,6 @@ export const RemainingSpentCards = ({
                 </div>
               </CardHeader>
               <CardContent className='pb-2'>
-                <Separator />
                 {category.line_items.map((item) => {
                   const itemSpent = getSpentForLineItem(item.id);
                   const itemPlanned = item.planned_amount ?? 0;
