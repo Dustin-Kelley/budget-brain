@@ -15,7 +15,7 @@ export async function Charts({ date }: { date: string | undefined }) {
     income?.reduce((acc, item) => acc + (item.amount ?? 0), 0) ?? 0;
   const categoriesWithLineItems = categories.map((category) => ({
     ...category,
-    total_planned_amount: category.line_items?.reduce(
+    totalPlannedAmount: category.line_items?.reduce(
       (acc, item) => acc + (item?.planned_amount ?? 0),
       0
     ),
@@ -23,7 +23,7 @@ export async function Charts({ date }: { date: string | undefined }) {
 
   const chartData = categoriesWithLineItems.map((category, index) => ({
     name: category.name,
-    value: category.total_planned_amount,
+    value: category.totalPlannedAmount,
     color: categoryColors[index % categoryColors.length],
   }));
 
