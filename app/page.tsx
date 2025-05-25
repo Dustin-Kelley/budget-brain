@@ -4,7 +4,7 @@ import { BudgetSummary } from './components/BudgetSummary';
 import { BudgetHeader } from './components/BudgetHeader';
 import { getCurrentUser } from './queries/getCurrentUser';
 import { redirect } from 'next/navigation';
-import { CategoryPieChart } from './components/CategoryPieChart';
+import { Charts } from './components/Charts';
 
 export default async function Page({
   searchParams,
@@ -34,7 +34,7 @@ export default async function Page({
         <BudgetSummary date={month} />
       </Suspense>
 
-      <CategoryPieChart />
+      <Charts date={month} />
     </main>
   );
 }
