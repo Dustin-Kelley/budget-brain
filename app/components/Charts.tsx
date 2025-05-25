@@ -6,7 +6,6 @@ import { CategoryPieChart } from './CategoryPieChart';
 export async function Charts({ date }: { date: string | undefined }) {
   const { categories } = await getCategories({ date: date });
   const { income } = await getTotalIncomePerMonth({ date: date });
-  console.log(categories);
 
   if (!categories) {
     return null;
