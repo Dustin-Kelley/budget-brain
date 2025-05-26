@@ -9,10 +9,9 @@ import {
 import { format } from 'date-fns';
 import type { Transaction } from '@/types/types';
 import { Separator } from '@/components/ui/separator';
-import { EditExpenseForm } from './EditExpenseForm';
+import {  EditTransactionForm } from './EditTransactionForm';
 import { getCategories } from '@/app/queries/getCategories';
 
-// Type for transaction with nested line_items and categories
 interface TransactionWithLineItem extends Transaction {
   line_items?: {
     name?: string | null;
@@ -81,7 +80,7 @@ export async function TransactionsTab({
                       key={transaction.id}
                       className='flex flex-col'
                     >
-                      <EditExpenseForm
+                      <EditTransactionForm
                         transactionAmount={transaction.amount}
                         categories={categories}
                         transactionId={transaction.id}
@@ -100,7 +99,7 @@ export async function TransactionsTab({
                           </div>
                           <div>${transaction.amount?.toFixed(2)}</div>
                         </div>
-                      </EditExpenseForm>
+                      </EditTransactionForm>
                     </div>
                   );
                 })}

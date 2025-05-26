@@ -40,7 +40,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const EditExpenseForm = ({
+export const EditTransactionForm = ({
   children,
   categories,
   transactionAmount,
