@@ -9,6 +9,8 @@ import {
 import { format } from 'date-fns';
 import type { Transaction } from '@/types/types';
 import { Separator } from '@/components/ui/separator';
+import { EditExpenseForm } from './EditExpenseForm';
+import { getCategories } from '@/app/queries/getCategories';
 
 // Type for transaction with nested line_items and categories
 interface TransactionWithLineItem extends Transaction {
@@ -43,10 +45,13 @@ export async function TransactionsTab({
   month: string | undefined;
 }) {
   const { transactions } = await getTransactions({ date: month });
+  const { categories } = await getCategories({ date: month });
+
+  if (!transactions) return null;
 
   // Group transactions by date
-  const grouped = transactions ? groupTransactionsByDate(transactions) : {};
-  const sortedDates = Object.keys(grouped).sort(
+  const groupedTransactions = groupTransactionsByDate(transactions);
+  const sortedDates = Object.keys(groupedTransactions).sort(
     (a, b) => new Date(b).getTime() - new Date(a).getTime()
   );
 
@@ -70,15 +75,17 @@ export async function TransactionsTab({
                 <Separator className='flex-1' />
               </div>
               <div className='flex flex-col gap-4'>
-                {grouped[date].map((transaction) => {
+                {groupedTransactions[date].map((transaction) => {
                   const lineItem = transaction.line_items;
                   return (
-                  
-                      <div
-                        key={transaction.id}
-                        className='flex flex-col'
+                    <div
+                      key={transaction.id}
+                      className='flex flex-col'
+                    >
+                      <EditExpenseForm
+                        categories={categories}
                       >
-                        <div className='flex items-center justify-between'>
+                        <div className='flex hover:bg-secondary/10 rounded-xl px-4 py-1 cursor-pointer items-center justify-between'>
                           <div>
                             <div className='font-medium'>{lineItem?.name}</div>
                             {transaction.description && (
@@ -89,12 +96,11 @@ export async function TransactionsTab({
                           </div>
                           <div>${transaction.amount?.toFixed(2)}</div>
                         </div>
-                      </div>
-                    
+                      </EditExpenseForm>
+                    </div>
                   );
                 })}
               </div>
-            
             </div>
           ))}
         </div>
