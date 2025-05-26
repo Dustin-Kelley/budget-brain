@@ -47,6 +47,7 @@ export const EditExpenseForm = ({
   transactionId,
   transactionDate,
   transactionDescription,
+  lineItemId,
 }: {
   categories: CategoryWithLineItems[] | null;
   children: React.ReactNode;
@@ -54,6 +55,7 @@ export const EditExpenseForm = ({
   transactionId: string;
   transactionDate: string | null;
   transactionDescription: string | null;
+  lineItemId: string | null;
 }) => {
 
 
@@ -64,6 +66,7 @@ export const EditExpenseForm = ({
       description: transactionDescription ?? '',
       transactionId: transactionId,
       date: formatDateForInput(transactionDate),
+      lineItemId: lineItemId ?? '',
     },
   });
 

@@ -87,6 +87,7 @@ export async function TransactionsTab({
                         transactionId={transaction.id}
                         transactionDate={transaction.date}
                         transactionDescription={transaction.description}
+                        lineItemId={transaction.line_item_id}
                       >
                         <div className='flex hover:bg-secondary/10 rounded-xl px-4 py-1 cursor-pointer items-center justify-between'>
                           <div>
