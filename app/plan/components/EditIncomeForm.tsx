@@ -124,8 +124,7 @@ export const EditIncomeForm = ({
                       </span>
                       <Input
                         {...field}
-                        type='number'
-                        inputMode='decimal'
+                        type='text'
                         placeholder='0.00'
                         className='pl-7'
                         value={

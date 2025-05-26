@@ -3,7 +3,7 @@ import { RemainingSpentTab } from './components/RemainingSpentTab';
 import { BudgetHeader } from '../components/BudgetHeader';
 import { IncomeCard } from './components/IncomeCard';
 import { CategoryCards } from './components/CategoryCards';
-import { TransactionsTab } from './components/TransactionsTab'; 
+import { TransactionsTab } from './components/TransactionsTab';
 
 export default async function Page({
   searchParams,
@@ -41,18 +41,14 @@ export default async function Page({
           value='remaining'
           className='flex flex-col gap-4'
         >
-        <RemainingSpentTab month={month} />
+          <RemainingSpentTab month={month} />
         </TabsContent>
 
         {/* Transactions Tab */}
         <TabsContent value='transactions'>
-        <TransactionsTab month={month} />
+          <TransactionsTab month={month} />
         </TabsContent>
       </Tabs>
     </main>
   );
 }
-
-
-
-

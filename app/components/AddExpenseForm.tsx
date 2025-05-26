@@ -115,8 +115,7 @@ export const AddExpenseForm = ({
                       </span>
                       <Input
                         {...field}
-                        type='number'
-                        inputMode='decimal'
+                        type='text'
                         placeholder='0.00'
                         className='pl-7'
                       />

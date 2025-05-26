@@ -115,8 +115,7 @@ export const EditLineItemForm = ({ lineItem }: { lineItem: LineItem }) => {
                       <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-500'>$</span>
                       <Input
                         {...field}
-                        type='number'
-                        inputMode='decimal'
+                        type='text'
                         placeholder='0.00'
                         className='pl-7'
                       />

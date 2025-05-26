@@ -121,8 +121,7 @@ export const AddIncomeForm = ({ month }: { month: string | undefined }) => {
                       </span>
                       <Input
                         {...field}
-                        type='number'
-                        inputMode='decimal'
+                        type='text'
                         placeholder='0.00'
                         className='pl-7'
                         value={
