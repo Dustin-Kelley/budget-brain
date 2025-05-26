@@ -11,3 +11,4 @@ export const categoryColors = [
   'var(--chart-9)',
   'var(--chart-10)',
 ];
+

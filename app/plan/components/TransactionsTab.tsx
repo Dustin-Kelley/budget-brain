@@ -22,7 +22,6 @@ interface TransactionWithLineItem extends Transaction {
   } | null;
 }
 
-// Utility to group transactions by date (YYYY-MM-DD)
 function groupTransactionsByDate(transactions: TransactionWithLineItem[]) {
   return transactions.reduce(
     (groups: Record<string, TransactionWithLineItem[]>, transaction) => {
@@ -83,7 +82,11 @@ export async function TransactionsTab({
                       className='flex flex-col'
                     >
                       <EditExpenseForm
+                        transactionAmount={transaction.amount}
                         categories={categories}
+                        transactionId={transaction.id}
+                        transactionDate={transaction.date}
+                        transactionDescription={transaction.description}
                       >
                         <div className='flex hover:bg-secondary/10 rounded-xl px-4 py-1 cursor-pointer items-center justify-between'>
                           <div>

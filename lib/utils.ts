@@ -16,5 +16,12 @@ export function getMonthAndYearNumberFromDate(date: string | undefined) {
     : currentDate.getFullYear();
 
   return { monthNumber, yearNumber };
-}
+};
+
+export const formatDateForInput = (dateString: string | null) => {
+  if (!dateString) return '';
+  const d = new Date(dateString);
+  if (isNaN(d.getTime())) return '';
+  return d.toISOString().split('T')[0];
+};
 

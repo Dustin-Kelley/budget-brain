@@ -1,18 +1,37 @@
-'use client'
+'use client';
 
-import { Button } from '@/components/ui/button'
-import { DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Dialog } from '@/components/ui/dialog'
-import { DialogContent } from '@/components/ui/dialog'
-import { Form, FormControl, FormItem, FormMessage, FormField, FormLabel } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { CategoryWithLineItems } from '@/types/types'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
+import { Button } from '@/components/ui/button';
+import {
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Dialog } from '@/components/ui/dialog';
+import { DialogContent } from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormItem,
+  FormMessage,
+  FormField,
+  FormLabel,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { CategoryWithLineItems } from '@/types/types';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { formatDateForInput } from '@/lib/utils';
 
 const formSchema = z.object({
+  transactionId: z.string().min(1, 'Transaction ID is required'),
   amount: z.coerce.number().positive('Amount must be positive'),
   description: z.string().optional(),
   lineItemId: z.string().min(1, 'Budget item is required'),
@@ -24,18 +43,27 @@ type FormValues = z.infer<typeof formSchema>;
 export const EditExpenseForm = ({
   children,
   categories,
+  transactionAmount,
+  transactionId,
+  transactionDate,
+  transactionDescription,
 }: {
   categories: CategoryWithLineItems[] | null;
   children: React.ReactNode;
+  transactionAmount: number | null;
+  transactionId: string;
+  transactionDate: string | null;
+  transactionDescription: string | null;
 }) => {
+
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      amount: 0,
-      description: '',
-      lineItemId: '',
-      date: new Date().toISOString().split('T')[0],
+      amount: transactionAmount ?? 0,
+      description: transactionDescription ?? '',
+      transactionId: transactionId,
+      date: formatDateForInput(transactionDate),
     },
   });
 
@@ -55,23 +83,17 @@ export const EditExpenseForm = ({
     //router.refresh();
   };
 
-
   return (
     <Dialog>
-    <DialogTrigger asChild >
-      {children}
-    </DialogTrigger>
-    <DialogContent className='sm:max-w-[425px]'>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
-          <DialogTitle>Add New Expense</DialogTitle>
-          <DialogDescription>
-            Add a new expense to your budget. Click save when you&apos;re done.
-          </DialogDescription>
+          <DialogTitle>Edit Expense</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className='space-y-4'
+            className='flex flex-col gap-4'
           >
             <FormField
               control={form.control}
@@ -172,6 +194,6 @@ export const EditExpenseForm = ({
           </form>
         </Form>
       </DialogContent>
-  </Dialog>
-  )
-}
+    </Dialog>
+  );
+};
