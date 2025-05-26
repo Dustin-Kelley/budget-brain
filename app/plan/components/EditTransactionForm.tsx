@@ -29,6 +29,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { formatDateForInput } from '@/lib/utils';
+import { updateTransaction } from '../mutations/updateTransaction';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 const formSchema = z.object({
   transactionId: z.string().min(1, 'Transaction ID is required'),
@@ -57,7 +61,8 @@ export const EditTransactionForm = ({
   transactionDescription: string | null;
   lineItemId: string | null;
 }) => {
-
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -72,22 +77,23 @@ export const EditTransactionForm = ({
 
   const onSubmit = async (values: FormValues) => {
     console.log(values);
-    // const { error } = await addTransaction({
-    //   amount: values.amount,
-    //   description: values.description,
-    //   lineItemId: values.lineItemId,
-    //   dateOfTransaction: values.date,
-    //   dateOfInput: undefined,
-    // });
-    // if (error) {
-    //  // toast.error(error.message);
-    // }
-    // setIsOpen(false);
-    //router.refresh();
+    const { error } = await updateTransaction({
+      amount: values.amount,
+      description: values.description,
+      lineItemId: values.lineItemId,
+      dateOfTransaction: values.date,
+      dateOfInput: undefined,
+      transactionId: values.transactionId,
+    });
+    if (error) {
+      toast.error('Something went wrong updating your transaction');
+    }
+     setIsOpen(false);
+    router.refresh();
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
