@@ -1,6 +1,7 @@
 import { MonthSelector } from './MonthSelector';
 import { AddExpenseForm } from './AddExpenseForm';
 import { getCategories } from '../queries/getCategories';
+import { BudgetRolloverButton } from './BudgetRolloverButton';
 
 export async function BudgetHeader({ month }: { month: string | undefined }) {
   const parsedMonth =
@@ -17,6 +18,7 @@ export async function BudgetHeader({ month }: { month: string | undefined }) {
       <div className='flex flex-col md:flex-row items-end gap-2'>
         <MonthSelector selectedMonth={month} />
         <AddExpenseForm categories={categories} />
+        <BudgetRolloverButton month={month} />
       </div>
     </div>
   );
