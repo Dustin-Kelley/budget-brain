@@ -9,9 +9,6 @@ export const rolloverBudget = async ({ fromDate, toDate }: { fromDate: string; t
   const supabase = await createClient();
   const { currentUser } = await getCurrentUser();
 
-  console.log("🚀 ~ rolloverBudget ~ fromDate:", fromDate)
-  console.log("🚀 ~ rolloverBudget ~ toDate:", toDate)
-
   if (!currentUser) {
     redirect('/login');
   }
@@ -20,10 +17,7 @@ export const rolloverBudget = async ({ fromDate, toDate }: { fromDate: string; t
   const { monthNumber: fromMonth, yearNumber: fromYear } = getMonthAndYearNumberFromDate(fromDate);
   const { monthNumber: toMonth, yearNumber: toYear } = getMonthAndYearNumberFromDate(toDate);
 
-  console.log("🚀 ~ rolloverBudget ~ fromMonth:", fromMonth)
-  console.log("🚀 ~ rolloverBudget ~ fromYear:", fromYear)
-  console.log("🚀 ~ rolloverBudget ~ toMonth:", toMonth)
-  console.log("🚀 ~ rolloverBudget ~ toYear:", toYear)
+
   // Fetch previous month's categories and line items
   const { data: prevCategories, error: prevCatError } = await supabase
     .from('categories')
@@ -33,7 +27,6 @@ export const rolloverBudget = async ({ fromDate, toDate }: { fromDate: string; t
     .eq('year', fromYear);
     
     if (prevCatError) {
-      console.log("🚀 ~ rolloverBudget ~ prevCatError:", prevCatError)
       return { error: prevCatError };
     }
     
@@ -46,7 +39,6 @@ export const rolloverBudget = async ({ fromDate, toDate }: { fromDate: string; t
     .eq('year', toYear);
 
   if (delCatError) {
-    console.log("🚀 ~ rolloverBudget ~ delCatError:", delCatError)
     return { error: delCatError };
   }
 
@@ -64,7 +56,6 @@ export const rolloverBudget = async ({ fromDate, toDate }: { fromDate: string; t
       .select()
       .single();
     if (newCatError) {
-      console.log("🚀 ~ rolloverBudget ~ newCatError:", newCatError)
       return { error: newCatError };
     }
     // Insert line items for this category
@@ -80,12 +71,10 @@ export const rolloverBudget = async ({ fromDate, toDate }: { fromDate: string; t
           year: toYear,
         });
       if (newLineItemError) {
-        console.log("🚀 ~ rolloverBudget ~ newLineItemError:", newLineItemError)
         return { error: newLineItemError };
       }
     }
   }
-  console.log("🚀 ~ rolloverBudget ~ success: true")
   return { success: true };
 };
 

@@ -25,3 +25,23 @@ export const formatDateForInput = (dateString: string | null) => {
   return d.toISOString().split('T')[0];
 };
 
+export function getPreviousMonth(dateStr: string | undefined): string | undefined {
+  if (!dateStr) return undefined;
+  // Expecting format 'Month-YYYY'
+  const [monthName, yearStr] = dateStr.split('-');
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  const monthIndex = months.findIndex(
+    m => m.toLowerCase() === monthName.toLowerCase()
+  );
+  if (monthIndex === -1 || !yearStr) return undefined;
+  const prevMonthIndex = monthIndex === 0 ? 11 : monthIndex - 1;
+  let prevYear = Number(yearStr);
+  if (monthIndex === 0) {
+    prevYear -= 1;
+  }
+  return `${months[prevMonthIndex]}-${prevYear}`;
+}
+

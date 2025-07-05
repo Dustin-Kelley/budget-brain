@@ -16,29 +16,11 @@ import {
 import { rolloverBudget } from "@/app/mutations/rolloverBudget";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { getPreviousMonth } from "@/lib/utils";
 
-function getPreviousMonth(dateStr: string | undefined): string | undefined {
-  if (!dateStr) return undefined;
-  // Expecting format 'Month-YYYY'
-  const [monthName, yearStr] = dateStr.split('-');
-  const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
-  const monthIndex = months.findIndex(
-    m => m.toLowerCase() === monthName.toLowerCase()
-  );
-  if (monthIndex === -1 || !yearStr) return undefined;
-  const prevMonthIndex = monthIndex === 0 ? 11 : monthIndex - 1;
-  let prevYear = Number(yearStr);
-  if (monthIndex === 0) {
-    prevYear -= 1;
-  }
-  return `${months[prevMonthIndex]}-${prevYear}`;
-}
+
 
 export function BudgetRolloverButton({ month }: { month: string | undefined }) {
-  console.log("🚀 ~ BudgetRolloverButton ~ month:", month)
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
