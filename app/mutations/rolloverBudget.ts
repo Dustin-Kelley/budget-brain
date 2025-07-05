@@ -75,6 +75,48 @@ export const rolloverBudget = async ({ fromDate, toDate }: { fromDate: string; t
       }
     }
   }
+
+  // Fetch previous month's income
+  const { data: prevIncome, error: prevIncomeError } = await supabase
+    .from('income')
+    .select('*')
+    .eq('household_id', currentUser.household_id)
+    .eq('month', fromMonth)
+    .eq('year', fromYear);
+
+  if (prevIncomeError) {
+    return { error: prevIncomeError };
+  }
+
+  // Delete current month's income
+  const { error: delIncomeError } = await supabase
+    .from('income')
+    .delete()
+    .eq('household_id', currentUser.household_id)
+    .eq('month', toMonth)
+    .eq('year', toYear);
+
+  if (delIncomeError) {
+    return { error: delIncomeError };
+  }
+
+  // Insert previous month's income for the current month
+  for (const income of prevIncome || []) {
+    const { error: newIncomeError } = await supabase
+      .from('income')
+      .insert({
+        ...income,
+        id: undefined, // Let the DB generate a new ID
+        month: toMonth,
+        year: toYear,
+        created_at: undefined,
+        updated_at: undefined,
+      });
+    if (newIncomeError) {
+      return { error: newIncomeError };
+    }
+  }
+
   return { success: true };
 };
 
