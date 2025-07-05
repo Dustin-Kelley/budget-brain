@@ -17,29 +17,28 @@ import { rolloverBudget } from "@/app/mutations/rolloverBudget";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { getPreviousMonth } from "@/lib/utils";
+import { Spinner } from "@/components/app/Spinner";
 
 
 
 export function BudgetRolloverButton({ month }: { month: string | undefined }) {
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   // Placeholder: Assume current month always has a budget for now
   const currentMonthHasBudget = true;
 
   const handleRollover = async () => {
-    setLoading(true);
+    setIsLoading(true);
     const fromDate = getPreviousMonth(month);
-    console.log("🚀 ~ handleRollover ~ fromDate:", fromDate)
     const toDate = month;
-    console.log("🚀 ~ handleRollover ~ toDate:", toDate)
     if (!fromDate || !toDate) {
       toast.error("Invalid month for rollover.");
-      setLoading(false);
+      setIsLoading(false);
       return;
     }
     const result = await rolloverBudget({ fromDate, toDate });
-    setLoading(false);
+    setIsLoading(false);
     setOpen(false);
     if (result?.success) {
       router.refresh();
@@ -51,7 +50,7 @@ export function BudgetRolloverButton({ month }: { month: string | undefined }) {
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="default" disabled={loading}>Roll Over Previous Month</Button>
+        <Button variant="default" disabled={isLoading}>{isLoading ? <Spinner/> : "Roll Over Previous Month"}</Button>
       </AlertDialogTrigger>
       {currentMonthHasBudget && (
         <AlertDialogContent>
@@ -62,9 +61,9 @@ export function BudgetRolloverButton({ month }: { month: string | undefined }) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleRollover} disabled={loading}>
-              {loading ? "Rolling Over..." : "Continue"}
+            <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleRollover} disabled={isLoading}>
+              Continue
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
