@@ -18,12 +18,72 @@ import {
 } from '@/components/ui/chart';
 import { useMemo, useState } from 'react';
 import { categoryColors } from '@/lib/constants';
+import { Separator } from '@/components/ui/separator';
 
 type ChartData = {
   name: string | null;
   value: number;
   color: string;
 }[];
+
+// Chart Legend Component
+function ChartLegend({ 
+  chartData, 
+  totalIncome 
+}: { 
+  chartData: ChartData; 
+  totalIncome: number; 
+}) {
+  const totalPlanned = chartData.reduce((sum, item) => sum + item.value, 0);
+  const remaining = totalIncome - totalPlanned;
+
+  return (
+    <div className="flex px-2  items-center justify-center flex-col gap-3 ">
+      <div className="flex flex-col gap-3 w-full">
+        <h4 className="text-sm font-medium text-muted-foreground">Categories</h4>
+        {chartData.map((item, index) => (
+          <div key={index} className="flex items-center justify-between  ">
+            <div className="flex items-center gap-2">
+              <div 
+                className="w-3 h-3 rounded-full " 
+                style={{ backgroundColor: item.color }}
+              />
+              <span className="text-sm font-medium truncate">
+                {item.name || 'Unnamed'}
+              </span>
+            </div>
+            <span className="text-sm text-muted-foreground">
+              ${item.value.toLocaleString()}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <Separator />
+      
+      <div className="flex flex-col gap-2 ">
+        <div className="flex items-center  gap-2">
+          <span className="text-sm font-medium">Total Planned</span>
+          <span className="text-sm font-medium">
+            ${totalPlanned.toLocaleString()}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Remaining</span>
+          <span className={`text-sm ${remaining < 0 ? 'text-destructive' : 'text-muted-foreground'}`}>
+            ${remaining.toLocaleString()}
+          </span>
+        </div>
+        <div className="flex items-center  gap-2">
+          <span className="text-sm font-medium">Total Income</span>
+          <span className="text-sm font-medium">
+            ${totalIncome.toLocaleString()}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function CategoryPieChart({
   totalIncome,
@@ -52,72 +112,75 @@ export function CategoryPieChart({
         <CardTitle>Budget Breakdown</CardTitle>
         <CardDescription>Showing total planned for this month</CardDescription>
       </CardHeader>
-      <CardContent className='flex-1 pb-0'>
-        <ChartContainer
-          config={chartConfig}
-          className='mx-auto aspect-square max-h-[250px]'
-        >
-          <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Pie
-              data={chartData}
-              dataKey='value'
-              nameKey='name'
-              innerRadius={60}
-              strokeWidth={5}
-              activeIndex={activeIndex ?? undefined}
-              onMouseEnter={(_, idx) => setActiveIndex(idx)}
-              onMouseLeave={() => setActiveIndex(null)}
-            >
-              {chartData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={entry.color}
-                />
-              ))}
-              <Label
-                content={({ viewBox }) => {
-                  if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
-                    const value =
-                      activeIndex !== null && chartData[activeIndex]
-                        ? chartData[activeIndex].value
-                        : totalIncome;
-                    return (
-                      <text
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        textAnchor='middle'
-                        dominantBaseline='middle'
-                      >
-                        <tspan
+      <CardContent className="grid grid-cols-1 lg:grid-cols-2 p-4 gap-6 justify-center items-center">
+          <ChartContainer
+            config={chartConfig}
+            className='max-h-[250px] flex-1 w-full'
+          >
+            <PieChart>
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
+              <Pie
+                data={chartData}
+                dataKey='value'
+                nameKey='name'
+                innerRadius={60}
+                strokeWidth={5}
+                activeIndex={activeIndex ?? undefined}
+                onMouseEnter={(_, idx) => setActiveIndex(idx)}
+                onMouseLeave={() => setActiveIndex(null)}
+              >
+                {chartData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={entry.color}
+                  />
+                ))}
+                <Label
+                  content={({ viewBox }) => {
+                    if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+                      const value =
+                        activeIndex !== null && chartData[activeIndex]
+                          ? chartData[activeIndex].value
+                          : totalIncome;
+                      return (
+                        <text
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className='fill-foreground text-3xl font-bold'
+                          textAnchor='middle'
+                          dominantBaseline='middle'
                         >
-                          ${value.toLocaleString()}
-                        </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className='fill-muted-foreground'
-                        >
-                          {activeIndex !== null &&
-                          chartData[activeIndex] &&
-                          chartData[activeIndex].name
-                            ? chartData[activeIndex].name
-                            : 'Total Planned'}
-                        </tspan>
-                      </text>
-                    );
-                  }
-                }}
-              />
-            </Pie>
-          </PieChart>
-        </ChartContainer>
+                          <tspan
+                            x={viewBox.cx}
+                            y={viewBox.cy}
+                            className='fill-foreground text-3xl font-bold'
+                          >
+                            ${value.toLocaleString()}
+                          </tspan>
+                          <tspan
+                            x={viewBox.cx}
+                            y={(viewBox.cy || 0) + 24}
+                            className='fill-muted-foreground'
+                          >
+                            {activeIndex !== null &&
+                            chartData[activeIndex] &&
+                            chartData[activeIndex].name
+                              ? chartData[activeIndex].name
+                              : 'Total Planned'}
+                          </tspan>
+                        </text>
+                      );
+                    }
+                  }}
+                />
+              </Pie>
+            </PieChart>
+          </ChartContainer>
+          
+{/*        
+          <ChartLegend chartData={chartData} totalIncome={totalIncome} /> */}
       </CardContent>
     </Card>
   );
