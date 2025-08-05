@@ -61,7 +61,7 @@ function ChartLegend({
 
       <Separator />
       
-      <div className="flex flex-col gap-2 ">
+      <div className="flex flex-col items-center gap-2 ">
         <div className="flex items-center  gap-2">
           <span className="text-sm font-medium">Total Planned</span>
           <span className="text-sm font-medium">
@@ -178,9 +178,7 @@ export function CategoryPieChart({
               </Pie>
             </PieChart>
           </ChartContainer>
-          
-{/*        
-          <ChartLegend chartData={chartData} totalIncome={totalIncome} /> */}
+          <ChartLegend chartData={chartData} totalIncome={totalIncome} />
       </CardContent>
     </Card>
   );
