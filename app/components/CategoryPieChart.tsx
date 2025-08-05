@@ -38,7 +38,7 @@ function ChartLegend({
   const remaining = totalIncome - totalPlanned;
 
   return (
-    <div className="flex px-2  items-center justify-center flex-col gap-3 ">
+    <div className="flex px-2 items-center justify-center flex-col gap-3 ">
       <div className="flex flex-col gap-3 w-full">
         <h4 className="text-sm font-medium text-muted-foreground">Categories</h4>
         {chartData.map((item, index) => {
@@ -120,11 +120,11 @@ export function CategoryPieChart({
         <CardTitle>Budget Breakdown</CardTitle>
         <CardDescription>Showing total planned for this month</CardDescription>
       </CardHeader>
-      <CardContent className="grid grid-cols-1 lg:grid-cols-2 p-4 gap-6 justify-center items-center">
-          <ChartContainer
-            config={chartConfig}
-            className='max-h-[250px] flex-1 w-full'
-          >
+            <CardContent className="grid grid-cols-1 md:grid-cols-2 p-4 gap-6 items-center justify-center">
+        <ChartContainer
+          config={chartConfig}
+          className='aspect-square mx-auto max-h-[250px] w-full max-w-[300px]'
+        >
             <PieChart>
               <ChartTooltip
                 cursor={false}
