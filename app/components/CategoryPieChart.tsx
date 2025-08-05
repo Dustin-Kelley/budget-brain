@@ -41,22 +41,30 @@ function ChartLegend({
     <div className="flex px-2  items-center justify-center flex-col gap-3 ">
       <div className="flex flex-col gap-3 w-full">
         <h4 className="text-sm font-medium text-muted-foreground">Categories</h4>
-        {chartData.map((item, index) => (
-          <div key={index} className="flex items-center justify-between  ">
-            <div className="flex items-center gap-2">
-              <div 
-                className="w-3 h-3 rounded-full " 
-                style={{ backgroundColor: item.color }}
-              />
-              <span className="text-sm font-medium truncate">
-                {item.name || 'Unnamed'}
+        {chartData.map((item, index) => {
+          const percentage = totalIncome > 0 ? (item.value / totalIncome) * 100 : 0;
+          return (
+            <div key={index} className="flex items-center justify-between  ">
+              <div className="flex items-center gap-2">
+                <div 
+                  className="w-3 h-3 rounded-full " 
+                  style={{ backgroundColor: item.color }}
+                />
+                <div className="flex gap-2 items-center">
+                  <span className="text-sm font-medium truncate">
+                    {item.name || 'Unnamed'}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {percentage.toFixed(1)}% 
+                  </span>
+                </div>
+              </div>
+              <span className="text-sm text-muted-foreground">
+                ${item.value.toLocaleString()}
               </span>
             </div>
-            <span className="text-sm text-muted-foreground">
-              ${item.value.toLocaleString()}
-            </span>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <Separator />
