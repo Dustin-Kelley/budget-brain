@@ -37,7 +37,7 @@ export function MonthSelector({ selectedMonth }: { selectedMonth: string | undef
         </SelectTrigger>
         <SelectContent className="max-h-[300px]">
           {months.map((month) => (
-            <SelectItem key={`${month}-${currentYear}`} value={`${month}-${currentYear}`}>
+            <SelectItem  key={`${month}-${currentYear}`} value={`${month}-${currentYear}`}>
               {month} {currentYear}
             </SelectItem>
           ))}

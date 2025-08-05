@@ -5,6 +5,7 @@ import { BudgetHeader } from './components/BudgetHeader';
 import { getCurrentUser } from './queries/getCurrentUser';
 import { redirect } from 'next/navigation';
 import { Charts } from './components/Charts';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default async function Page({
   searchParams,
@@ -25,15 +26,18 @@ export default async function Page({
         <BudgetHeader month={month} />
         <p className='text-muted-foreground'>Budget Overview</p>
       </div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <MonthlyBudgetProgress date={month} />
-      </Suspense>
 
-      <Suspense fallback={<div>Loading...</div>}>
+    
+      <Suspense fallback={<Skeleton className='h-[140px]' />}>
         <BudgetSummary date={month} />
       </Suspense>
 
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Skeleton className='h-[140px]' />}>
+        <MonthlyBudgetProgress date={month} />
+      </Suspense>
+
+
+      <Suspense fallback={<Skeleton className='h-[140px]' />}>
         <Charts date={month} />
       </Suspense>
     </main>
