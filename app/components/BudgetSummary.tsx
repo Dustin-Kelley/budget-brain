@@ -3,22 +3,24 @@ import { Card } from '@/components/ui/card';
 import { CreditCard, DollarSign, Wallet } from 'lucide-react';
 import React from 'react';
 import { getBudgetSummary } from '../queries/getBudgetSummary';
+import { getTotalPlannedAmount } from '../queries/getTotalPlannedAmount';
 
 export const BudgetSummary = async ({date}: {date: string | undefined}) => {
-  const { income, transactions } = await getBudgetSummary({date});
+  const { transactions } = await getBudgetSummary({date});
+  const { totalPlanned } = await getTotalPlannedAmount({date});
 
-  if (!income || !transactions) {
+  if (!transactions) {
     return null;
   }
 
-  const planned = income.reduce((acc, income) => acc + (income.amount || 0), 0) || 0;
+  const planned = totalPlanned;
   const spent = transactions.reduce(
     (acc, transaction) => acc + (transaction.amount || 0),
     0
   ) || 0;
   const remaining = planned - spent;
 
-  const percentSpent = Math.round((spent / planned) * 100) || 0;
+  const percentSpent = planned > 0 ? Math.round((spent / planned) * 100) : 0;
 
   return (
     <div className='grid gap-4 md:grid-cols-3'>

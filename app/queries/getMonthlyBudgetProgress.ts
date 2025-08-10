@@ -1,31 +1,38 @@
-import { getBudgetSummary } from "./getBudgetSummary";
-import { getCurrentUser } from "./getCurrentUser";
+import { getBudgetSummary } from './getBudgetSummary';
+import { getTotalPlannedAmount } from './getTotalPlannedAmount';
 import { cache } from 'react';
 
-export const getMonthlyBudgetProgress = cache(async ({date}: {date: string | undefined}) => {
-  const { currentUser } = await getCurrentUser();
-  const { income, transactions, incomeError, transactionsError } = await getBudgetSummary({date});
+export const getMonthlyBudgetProgress = cache(
+  async ({ date }: { date: string | undefined }) => {
+    const { transactions, transactionsError } = await getBudgetSummary({
+      date,
+    });
+    const { totalPlanned, totalPlannedError } = await getTotalPlannedAmount({
+      date,
+    });
 
-  if (!currentUser || !income || !transactions) {
+    if (!transactions || !totalPlanned || transactionsError || totalPlannedError) {
+      return {
+        totalPlanned: 0,
+        spent: 0,
+        percentSpent: 0,
+        error: transactionsError || totalPlannedError,
+      };
+    }
+
+    const spent = transactions.reduce(
+      (acc, transaction) => acc + (transaction.amount ?? 0),
+      0
+    );
+
+    const percentSpent =
+      totalPlanned > 0 ? Math.round((spent / totalPlanned) * 100) : 0;
+
     return {
-      planned: 0,
-      spent: 0,
-      percentSpent: 0,
-      error: incomeError || transactionsError,
+      totalPlanned,
+      spent,
+      percentSpent,
+      error: totalPlannedError,
     };
   }
-
-  const planned = income.reduce((acc, income) => acc + (income.amount || 0), 0) || 0;
-  const spent = transactions.reduce((acc, transaction) => acc + (transaction.amount || 0), 0) || 0;
-
-  const percentSpent = Math.round((spent / planned) * 100) || 0;
-
-  return {
-    planned,
-    spent,
-    percentSpent,
-    incomeError,
-    transactionsError,
-  };
-});
-
+);

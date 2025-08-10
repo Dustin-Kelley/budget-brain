@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server';
 import { getCurrentUser } from './getCurrentUser';
 import { cache } from 'react';
 import { getMonthAndYearNumberFromDate } from '@/lib/utils';
+import { redirect } from 'next/navigation';
 
 export const getBudgetSummary = cache(
   async ({ date }: { date: string | undefined }) => {
@@ -9,7 +10,7 @@ export const getBudgetSummary = cache(
     const supabase = await createClient();
 
     if (!currentUser) {
-      throw new Error('User not found');
+      redirect('/login');
     }
 
     const { monthNumber, yearNumber } = getMonthAndYearNumberFromDate(date);

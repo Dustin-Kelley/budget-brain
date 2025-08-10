@@ -1,28 +1,18 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { DollarSign } from 'lucide-react';
 import { getTotalIncomePerMonth } from '@/app/queries/getTotalIncome';
-import { getCategories } from '@/app/queries/getCategories';
+import { getTotalPlannedAmount } from '@/app/queries/getTotalPlannedAmount';
 import { AddIncomeForm } from './AddIncomeForm';
 import { EditIncome } from './EditIncome';
 
 export async function IncomeCard({ month }: { month: string | undefined }) {
+  const { income, totalIncome } = await getTotalIncomePerMonth({ date: month });
+  const { totalPlanned } = await getTotalPlannedAmount({ date: month });
+  
   const parsedMonth =
     month?.split('-')[0] ||
     new Date().toLocaleString('default', { month: 'long' });
 
-  const { income, totalIncome } = await getTotalIncomePerMonth({ date: month });
-  const { categories } = await getCategories({ date: month });
-
-  const totalPlanned =
-    categories?.reduce(
-      (total, category) =>
-        total +
-        (category.line_items?.reduce(
-          (total, lineItem) => total + (lineItem.planned_amount || 0),
-          0
-        ) || 0),
-      0
-    ) || 0;
 
   const remaining = totalIncome - totalPlanned;
 

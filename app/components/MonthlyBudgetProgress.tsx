@@ -13,7 +13,7 @@ export const MonthlyBudgetProgress = async ({
 }: {
   date: string | undefined;
 }) => {
-  const { planned, spent, percentSpent } = await getMonthlyBudgetProgress({
+  const { totalPlanned, spent, percentSpent } = await getMonthlyBudgetProgress({
     date,
   });
 
@@ -35,7 +35,7 @@ export const MonthlyBudgetProgress = async ({
           />
           <div className='flex items-center justify-between text-sm text-muted-foreground'>
             <div>$0</div>
-            <div>${planned}</div>
+            <div>${totalPlanned}</div>
           </div>
         </div>
       </CardContent>
