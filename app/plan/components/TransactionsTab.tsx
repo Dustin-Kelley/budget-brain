@@ -1,4 +1,4 @@
-import { getTransactionsList } from '@/app/plan/queries/getTransactions';
+import { getTransactionsList } from '@/app/plan/queries/getTransactionsList';
 import {
   Card,
   CardContent,
