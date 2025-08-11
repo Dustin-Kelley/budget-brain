@@ -13,7 +13,6 @@ export const getTotalPlannedAmount = cache(
       };
     }
 
-    // Calculate total planned amount from all line items across all categories
     const totalPlanned = categories.reduce(
       (total, category) =>
         total +
