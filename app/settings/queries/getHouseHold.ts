@@ -10,6 +10,6 @@ export const getHouseHoldById = cache(
       .eq('id', householdId)
       .maybeSingle();
 
-    return { data, error };
+    return { household: data, householdError: error };
   }
 );

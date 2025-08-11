@@ -19,10 +19,10 @@ export async function HouseHold() {
   if (!currentUser) {
     redirect('/login');
   }
-  const { data, error } = await getHouseHoldById({
+  const { household, householdError } = await getHouseHoldById({
     householdId: currentUser.household_id,
   });
-  if (error || !data) {
+  if (householdError || !household) {
     return (
       <Card>
         <CardHeader>
@@ -49,7 +49,7 @@ export async function HouseHold() {
       </CardHeader>
       <CardContent>
         <div className='flex flex-col gap-4'>
-          {data.users.map((user, index) => {
+          {household.users.map((user, index) => {
             const isOwner = user.id === currentUser.id;
             return (
               <div key={user.id}>
@@ -70,7 +70,7 @@ export async function HouseHold() {
                           </Badge>
                         )}
                       </div>
-                      <div className='flex items-center text-sm text-muted-foreground'>
+                      <div className='flex items-center gap-1 text-sm text-muted-foreground'>
                         <Mail className='h-3 w-3' />
                         <span>{user.email}</span>
                       </div>
@@ -88,7 +88,7 @@ export async function HouseHold() {
                     )}
                   </div>
                 </div>
-                {index < data.users.length - 1 && <Separator />}
+                {index < household.users.length - 1 && <Separator />}
               </div>
             );
           })}
