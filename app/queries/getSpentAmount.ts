@@ -14,11 +14,11 @@ export const getSpentAmount = cache(async ({ date }: { date: string | undefined 
     .eq('year', yearNumber)
 
   if (error) {
-    return { spentAmount: 0, error };
+    return { spentAmount: 0, spentAmountError: error };
   }
 
   if (!data) {
-    return { spentAmount: 0, error: null };
+    return { spentAmount: 0, spentAmountError: null };
   }
 
   const spentAmount = data.reduce(
@@ -26,6 +26,6 @@ export const getSpentAmount = cache(async ({ date }: { date: string | undefined 
     0
   );
 
-  return { spentAmount, error: null };
+  return { spentAmount, spentAmountError: null };
 });
 

@@ -1,26 +1,30 @@
-import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Card } from '@/components/ui/card';
 import { CreditCard, DollarSign, Wallet } from 'lucide-react';
 import React from 'react';
-import { getBudgetSummary } from '../queries/getBudgetSummary';
 import { getTotalPlannedAmount } from '../queries/getTotalPlannedAmount';
+import { getSpentAmount } from '../queries/getSpentAmount';
 
 export const BudgetSummary = async ({date}: {date: string | undefined}) => {
-  const { transactions } = await getBudgetSummary({date});
-  const { totalPlanned } = await getTotalPlannedAmount({date});
+  const { totalPlanned, totalPlannedError } = await getTotalPlannedAmount({date});
+  const { spentAmount, spentAmountError } = await getSpentAmount({date});
 
-  if (!transactions) {
-    return null;
+  if (totalPlannedError || spentAmountError) {
+    return (
+      <div className='grid gap-4 md:grid-cols-3'>
+        <Card>
+          <CardHeader>
+            <CardTitle>Budget Summary</CardTitle>
+            <CardDescription>Error loading budget summary</CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
   }
 
-  const planned = totalPlanned;
-  const spent = transactions.reduce(
-    (acc, transaction) => acc + (transaction.amount || 0),
-    0
-  ) || 0;
-  const remaining = planned - spent;
+  const remaining = totalPlanned - spentAmount;
 
-  const percentSpent = planned > 0 ? Math.round((spent / planned) * 100) : 0;
+  const percentSpent = totalPlanned > 0 ? Math.round((spentAmount / totalPlanned) * 100) : 0;
 
   return (
     <div className='grid gap-4 md:grid-cols-3'>
@@ -30,7 +34,7 @@ export const BudgetSummary = async ({date}: {date: string | undefined}) => {
           <DollarSign className='h-4 w-4 text-muted-foreground' />
         </CardHeader>
         <CardContent>
-          <div className='text-2xl font-bold'>${planned.toLocaleString()}</div>
+          <div className='text-2xl font-bold'>${totalPlanned}</div>
           <p className='text-xs text-muted-foreground'>
             Total budget for this month
           </p>
@@ -42,7 +46,7 @@ export const BudgetSummary = async ({date}: {date: string | undefined}) => {
           <CreditCard className='h-4 w-4 text-muted-foreground' />
         </CardHeader>
         <CardContent>
-          <div className='text-2xl font-bold'>${spent.toLocaleString()}</div>
+          <div className='text-2xl font-bold'>${spentAmount}</div>
           <p className='text-xs text-muted-foreground'>
             {percentSpent}% of your budget used
           </p>
@@ -55,7 +59,7 @@ export const BudgetSummary = async ({date}: {date: string | undefined}) => {
         </CardHeader>
         <CardContent>
           <div className='text-2xl font-bold'>
-            ${remaining.toLocaleString()}
+            ${remaining}
           </div>
           <p className='text-xs text-muted-foreground'>
             {100 - percentSpent}% of your budget left

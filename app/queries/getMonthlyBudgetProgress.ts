@@ -7,14 +7,14 @@ export const getMonthlyBudgetProgress = cache(
     const { totalPlanned, totalPlannedError } = await getTotalPlannedAmount({
       date,
     });
-    const { spentAmount, error: spentError } = await getSpentAmount({ date });
+    const { spentAmount, spentAmountError } = await getSpentAmount({ date });
 
-    if (totalPlannedError || spentError) {
+    if (totalPlannedError || spentAmountError) {
       return {
         totalPlanned: 0,
         spentAmount: 0,
         percentSpent: 0,
-        error: totalPlannedError || spentError,
+        error: totalPlannedError || spentAmountError,
       };
     }
 
