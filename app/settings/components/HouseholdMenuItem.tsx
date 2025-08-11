@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -9,39 +11,49 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { UserMinus, UserPlus, User, Mail, Crown } from 'lucide-react';
-import React from 'react';
-import { getHouseHoldById } from '../queries/getHouseHold';
-import { getCurrentUser } from '@/app/queries/getCurrentUser';
-import { redirect } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { usePathname } from 'next/navigation';
 
-export async function HouseHold() {
-  const { currentUser } = await getCurrentUser();
-  if (!currentUser) {
-    redirect('/login');
-  }
-  const { household, householdError } = await getHouseHoldById({
-    householdId: currentUser.household_id,
-  });
-  if (householdError || !household) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Household Members</CardTitle>
-          <CardDescription>Error loading household members</CardDescription>
-        </CardHeader>
-      </Card>
-    );
-  }
+interface User {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+}
+
+interface HouseholdMenuItemProps {
+  household: {
+    users: User[];
+  };
+  currentUserId: string;
+}
+
+export function HouseholdMenuItem({ household, currentUserId }: HouseholdMenuItemProps) {
+  const pathname = usePathname();
+  const isActive = pathname === '/settings';
 
   return (
-    <Card>
+    <Card className={cn(
+      'transition-colors duration-200',
+      isActive && 'ring-2 ring-primary/20 bg-primary/5'
+    )}>
       <CardHeader>
         <div className='flex items-center justify-between'>
           <div>
-            <CardTitle>Household Members</CardTitle>
+            <CardTitle className={cn(
+              'transition-colors duration-200',
+              isActive && 'text-primary'
+            )}>
+              Household Members
+            </CardTitle>
             <CardDescription>Manage members of your household</CardDescription>
           </div>
-          <Button>
+          <Button 
+            className={cn(
+              'transition-colors duration-200',
+              isActive && 'bg-primary text-primary-foreground hover:bg-primary/90'
+            )}
+          >
             <UserPlus className='mr-2 h-4 w-4' />
             Add Member
           </Button>
@@ -50,10 +62,10 @@ export async function HouseHold() {
       <CardContent>
         <div className='flex flex-col gap-4'>
           {household.users.map((user, index) => {
-            const isOwner = user.id === currentUser.id;
+            const isOwner = user.id === currentUserId;
             return (
               <div key={user.id}>
-                <div className='flex items-center  justify-between p-4 rounded-lg border bg-card'>
+                <div className='flex items-center justify-between p-4 rounded-lg border bg-card'>
                   <div className='flex items-center gap-3'>
                     <div className='flex items-center justify-center w-10 h-10 rounded-full bg-primary/10'>
                       <User className='h-5 w-5 text-primary' />
@@ -65,7 +77,7 @@ export async function HouseHold() {
                         </h3>
                         {isOwner && (
                           <Badge className='text-xs'>
-                            <Crown className=' h-3 w-3' />
+                            <Crown className='h-3 w-3' />
                             You
                           </Badge>
                         )}
@@ -77,7 +89,7 @@ export async function HouseHold() {
                     </div>
                   </div>
                   <div className='flex items-center gap-2'>
-                    {user.id !== currentUser.id && (
+                    {user.id !== currentUserId && (
                       <Button
                         variant='outline'
                         size='sm'

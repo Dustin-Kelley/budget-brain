@@ -11,9 +11,8 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
-import { Logo } from '@/components/ui/logo';  
+import { Logo } from '@/components/ui/logo';
 import { AppSidebarMenuItem } from './AppSidebarMenuItem';
-
 
 const items = [
   {
@@ -34,25 +33,28 @@ const items = [
 ];
 
 export function AppSidebar() {
-
-
   return (
     <Sidebar
       variant='inset'
       collapsible='icon'
     >
       <SidebarContent>
-        <SidebarGroup className='h-full  flex flex-col gap-4'>
+        <SidebarGroup className='h-full flex flex-col gap-4'>
           <div className='flex justify-center items-center'>
             <Logo />
-          <SidebarGroupLabel className='text-2xl text-secondary font-bold flex justify-center items-center'>
-            Budget Brain
-          </SidebarGroupLabel>
+            <SidebarGroupLabel className='text-2xl text-secondary font-bold flex justify-center items-center'>
+              Budget Brain
+            </SidebarGroupLabel>
           </div>
           <SidebarGroupContent>
             <SidebarMenu className='flex flex-col gap-4'>
               {items.map((item) => (
-                <AppSidebarMenuItem key={item.title} url={item.url} Icon={item.icon} title={item.title} />
+                <AppSidebarMenuItem
+                  key={item.title}
+                  url={item.url}
+                  Icon={item.icon}
+                  title={item.title}
+                />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
