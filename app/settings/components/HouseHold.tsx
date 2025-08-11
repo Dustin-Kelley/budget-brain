@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { UserMinus, UserPlus, User, Mail, Crown } from 'lucide-react';
 import React from 'react';
-import { getHouseHoldById } from '../queries/getHouseHold';
+import { getHouseHoldById } from '../queries/getHouseHoldById';
 import { getCurrentUser } from '@/app/queries/getCurrentUser';
 import { redirect } from 'next/navigation';
 
@@ -46,7 +46,7 @@ export async function HouseHold() {
             Add Member
           </Button>
         </div>
-      </CardHeader>
+      </CardHeader> 
       <CardContent>
         <div className='flex flex-col gap-4'>
           {household.users.map((user, index) => {
