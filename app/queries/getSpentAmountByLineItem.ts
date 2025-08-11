@@ -2,7 +2,7 @@ import { getMonthAndYearNumberFromDate } from "@/lib/utils";
 import { createClient } from "@/utils/supabase/server";
 import { cache } from "react";
 
-export const getSpentAmount = cache(async ({ date }: { date: string | undefined }) => {
+export const getSpentAmountByLineItem = cache(async ({ date }: { date: string | undefined }) => {
   const supabase = await createClient();
 
   const { monthNumber, yearNumber } = getMonthAndYearNumberFromDate(date);
@@ -14,18 +14,9 @@ export const getSpentAmount = cache(async ({ date }: { date: string | undefined 
     .eq('year', yearNumber)
 
   if (error) {
-    return { spentAmount: 0, error };
+    console.error(error);
+    return { transactions: [], error };
   }
 
-  if (!data) {
-    return { spentAmount: 0, error: null };
-  }
-
-  const spentAmount = data.reduce(
-    (acc, transaction) => acc + (transaction.amount ?? 0),
-    0
-  );
-
-  return { spentAmount, error: null };
+  return { transactions: data || [], error: null };
 });
-

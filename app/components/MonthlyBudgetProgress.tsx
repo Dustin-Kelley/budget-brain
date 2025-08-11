@@ -13,7 +13,7 @@ export const MonthlyBudgetProgress = async ({
 }: {
   date: string | undefined;
 }) => {
-  const { totalPlanned, spent, percentSpent, error } = await getMonthlyBudgetProgress({ date });
+  const { totalPlanned, spentAmount, percentSpent, error } = await getMonthlyBudgetProgress({ date });
 
   if (error) {
     return (
@@ -38,7 +38,7 @@ export const MonthlyBudgetProgress = async ({
       <CardContent>
         <div className='space-y-2'>
           <div className='flex items-center justify-between text-sm'>
-            <div>Spent: ${spent.toLocaleString()}</div>
+            <div>Spent: ${spentAmount}</div>
             <div>{percentSpent}%</div>
           </div>
           <Progress
@@ -47,7 +47,7 @@ export const MonthlyBudgetProgress = async ({
           />
           <div className='flex items-center justify-between text-sm text-muted-foreground'>
             <div>$0</div>
-            <div>${totalPlanned.toLocaleString()}</div>
+            <div>${totalPlanned}</div>
           </div>
         </div>
       </CardContent>
