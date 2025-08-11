@@ -23,7 +23,6 @@ export const BudgetSummary = async ({date}: {date: string | undefined}) => {
   }
 
   const remaining = totalPlanned - spentAmount;
-
   const percentSpent = totalPlanned > 0 ? Math.round((spentAmount / totalPlanned) * 100) : 0;
 
   return (

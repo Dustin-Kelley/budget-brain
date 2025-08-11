@@ -7,51 +7,19 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { format } from 'date-fns';
-import type { Transaction } from '@/types/types';
 import { Separator } from '@/components/ui/separator';
-import {  EditTransactionForm } from './EditTransactionForm';
+import { EditTransactionForm } from './EditTransactionForm';
 import { getCategories } from '@/app/queries/getCategories';
-
-interface TransactionWithLineItem extends Transaction {
-  line_items?: {
-    name?: string | null;
-    categories?: {
-      name?: string | null;
-    } | null;
-  } | null;
-}
-
-function groupTransactionsByDate(transactions: TransactionWithLineItem[]) {
-  return transactions.reduce(
-    (groups: Record<string, TransactionWithLineItem[]>, transaction) => {
-      const dateKey = transaction.date
-        ? format(new Date(transaction.date), 'yyyy-MM-dd')
-        : 'Unknown Date';
-      if (!groups[dateKey]) {
-        groups[dateKey] = [];
-      }
-      groups[dateKey].push(transaction);
-      return groups;
-    },
-    {}
-  );
-}
 
 export async function TransactionsTab({
   month,
 }: {
   month: string | undefined;
 }) {
-  const { transactions } = await getTransactionsList({ date: month });
+  const { groupedTransactions, sortedDates } = await getTransactionsList({
+    date: month,
+  });
   const { categories } = await getCategories({ date: month });
-
-  if (!transactions) return null;
-
-  // Group transactions by date
-  const groupedTransactions = groupTransactionsByDate(transactions);
-  const sortedDates = Object.keys(groupedTransactions).sort(
-    (a, b) => new Date(b).getTime() - new Date(a).getTime()
-  );
 
   return (
     <Card>

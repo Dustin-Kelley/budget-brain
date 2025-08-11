@@ -1,16 +1,22 @@
 import { getMonthAndYearNumberFromDate } from '@/lib/utils';
 import { createClient } from '@/utils/supabase/server';
 import { cache } from 'react';
-import type { Transaction } from '@/types/types';
+import type { TransactionWithLineItem } from '@/types/types';
 
-// Type for transaction with nested line_items and categories
-interface TransactionWithLineItem extends Transaction {
-  line_items?: {
-    name?: string | null;
-    categories?: {
-      name?: string | null;
-    } | null;
-  } | null;
+function groupTransactionsByDate(transactions: TransactionWithLineItem[]) {
+  return transactions.reduce(
+    (groups: Record<string, TransactionWithLineItem[]>, transaction) => {
+      const dateKey = transaction.date
+        ? new Date(transaction.date).toISOString().split('T')[0]
+        : 'Unknown Date';
+      if (!groups[dateKey]) {
+        groups[dateKey] = [];
+      }
+      groups[dateKey].push(transaction);
+      return groups;
+    },
+    {}
+  );
 }
 
 export const getTransactionsList = cache(
@@ -19,7 +25,8 @@ export const getTransactionsList = cache(
   }: {
     date: string | undefined;
   }): Promise<{
-    transactions: TransactionWithLineItem[] | null;
+    groupedTransactions: Record<string, TransactionWithLineItem[]>;
+    sortedDates: string[];
     error: unknown;
   }> => {
     const supabase = await createClient();
@@ -35,8 +42,18 @@ export const getTransactionsList = cache(
 
     if (error) {
       console.error(error);
+      return { groupedTransactions: {}, sortedDates: [], error };
     }
 
-    return { transactions: data, error };
+    if (!data) {
+      return { groupedTransactions: {}, sortedDates: [], error: null };
+    }
+
+    const groupedTransactions = groupTransactionsByDate(data);
+    const sortedDates = Object.keys(groupedTransactions).sort(
+      (a, b) => new Date(b).getTime() - new Date(a).getTime()
+    );
+
+    return { groupedTransactions, sortedDates, error: null };
   }
 );
