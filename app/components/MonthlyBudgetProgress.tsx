@@ -13,9 +13,21 @@ export const MonthlyBudgetProgress = async ({
 }: {
   date: string | undefined;
 }) => {
-  const { totalPlanned, spent, percentSpent } = await getMonthlyBudgetProgress({
-    date,
-  });
+  const { totalPlanned, spent, percentSpent, error } = await getMonthlyBudgetProgress({ date });
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Overall Budget Progress</CardTitle>
+          <CardDescription>Error loading budget progress</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-destructive">Failed to load budget data</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -35,7 +47,7 @@ export const MonthlyBudgetProgress = async ({
           />
           <div className='flex items-center justify-between text-sm text-muted-foreground'>
             <div>$0</div>
-            <div>${totalPlanned}</div>
+            <div>${totalPlanned.toLocaleString()}</div>
           </div>
         </div>
       </CardContent>

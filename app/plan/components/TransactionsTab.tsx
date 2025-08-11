@@ -1,4 +1,4 @@
-import { getTransactions } from '@/app/queries/getTransactions';
+import { getTransactionsList } from '@/app/plan/queries/getTransactions';
 import {
   Card,
   CardContent,
@@ -42,7 +42,7 @@ export async function TransactionsTab({
 }: {
   month: string | undefined;
 }) {
-  const { transactions } = await getTransactions({ date: month });
+  const { transactions } = await getTransactionsList({ date: month });
   const { categories } = await getCategories({ date: month });
 
   if (!transactions) return null;

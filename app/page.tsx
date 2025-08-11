@@ -27,7 +27,6 @@ export default async function Page({
         <p className='text-muted-foreground'>Budget Overview</p>
       </div>
 
-    
       <Suspense fallback={<Skeleton className='h-[140px]' />}>
         <BudgetSummary date={month} />
       </Suspense>
@@ -35,7 +34,6 @@ export default async function Page({
       <Suspense fallback={<Skeleton className='h-[140px]' />}>
         <MonthlyBudgetProgress date={month} />
       </Suspense>
-
 
       <Suspense fallback={<Skeleton className='h-[140px]' />}>
         <Charts date={month} />
