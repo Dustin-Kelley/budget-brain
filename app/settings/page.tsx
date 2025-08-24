@@ -13,6 +13,7 @@ import { DarkModeToggle } from '../../components/app/DarkModeToggle';
 import LogoutButton from '@/components/app/LogoutButton';
 import { ResetBudgetButton } from '../components/ResetBudgetButton';
 import { HouseHold } from './components/HouseHold';
+import { Profile } from './components/Profile';
 
 export default async function SettingsPage({
   searchParams,
@@ -35,45 +36,7 @@ export default async function SettingsPage({
         <Separator />
         <ResetBudgetButton month={month} />
         <HouseHold />
-        <Card>
-          <CardHeader>
-            <CardTitle>Profile Information</CardTitle>
-            <CardDescription>
-              Update your personal information and account details
-            </CardDescription>
-          </CardHeader>
-          <CardContent className='space-y-4'>
-            <div className='grid gap-4'>
-              <div className='grid gap-2'>
-                <Label htmlFor='name'>Name</Label>
-                <Input
-                  id='name'
-                  placeholder='John Doe'
-                  defaultValue='John Smith'
-                />
-              </div>
-              <div className='grid gap-2'>
-                <Label htmlFor='email'>Email</Label>
-                <Input
-                  id='email'
-                  type='email'
-                  placeholder='john@example.com'
-                  defaultValue='john.smith@example.com'
-                />
-              </div>
-              <div className='grid gap-2'>
-                <Label htmlFor='household'>Household</Label>
-                <Input
-                  id='household'
-                  placeholder='Household Name'
-                  defaultValue='Smith Family'
-                  disabled
-                />
-              </div>
-            </div>
-            <Button className='mt-4'>Save Changes</Button>
-          </CardContent>
-        </Card>
+        <Profile />
 
         <Card>
           <CardHeader>
@@ -105,7 +68,6 @@ export default async function SettingsPage({
           </CardContent>
         </Card>
 
-       
         <LogoutButton />
       </div>
     </div>

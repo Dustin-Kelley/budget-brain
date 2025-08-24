@@ -242,7 +242,7 @@ export default function LandingPage() {
       </header>
       <main className='flex-1'>
         {/* Hero Section */}
-        <section className='w-full py-20 md:py-32 lg:py-40 overflow-hidden'>
+        <section className='w-full mx-auto py-20 md:py-32 lg:py-40 overflow-hidden'>
           <div className='container px-4 md:px-6 relative'>
             <div className='absolute inset-0 -z-10 h-full w-full bg-white dark:bg-black bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#1f1f1f_1px,transparent_1px),linear-gradient(to_bottom,#1f1f1f_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]'></div>
 
@@ -851,7 +851,7 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
-          <div className='flex flex-col gap-4 sm:flex-row justify-between items-center border-t border-border/40 pt-8'>
+          <section className='flex flex-col gap-4 sm:flex-row justify-between items-center border-t border-border/40 pt-8'>
             <p className='text-xs text-muted-foreground'>
               &copy; {new Date().getFullYear()} Budget Brain. All rights
               reserved.
@@ -876,7 +876,7 @@ export default function LandingPage() {
                 Cookie Policy
               </Link>
             </div>
-          </div>
+          </section>
         </div>
       </footer>
     </div>

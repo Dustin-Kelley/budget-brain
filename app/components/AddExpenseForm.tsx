@@ -14,6 +14,14 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
+import {
   Form,
   FormControl,
   FormField,
@@ -34,6 +42,7 @@ import { addTransaction } from '../mutations/addTransaction';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { CategoryWithLineItems } from '@/types/types';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const formSchema = z.object({
   amount: z.coerce.number().positive('Amount must be positive'),
@@ -44,6 +53,133 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+// Form content component to avoid duplication
+function ExpenseFormContent({ 
+  form, 
+  onSubmit, 
+  categories 
+}: { 
+  form: ReturnType<typeof useForm<FormValues>>; 
+  onSubmit: (values: FormValues) => Promise<void>; 
+  categories: CategoryWithLineItems[] | null; 
+}) {
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className='space-y-4'
+      >
+        <FormField
+          control={form.control}
+          name='amount'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Amount</FormLabel>
+              <FormControl>
+                <div className='relative'>
+                  <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-500'>
+                    $
+                  </span>
+                  <Input
+                    {...field}
+                    type='text'
+                    placeholder='0.00'
+                    className='pl-7'
+                  />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='description'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='lineItemId'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Budget Item</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder='Select a budget item' />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {categories?.map((category) => (
+                    <div key={category.id}>
+                      <div className='px-3 py-1 text-xs font-semibold text-muted-foreground'>
+                        {category.name}
+                      </div>
+                      {category.line_items.map((item) => (
+                        <SelectItem
+                          key={item.id}
+                          value={item.id}
+                        >
+                          {item.name}
+                        </SelectItem>
+                      ))}
+                    </div>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='date'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Date</FormLabel>
+              <FormControl>
+                <Input
+                  type='date'
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button
+          type='submit'
+          className='w-full'
+        >
+          Save Expense
+        </Button>
+      </form>
+    </Form>
+  );
+}
+
+const triggerButton = (
+  <Button
+    className='fixed bottom-6 right-6 z-50 bg-primary text-white rounded-full shadow-lg w-14 h-14 flex items-center justify-center text-3xl hover:bg-primary/90 transition-colors'
+    aria-label='Add'
+  >
+    <PlusIcon className='size-6' />
+  </Button>
+);
+
+
 export const AddExpenseForm = ({
   categories,
 }: {
@@ -51,6 +187,7 @@ export const AddExpenseForm = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -77,18 +214,44 @@ export const AddExpenseForm = ({
     router.refresh();
   };
 
+
+  // Mobile: Use Drawer
+  if (isMobile) {
+    return (
+      <Drawer
+        open={isOpen}
+        onOpenChange={setIsOpen}
+      >
+        <DrawerTrigger asChild>
+          {triggerButton}
+        </DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Add New Expense</DrawerTitle>
+            <DrawerDescription>
+              Add a new expense to your budget. Click save when you&apos;re done.
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="px-4 pb-4">
+            <ExpenseFormContent 
+              form={form} 
+              onSubmit={onSubmit} 
+              categories={categories} 
+            />
+          </div>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
+  // Desktop: Use Dialog
   return (
     <Dialog
       open={isOpen}
       onOpenChange={setIsOpen}
     >
       <DialogTrigger asChild>
-        <Button
-          className='fixed bottom-6 right-6 z-50 bg-primary text-white rounded-full shadow-lg w-14 h-14 flex items-center justify-center text-3xl hover:bg-primary/90 transition-colors'
-          aria-label='Add'
-        >
-          <PlusIcon className='size-6' />
-        </Button>
+        {triggerButton}
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
@@ -97,109 +260,11 @@ export const AddExpenseForm = ({
             Add a new expense to your budget. Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className='space-y-4'
-          >
-            <FormField
-              control={form.control}
-              name='amount'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Amount</FormLabel>
-                  <FormControl>
-                    <div className='relative'>
-                      <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-500'>
-                        $
-                      </span>
-                      <Input
-                        {...field}
-                        type='text'
-                        placeholder='0.00'
-                        className='pl-7'
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='description'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='lineItemId'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Budget Item</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder='Select a budget item' />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {categories?.map((category) => (
-                        <div key={category.id}>
-                          <div className='px-3 py-1 text-xs font-semibold text-muted-foreground'>
-                            {category.name}
-                          </div>
-                          {category.line_items.map((item) => (
-                            <SelectItem
-                              key={item.id}
-                              value={item.id}
-                            >
-                              {item.name}
-                            </SelectItem>
-                          ))}
-                        </div>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name='date'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date</FormLabel>
-                  <FormControl>
-                    <Input
-                      type='date'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button
-              type='submit'
-              className='w-full'
-            >
-              Save Expense
-            </Button>
-          </form>
-        </Form>
+        <ExpenseFormContent 
+          form={form} 
+          onSubmit={onSubmit} 
+          categories={categories} 
+        />
       </DialogContent>
     </Dialog>
   );
