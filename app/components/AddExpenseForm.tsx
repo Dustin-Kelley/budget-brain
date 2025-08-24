@@ -53,15 +53,99 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+export const AddExpenseForm = ({
+  categories,
+}: {
+  categories: CategoryWithLineItems[] | null;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  const isMobile = useIsMobile();
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      amount: 0,
+      description: '',
+      lineItemId: '',
+      date: new Date().toISOString().split('T')[0],
+    },
+  });
+
+  const onSubmit = async (values: FormValues) => {
+    const { error } = await addTransaction({
+      amount: values.amount,
+      description: values.description,
+      lineItemId: values.lineItemId,
+      dateOfTransaction: values.date,
+      dateOfInput: undefined,
+    });
+    if (error) {
+      toast.error(error.message);
+    }
+    setIsOpen(false);
+    router.refresh();
+  };
+
+  if (isMobile) {
+    return (
+      <Drawer
+        open={isOpen}
+        onOpenChange={setIsOpen}
+      >
+        <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Add New Expense</DrawerTitle>
+            <DrawerDescription>
+              Add a new expense to your budget. Click save when you&apos;re
+              done.
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className='px-4 pb-4'>
+            <ExpenseFormContent
+              form={form}
+              onSubmit={onSubmit}
+              categories={categories}
+            />
+          </div>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
+  return (
+    <Dialog
+      open={isOpen}
+      onOpenChange={setIsOpen}
+    >
+      <DialogTrigger asChild>{triggerButton}</DialogTrigger>
+      <DialogContent className='sm:max-w-[425px]'>
+        <DialogHeader>
+          <DialogTitle>Add New Expense</DialogTitle>
+          <DialogDescription>
+            Add a new expense to your budget. Click save when you&apos;re done.
+          </DialogDescription>
+        </DialogHeader>
+        <ExpenseFormContent
+          form={form}
+          onSubmit={onSubmit}
+          categories={categories}
+        />
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 // Form content component to avoid duplication
-function ExpenseFormContent({ 
-  form, 
-  onSubmit, 
-  categories 
-}: { 
-  form: ReturnType<typeof useForm<FormValues>>; 
-  onSubmit: (values: FormValues) => Promise<void>; 
-  categories: CategoryWithLineItems[] | null; 
+function ExpenseFormContent({
+  form,
+  onSubmit,
+  categories,
+}: {
+  form: ReturnType<typeof useForm<FormValues>>;
+  onSubmit: (values: FormValues) => Promise<void>;
+  categories: CategoryWithLineItems[] | null;
 }) {
   return (
     <Form {...form}>
@@ -178,94 +262,3 @@ const triggerButton = (
     <PlusIcon className='size-6' />
   </Button>
 );
-
-
-export const AddExpenseForm = ({
-  categories,
-}: {
-  categories: CategoryWithLineItems[] | null;
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
-  const isMobile = useIsMobile();
-
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      amount: 0,
-      description: '',
-      lineItemId: '',
-      date: new Date().toISOString().split('T')[0],
-    },
-  });
-
-  const onSubmit = async (values: FormValues) => {
-    const { error } = await addTransaction({
-      amount: values.amount,
-      description: values.description,
-      lineItemId: values.lineItemId,
-      dateOfTransaction: values.date,
-      dateOfInput: undefined,
-    });
-    if (error) {
-      toast.error(error.message);
-    }
-    setIsOpen(false);
-    router.refresh();
-  };
-
-
-  // Mobile: Use Drawer
-  if (isMobile) {
-    return (
-      <Drawer
-        open={isOpen}
-        onOpenChange={setIsOpen}
-      >
-        <DrawerTrigger asChild>
-          {triggerButton}
-        </DrawerTrigger>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>Add New Expense</DrawerTitle>
-            <DrawerDescription>
-              Add a new expense to your budget. Click save when you&apos;re done.
-            </DrawerDescription>
-          </DrawerHeader>
-          <div className="px-4 pb-4">
-            <ExpenseFormContent 
-              form={form} 
-              onSubmit={onSubmit} 
-              categories={categories} 
-            />
-          </div>
-        </DrawerContent>
-      </Drawer>
-    );
-  }
-
-  // Desktop: Use Dialog
-  return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={setIsOpen}
-    >
-      <DialogTrigger asChild>
-        {triggerButton}
-      </DialogTrigger>
-      <DialogContent className='sm:max-w-[425px]'>
-        <DialogHeader>
-          <DialogTitle>Add New Expense</DialogTitle>
-          <DialogDescription>
-            Add a new expense to your budget. Click save when you&apos;re done.
-          </DialogDescription>
-        </DialogHeader>
-        <ExpenseFormContent 
-          form={form} 
-          onSubmit={onSubmit} 
-          categories={categories} 
-        />
-      </DialogContent>
-    </Dialog>
-  );
-};
