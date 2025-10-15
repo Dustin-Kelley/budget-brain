@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const months = [
@@ -40,10 +40,6 @@ export function MonthSelector({
 
   const { month: displayMonth, year: displayYear } = getCurrentDisplayMonth();
 
-  // Check if current display is different from actual current month
-  const isDifferentFromCurrentMonth = 
-    displayMonth !== currentMonth || displayYear !== currentYear;
-
   const updateMonthParam = (newMonth: string) => {
     const newParams = new URLSearchParams(params);
     newParams.set('month', newMonth);
@@ -78,11 +74,6 @@ export function MonthSelector({
     updateMonthParam(newMonthString);
   };
 
-  const handleResetToCurrentMonth = () => {
-    const currentMonthString = `${currentMonth}-${currentYear}`;
-    updateMonthParam(currentMonthString);
-  };
-
   return (
     <div className='flex items-center gap-3'>
       <Button
@@ -104,17 +95,6 @@ export function MonthSelector({
       >
         <ChevronRight className='size-5' />
       </Button>
-
-      {isDifferentFromCurrentMonth && (
-        <Button
-          size='icon'
-          onClick={handleResetToCurrentMonth}
-          variant='ghost'
-          title='Reset to current month'
-        >
-          <RotateCcw className='size-5' />
-        </Button>
-      )}
     </div>
   );
 }
