@@ -7,10 +7,10 @@ export async function BudgetHeader({ month }: { month: string | undefined }) {
   const { categories } = await getCategories({ date: month });
 
   return (
-    <div className='flex md:flex-row gap-2 items-end justify-between'>
+    <div className='flex flex-col items-center gap-2 '>
       <MonthSelector selectedMonth={month} />
 
-      <div className='flex flex-col md:flex-row items-end gap-2'>
+      <div className='flex flex-col gap-2'>
         <AddExpenseForm categories={categories} />
         <BudgetRolloverButton month={month} />
       </div>
