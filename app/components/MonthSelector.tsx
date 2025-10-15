@@ -2,6 +2,8 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
 const months = [
@@ -28,6 +30,7 @@ export function MonthSelector({
   const params = useSearchParams();
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+  const [direction, setDirection] = useState<'left' | 'right' | null>(null);
 
   // Parse the selected month or default to current month
   const getCurrentDisplayMonth = () => {
@@ -47,6 +50,7 @@ export function MonthSelector({
   };
 
   const handlePreviousMonth = () => {
+    setDirection('left');
     const currentMonthIndex = months.indexOf(displayMonth);
     let newMonthIndex = currentMonthIndex - 1;
     let newYear = displayYear;
@@ -61,6 +65,7 @@ export function MonthSelector({
   };
 
   const handleNextMonth = () => {
+    setDirection('right');
     const currentMonthIndex = months.indexOf(displayMonth);
     let newMonthIndex = currentMonthIndex + 1;
     let newYear = displayYear;
@@ -84,8 +89,30 @@ export function MonthSelector({
         <ChevronLeft className='size-5' />
       </Button>
 
-      <div className='px-4 py-2 text-3xl font-bold text-secondary tracking-tight min-w-[200px] text-center'>
-        {displayMonth} {displayYear}
+      <div className='text-3xl font-bold'>
+        <AnimatePresence
+          mode='wait'
+          onExitComplete={() => setDirection(null)}
+        >
+          <motion.div
+            key={`${displayMonth}-${displayYear}`}
+            initial={{
+              opacity: 0,
+              x: direction === 'left' ? -50 : direction === 'right' ? 50 : 0,
+            }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{
+              opacity: 0,
+              x: direction === 'left' ? 50 : direction === 'right' ? -50 : 0,
+            }}
+            transition={{
+              duration: 0.3,
+              ease: 'easeInOut',
+            }}
+          >
+            {displayMonth} {displayYear}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       <Button
