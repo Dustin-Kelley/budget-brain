@@ -22,10 +22,7 @@ export default async function Page({
 
   return (
     <main className='flex flex-col gap-4'>
-      <div className='flex flex-col'>
-        <BudgetHeader month={month} />
-        <p className='text-muted-foreground'>Budget Overview</p>
-      </div>
+      <BudgetHeader month={month} />
 
       <Suspense fallback={<Skeleton className='h-[140px]' />}>
         <BudgetSummary date={month} />

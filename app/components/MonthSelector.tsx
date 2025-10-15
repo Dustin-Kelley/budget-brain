@@ -1,53 +1,120 @@
-"use client"
+'use client';
 
-import { useRouter, useSearchParams } from "next/navigation"
-import { CalendarIcon } from "lucide-react"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { useRouter, useSearchParams } from 'next/navigation';
+import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const months = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-]
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
 
-export function MonthSelector({ selectedMonth }: { selectedMonth: string | undefined }) {
-  const router = useRouter()
-  const params = useSearchParams()
-  const currentYear = new Date().getFullYear()
-  const thisMonth = new Date().toLocaleString('default', { month: 'long' })
+export function MonthSelector({
+  selectedMonth,
+}: {
+  selectedMonth: string | undefined;
+}) {
+  const router = useRouter();
+  const params = useSearchParams();
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().toLocaleString('default', { month: 'long' });
 
+  // Parse the selected month or default to current month
+  const getCurrentDisplayMonth = () => {
+    if (!selectedMonth) {
+      return { month: currentMonth, year: currentYear };
+    }
+    const [month, year] = selectedMonth.split('-');
+    return { month, year: parseInt(year) };
+  };
 
-  const handleMonthSelect = (month: string) => {
-    const newParams = new URLSearchParams(params)
-    newParams.set("month", month)
-    router.push(`?${newParams.toString()}`)
-  }
+  const { month: displayMonth, year: displayYear } = getCurrentDisplayMonth();
+
+  // Check if current display is different from actual current month
+  const isDifferentFromCurrentMonth = 
+    displayMonth !== currentMonth || displayYear !== currentYear;
+
+  const updateMonthParam = (newMonth: string) => {
+    const newParams = new URLSearchParams(params);
+    newParams.set('month', newMonth);
+    router.push(`?${newParams.toString()}`);
+  };
+
+  const handlePreviousMonth = () => {
+    const currentMonthIndex = months.indexOf(displayMonth);
+    let newMonthIndex = currentMonthIndex - 1;
+    let newYear = displayYear;
+
+    if (newMonthIndex < 0) {
+      newMonthIndex = 11; // December
+      newYear = displayYear - 1;
+    }
+
+    const newMonthString = `${months[newMonthIndex]}-${newYear}`;
+    updateMonthParam(newMonthString);
+  };
+
+  const handleNextMonth = () => {
+    const currentMonthIndex = months.indexOf(displayMonth);
+    let newMonthIndex = currentMonthIndex + 1;
+    let newYear = displayYear;
+
+    if (newMonthIndex > 11) {
+      newMonthIndex = 0; // January
+      newYear = displayYear + 1;
+    }
+
+    const newMonthString = `${months[newMonthIndex]}-${newYear}`;
+    updateMonthParam(newMonthString);
+  };
+
+  const handleResetToCurrentMonth = () => {
+    const currentMonthString = `${currentMonth}-${currentYear}`;
+    updateMonthParam(currentMonthString);
+  };
 
   return (
-    <div className="flex flex-col gap-1">
-      <Select defaultValue={selectedMonth} onValueChange={handleMonthSelect}>
-        <SelectTrigger >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          <SelectValue className="w-[180px] text-black" placeholder={`${thisMonth} ${currentYear}`} />
-        </SelectTrigger>
-        <SelectContent className="max-h-[300px]">
-          {months.map((month) => (
-            <SelectItem  key={`${month}-${currentYear}`} value={`${month}-${currentYear}`}>
-              {month} {currentYear}
-            </SelectItem>
-          ))}
-          {months.map((month) => (
-            <SelectItem key={`${month}-${currentYear + 1}`} value={`${month}-${currentYear + 1}`}>
-              {month} {currentYear + 1}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+    <div className='flex items-center gap-3'>
+      <Button
+        variant='ghost'
+        size='icon'
+        onClick={handlePreviousMonth}
+      >
+        <ChevronLeft className='size-5' />
+      </Button>
+
+      <div className='px-4 py-2 text-3xl font-bold text-secondary tracking-tight min-w-[200px] text-center'>
+        {displayMonth} {displayYear}
+      </div>
+
+      <Button
+        size='icon'
+        onClick={handleNextMonth}
+        variant='ghost'
+      >
+        <ChevronRight className='size-5' />
+      </Button>
+
+      {isDifferentFromCurrentMonth && (
+        <Button
+          size='icon'
+          onClick={handleResetToCurrentMonth}
+          variant='ghost'
+          title='Reset to current month'
+        >
+          <RotateCcw className='size-5' />
+        </Button>
+      )}
     </div>
-  )
-} 
+  );
+}
