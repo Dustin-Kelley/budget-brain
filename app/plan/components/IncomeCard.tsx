@@ -49,9 +49,11 @@ export async function IncomeCard({ month }: { month: string | undefined }) {
           <div className='flex items-center pt-2 border-t'>
             <div className='flex items-center gap-2'>
               <p className='text-2xl font-bold text-muted-foreground'>
-                ${(Math.max(remaining, 0)).toFixed(2)}
+                {remaining < 0 ? '-' : ''}${Math.abs(remaining).toFixed(2)}
               </p>
-              <span className='text-xs'>left to budget</span>
+              <span className='text-xs'>
+                {remaining < 0 ? 'over budget' : 'left to budget'}
+              </span>
             </div>
           </div>
         </div>
