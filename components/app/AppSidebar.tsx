@@ -1,4 +1,4 @@
-import { BarChart, Home, Settings, NotebookPen } from 'lucide-react';
+import { Home, Settings, NotebookPen } from 'lucide-react';
 
 import {
   Sidebar,
@@ -24,11 +24,6 @@ const items = [
     title: 'Plan',
     url: '/plan',
     icon: NotebookPen,
-  },
-  {
-    title: 'Insights',
-    url: '/insights',
-    icon: BarChart,
   },
 ];
 

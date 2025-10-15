@@ -4,6 +4,8 @@ import { BudgetHeader } from '../components/BudgetHeader';
 import { IncomeCard } from './components/IncomeCard';
 import { CategoryCards } from './components/CategoryCards';
 import { TransactionsTab } from './components/TransactionsTab';
+import { RolloverBudgetState } from '../components/RolloverBudgetState';
+import { getCategories } from '../queries/getCategories';
 
 export default async function Page({
   searchParams,
@@ -11,6 +13,18 @@ export default async function Page({
   searchParams: Promise<{ month?: string }>;
 }) {
   const { month } = await searchParams;
+
+  const { categories } = await getCategories({ date: month });
+
+  if (!categories || categories.length === 0) {
+    return (
+      <main className='flex flex-col gap-4'>
+        <BudgetHeader month={month} />
+
+        <RolloverBudgetState month={month} />
+      </main>
+    );
+  }
 
   return (
     <main className='flex flex-col gap-4'>

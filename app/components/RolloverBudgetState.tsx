@@ -9,7 +9,7 @@ export function RolloverBudgetState({ month }: RolloverBudgetStateProps) {
   const displayMonthYear = parseMonthYearDisplay(month);
   
   return (
-    <div className='flex flex-col  items-center gap-4 text-center'>
+    <div className='flex flex-col mt-4 items-center gap-4 text-center'>
       <div className='flex flex-col gap-2'>
         <h2 className='text-2xl font-semibold text-secondary'>
           Create your budget for {displayMonthYear}
