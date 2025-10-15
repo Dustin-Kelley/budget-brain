@@ -45,3 +45,12 @@ export function getPreviousMonth(dateStr: string | undefined): string | undefine
   return `${months[prevMonthIndex]}-${prevYear}`;
 }
 
+export function parseMonthYearDisplay(monthStr: string | undefined): string {
+  if (!monthStr) {
+    const now = new Date();
+    return `${now.toLocaleString('default', { month: 'long' })} ${now.getFullYear()}`;
+  }
+  const [month, year] = monthStr.split('-');
+  return `${month} ${year}`;
+}
+

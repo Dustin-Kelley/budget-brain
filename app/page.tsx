@@ -6,6 +6,8 @@ import { getCurrentUser } from './queries/getCurrentUser';
 import { redirect } from 'next/navigation';
 import { Charts } from './components/Charts';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getCategories } from './queries/getCategories';
+import { RolloverBudgetState } from './components/RolloverBudgetState';
 
 export default async function Page({
   searchParams,
@@ -18,6 +20,18 @@ export default async function Page({
 
   if (!currentUser) {
     redirect('/login');
+  }
+
+  const { categories } = await getCategories({ date: month });
+
+  if (!categories || categories.length === 0) {
+    return (
+      <main className='flex flex-col gap-4'>
+        <BudgetHeader month={month} />
+
+        <RolloverBudgetState month={month} />
+      </main>
+    );
   }
 
   return (
