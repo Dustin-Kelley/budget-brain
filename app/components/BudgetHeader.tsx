@@ -8,9 +8,7 @@ export async function BudgetHeader({ month }: { month: string | undefined }) {
 
   return (
     <div className='flex md:flex-row gap-2 items-end justify-between'>
-      <div className='flex flex-col gap-1'>
-        <MonthSelector selectedMonth={month} />
-      </div>
+      <MonthSelector selectedMonth={month} />
 
       <div className='flex flex-col md:flex-row items-end gap-2'>
         <AddExpenseForm categories={categories} />
