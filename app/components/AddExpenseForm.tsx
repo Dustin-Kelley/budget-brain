@@ -43,6 +43,7 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { CategoryWithLineItems } from '@/types/types';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Spinner } from '@/components/app/Spinner';
 
 const formSchema = z.object({
   amount: z.coerce.number().positive('Amount must be positive'),
@@ -246,8 +247,15 @@ function ExpenseFormContent({
         <Button
           type='submit'
           className='w-full mt-4'
+          disabled={form.formState.isSubmitting}
         >
-          Save Expense
+          {form.formState.isSubmitting ? (
+            <span className='flex items-center gap-2'>
+              <Spinner /> Saving...
+            </span>
+          ) : (
+            'Save Expense'
+          )}
         </Button>
       </form>
     </Form>
