@@ -25,7 +25,7 @@ export async function IncomeCard({ month }: { month: string | undefined }) {
               <p className='text-sm font-medium'>
                 Total Income for: {parsedMonth}
               </p>
-              <p className='text-2xl font-bold'>${totalIncome}</p>
+              <p className='text-2xl font-bold'>${totalIncome.toFixed(2)}</p>
             </div>
             <div className='rounded-full bg-muted p-3'>
               <DollarSign className='h-6 w-6 text-muted-foreground' />
@@ -39,7 +39,7 @@ export async function IncomeCard({ month }: { month: string | undefined }) {
               >
                 <span className='font-medium'>{income.name}</span>
                 <div className='flex items-center gap-2'>
-                  <span className='font-medium'>${income.amount}</span>
+                  <span className='font-medium'>${income.amount.toFixed(2)}</span>
                   <EditIncome incomeId={income.id} incomeName={income.name} incomeAmount={income.amount} />
                 </div>
               </div>
@@ -49,7 +49,7 @@ export async function IncomeCard({ month }: { month: string | undefined }) {
           <div className='flex items-center pt-2 border-t'>
             <div className='flex items-center gap-2'>
               <p className='text-2xl font-bold text-muted-foreground'>
-                ${remaining}
+                ${(Math.max(remaining, 0)).toFixed(2)}
               </p>
               <span className='text-xs'>left to budget</span>
             </div>
