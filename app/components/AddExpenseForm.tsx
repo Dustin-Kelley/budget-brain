@@ -94,7 +94,7 @@ export const AddExpenseForm = ({
         onOpenChange={setIsOpen}
       >
         <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
-        <DrawerContent>
+        <DrawerContent className='py-4'>
           <DrawerHeader>
             <DrawerTitle>Add New Expense</DrawerTitle>
             <DrawerDescription>
@@ -151,7 +151,7 @@ function ExpenseFormContent({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-4'
+        className='flex flex-col gap-4'
       >
         <FormField
           control={form.control}
@@ -245,7 +245,7 @@ function ExpenseFormContent({
         />
         <Button
           type='submit'
-          className='w-full'
+          className='w-full mt-4'
         >
           Save Expense
         </Button>
