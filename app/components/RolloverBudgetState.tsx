@@ -7,7 +7,7 @@ interface RolloverBudgetStateProps {
 
 export function RolloverBudgetState({ month }: RolloverBudgetStateProps) {
   const displayMonthYear = parseMonthYearDisplay(month);
-  
+
   return (
     <div className='flex flex-col mt-4 items-center gap-4 text-center'>
       <div className='flex flex-col gap-2'>
@@ -21,8 +21,8 @@ export function RolloverBudgetState({ month }: RolloverBudgetStateProps) {
       </div>
 
       <p className='text-sm text-muted-foreground max-w-md'>
-        Roll over your budget from the previous month to get started with your
-        financial planning.
+        Roll over your budget from the previous month to get started with
+        planning!
       </p>
 
       <BudgetRolloverButton month={month} />
