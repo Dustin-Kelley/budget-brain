@@ -13,6 +13,7 @@ import { DarkModeToggle } from '../../components/app/DarkModeToggle';
 import LogoutButton from '@/components/app/LogoutButton';
 import { ResetBudgetButton } from '../components/ResetBudgetButton';
 import { HouseHold } from './components/HouseHold';
+import { ManageSubscriptionCard } from './components/ManageSubscriptionCard';
 import { Profile } from './components/Profile';
 
 export default async function SettingsPage({
@@ -37,6 +38,7 @@ export default async function SettingsPage({
         <ResetBudgetButton month={month} />
         <HouseHold />
         <Profile />
+        <ManageSubscriptionCard />
 
         <Card>
           <CardHeader>
