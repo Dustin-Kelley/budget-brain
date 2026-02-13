@@ -52,16 +52,28 @@ export type Database = {
           created_at: string
           id: string
           name: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_status: string | null
+          subscription_current_period_end: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           name?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
+          subscription_current_period_end?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           name?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
+          subscription_current_period_end?: string | null
         }
         Relationships: []
       }

@@ -2,15 +2,13 @@ import { type Stripe } from 'stripe';
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
-import { stripe } from '@/lib/stripe';
+import { stripe } from '@/lib/payments/stripe';
+import { createServiceRoleClient } from '@/utils/supabase/server';
 
 /**
  * Stripe webhook handler. Must use raw body for signature verification.
- * In Next.js App Router, req.text() gives the raw body for this route.
- *
  * Configure this URL in Stripe Dashboard: Developers → Webhooks → Add endpoint
- * URL: https://your-domain.com/api/stripe/webhook
- * For local testing use: stripe listen --forward-to localhost:3000/api/stripe/webhook
+ * Subscribe to: checkout.session.completed, customer.subscription.updated, customer.subscription.deleted
  */
 export async function POST(req: Request) {
   let event: Stripe.Event;
@@ -44,21 +42,78 @@ export async function POST(req: Request) {
 
   const permittedEvents = [
     'checkout.session.completed',
+    'customer.subscription.updated',
+    'customer.subscription.deleted',
     'payment_intent.succeeded',
     'payment_intent.payment_failed',
   ];
 
   if (permittedEvents.includes(event.type)) {
     try {
+      const supabase = createServiceRoleClient();
+
       switch (event.type) {
         case 'checkout.session.completed': {
           const session = event.data.object as Stripe.Checkout.Session;
-          console.log(
-            'Checkout completed:',
-            session.id,
-            session.payment_status,
-          );
-          // TODO: e.g. grant access, update DB, send confirmation
+          const householdId = session.metadata?.household_id as string | undefined;
+          const customerId =
+            typeof session.customer === 'string'
+              ? session.customer
+              : session.customer?.id;
+          const subscriptionId =
+            typeof session.subscription === 'string'
+              ? session.subscription
+              : session.subscription?.id;
+
+          if (householdId && customerId) {
+            const updates: {
+              stripe_customer_id: string;
+              stripe_subscription_id?: string;
+              subscription_status?: string;
+              subscription_current_period_end?: string | null;
+            } = {
+              stripe_customer_id: customerId,
+            };
+            if (subscriptionId) {
+              updates.stripe_subscription_id = subscriptionId;
+              const sub = await stripe.subscriptions.retrieve(subscriptionId);
+              const subObj = sub as unknown as { status: string; current_period_end?: number };
+              updates.subscription_status = subObj.status;
+              updates.subscription_current_period_end = subObj.current_period_end
+                ? new Date(subObj.current_period_end * 1000).toISOString()
+                : null;
+            }
+            const { error } = await supabase
+              .from('household')
+              .update(updates)
+              .eq('id', householdId);
+            if (error) console.error('Webhook household update failed:', error);
+          }
+          break;
+        }
+        case 'customer.subscription.updated':
+        case 'customer.subscription.deleted': {
+          const subscription = event.data.object as Stripe.Subscription & {
+            current_period_end?: number;
+          };
+          const status =
+            event.type === 'customer.subscription.deleted'
+              ? 'canceled'
+              : subscription.status;
+          const periodEnd = subscription.current_period_end
+            ? new Date(subscription.current_period_end * 1000).toISOString()
+            : null;
+          const { error } = await supabase
+            .from('household')
+            .update({
+              subscription_status: status,
+              subscription_current_period_end: periodEnd,
+              ...(event.type === 'customer.subscription.deleted' && {
+                stripe_subscription_id: null,
+              }),
+            })
+            .eq('stripe_subscription_id', subscription.id);
+          if (error) console.error('Webhook subscription update failed:', error);
           break;
         }
         case 'payment_intent.succeeded': {

@@ -1,46 +1,42 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import { headers } from 'next/headers';
 
-import { stripe } from '@/lib/stripe';
+import { stripe } from '@/lib/payments/stripe';
 
-/**
- * POST /api/stripe/checkout-session
- * Creates a Stripe Checkout session. Customize line_items, success_url, cancel_url,
- * and customer_email (e.g. from your auth) to match your product and flow.
- */
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json().catch(() => ({}));
-    const { priceId, successUrl, cancelUrl, customerEmail } = body as {
-      priceId?: string;
-      successUrl?: string;
-      cancelUrl?: string;
-      customerEmail?: string;
-    };
+    const headersList = await headers();
+    const origin = headersList.get('origin') ?? 'https://budget-brain.io';
 
-    const baseUrl =
-      process.env.NEXT_PUBLIC_APP_URL ||
-      (request.nextUrl.origin || 'http://localhost:3000');
+    const formData = await request.formData();
+    const priceId = formData.get('priceId')?.toString();
+    const householdId = formData.get('householdId')?.toString();
+    const successUrl = formData.get('successUrl')?.toString();
+    const cancelUrl = formData.get('cancelUrl')?.toString();
+
+    if (!priceId) {
+      return NextResponse.json({ error: 'Missing priceId' }, { status: 400 });
+    }
 
     const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
       line_items: [
         {
-          price: priceId || undefined,
+          price: priceId,
           quantity: 1,
         },
       ],
-      success_url: successUrl ?? `${baseUrl}/plan?success=true`,
-      cancel_url: cancelUrl ?? `${baseUrl}/plan?canceled=true`,
-      ...(customerEmail && { customer_email: customerEmail }),
+      mode: 'subscription',
+      success_url:
+        successUrl ??
+        `${origin}/checkout-sucess?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: cancelUrl ?? `${origin}/settings`,
+      ...(householdId && { metadata: { household_id: householdId } }),
     });
 
-    return NextResponse.json({ url: session.url });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Unknown error';
-    console.error('Checkout session error:', message);
-    return NextResponse.json(
-      { error: message },
-      { status: 500 }
-    );
+    const sessionUrl = session.url ?? origin;
+    return NextResponse.redirect(sessionUrl, 303);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

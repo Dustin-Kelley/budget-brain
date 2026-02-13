@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
 import { createClient } from '@/utils/supabase/server';
-import { stripe } from '@/lib/stripe';
+import { stripe } from '@/lib/payments/stripe';
 
 /**
  * POST /api/stripe/portal-session
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     if (!authUser?.email) {
       return NextResponse.json(
         { error: 'You must be signed in to manage your subscription.' },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
