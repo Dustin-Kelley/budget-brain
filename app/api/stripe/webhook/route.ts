@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
 import { stripe } from '@/lib/payments/stripe';
-import { createServiceRoleClient } from '@/utils/supabase/server';
+import { createClient } from '@/utils/supabase/server';
 
 /**
  * Stripe webhook handler. Must use raw body for signature verification.
@@ -50,12 +50,14 @@ export async function POST(req: Request) {
 
   if (permittedEvents.includes(event.type)) {
     try {
-      const supabase = createServiceRoleClient();
+      const supabase = await createClient();
 
       switch (event.type) {
         case 'checkout.session.completed': {
           const session = event.data.object as Stripe.Checkout.Session;
-          const householdId = session.metadata?.household_id as string | undefined;
+          const householdId = session.metadata?.household_id as
+            | string
+            | undefined;
           const customerId =
             typeof session.customer === 'string'
               ? session.customer
@@ -77,11 +79,15 @@ export async function POST(req: Request) {
             if (subscriptionId) {
               updates.stripe_subscription_id = subscriptionId;
               const sub = await stripe.subscriptions.retrieve(subscriptionId);
-              const subObj = sub as unknown as { status: string; current_period_end?: number };
+              const subObj = sub as unknown as {
+                status: string;
+                current_period_end?: number;
+              };
               updates.subscription_status = subObj.status;
-              updates.subscription_current_period_end = subObj.current_period_end
-                ? new Date(subObj.current_period_end * 1000).toISOString()
-                : null;
+              updates.subscription_current_period_end =
+                subObj.current_period_end
+                  ? new Date(subObj.current_period_end * 1000).toISOString()
+                  : null;
             }
             const { error } = await supabase
               .from('household')
@@ -113,7 +119,8 @@ export async function POST(req: Request) {
               }),
             })
             .eq('stripe_subscription_id', subscription.id);
-          if (error) console.error('Webhook subscription update failed:', error);
+          if (error)
+            console.error('Webhook subscription update failed:', error);
           break;
         }
         case 'payment_intent.succeeded': {
