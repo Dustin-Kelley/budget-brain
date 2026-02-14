@@ -48,10 +48,11 @@ export async function GET(request: NextRequest) {
     }
 
     // Prefer household_id from metadata (set by create-checkout-session); fallback to user lookup via client_reference_id
-    let householdId = session.metadata?.household_id as string | undefined;
+    let householdId = session.metadata?.household_id;
+
     if (!householdId && session.client_reference_id) {
-      const user = await getUserById(session.client_reference_id);
-      householdId = user.currentUser?.household_id ?? undefined;
+      const { currentUser } = await getUserById(session.client_reference_id);
+      householdId = currentUser?.household_id;
     }
     if (!householdId) {
       throw new Error(
@@ -75,7 +76,12 @@ export async function GET(request: NextRequest) {
       throw new Error('Failed to update household in database.');
     }
 
-    return NextResponse.redirect(new URL('/checkout-success', request.url));
+    return NextResponse.redirect(
+      new URL(
+        `/checkout-success?email=${session.customer_details?.email}`,
+        request.url,
+      ),
+    );
   } catch (error) {
     console.error('Error handling successful checkout:', error);
     return NextResponse.redirect(new URL('/error', request.url));
