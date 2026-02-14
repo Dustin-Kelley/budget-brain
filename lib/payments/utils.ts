@@ -7,14 +7,6 @@ export type HouseholdSubscription = {
   subscription_current_period_end?: string | null;
 };
 
-/** Use this to check if the current household has an active subscription (after running the migration and syncing via webhooks). */
-export function hasActiveSubscription(
-  household: HouseholdSubscription | null | undefined
-): boolean {
-  if (!household) return false;
-  return household.subscription_status === 'active';
-}
-
 export async function getStripePrices() {
   const prices = await stripe.prices.list({
     expand: ['data.product'],

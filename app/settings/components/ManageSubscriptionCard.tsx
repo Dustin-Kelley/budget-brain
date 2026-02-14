@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { CreditCard } from 'lucide-react';
 
 import { getStripePrices, getStripeProducts } from '@/lib/payments/utils';
+import { getHouseholdSubscription } from '@/app/queries/getHouseholdSubscription';
 
 function formatPrice(unitAmount: number | null, currency: string) {
   if (unitAmount == null) return '—';
@@ -36,6 +37,21 @@ export async function ManageSubscriptionCard({
     getStripeProducts(),
   ]);
 
+  const { householdSubscription } = await getHouseholdSubscription();
+
+  if (householdSubscription?.subscription_status === 'active') {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Manage Subscription</CardTitle>
+          <CardDescription>
+            Your subscription is active. You can manage it below.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -47,63 +63,55 @@ export async function ManageSubscriptionCard({
           Choose a plan to subscribe. You’ll be redirected to Stripe Checkout.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-
-
-        {prices.length === 0 ? (
-          <p className="text-muted-foreground text-sm">
-            No subscription plans available at the moment.
-          </p>
-        ) : (
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {prices.map((price) => {
-              const product = products.find((p) => p.id === price.productId);
-              return (
-                <li key={price.id}>
-                  <form
-                    action="/api/stripe/create-checkout-session"
-                    method="POST"
-                    className="flex flex-col gap-2 rounded-lg border bg-muted/30 p-4"
-                  >
-                    <input type="hidden" name="priceId" value={price.id} />
-                    {householdId && (
-                      <input
-                        type="hidden"
-                        name="householdId"
-                        value={householdId}
-                      />
-                    )}
-                    {product && (
-                      <div className="flex flex-col gap-0.5">
-                        <span className="font-semibold">{product.name}</span>
-                        {product.description && (
-                          <span className="text-muted-foreground text-sm">
-                            {product.description}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                    <div className="flex flex-1 items-baseline justify-between gap-2">
-                      <span className="font-medium">
-                        {formatPrice(price.unitAmount, price.currency)}
-                        {formatInterval(price.interval)}
-                      </span>
-                      {price.trialPeriodDays != null &&
-                        price.trialPeriodDays > 0 && (
-                          <span className="text-muted-foreground text-xs">
-                            {price.trialPeriodDays}-day free trial
-                          </span>
-                        )}
+      <CardContent className="flex flex-col gap-4">
+        <ul className="grid gap-3 sm:grid-cols-2">
+          {prices.map((price) => {
+            const product = products.find((p) => p.id === price.productId);
+            return (
+              <li key={price.id}>
+                <form
+                  action="/api/stripe/create-checkout-session"
+                  method="POST"
+                  className="flex flex-col gap-2 rounded-lg border bg-muted/30 p-4"
+                >
+                  <input type="hidden" name="priceId" value={price.id} />
+                  {householdId && (
+                    <input
+                      type="hidden"
+                      name="householdId"
+                      value={householdId}
+                    />
+                  )}
+                  {product && (
+                    <div className="flex flex-col gap-0.5">
+                      <span className="font-semibold">{product.name}</span>
+                      {product.description && (
+                        <span className="text-muted-foreground text-sm">
+                          {product.description}
+                        </span>
+                      )}
                     </div>
-                    <Button type="submit" variant="outline" className="w-full">
-                      Checkout
-                    </Button>
-                  </form>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+                  )}
+                  <div className="flex flex-1 items-baseline justify-between gap-2">
+                    <span className="font-medium">
+                      {formatPrice(price.unitAmount, price.currency)}
+                      {formatInterval(price.interval)}
+                    </span>
+                    {price.trialPeriodDays != null &&
+                      price.trialPeriodDays > 0 && (
+                        <span className="text-muted-foreground text-xs">
+                          {price.trialPeriodDays}-day free trial
+                        </span>
+                      )}
+                  </div>
+                  <Button type="submit" variant="outline" className="w-full">
+                    Checkout
+                  </Button>
+                </form>
+              </li>
+            );
+          })}
+        </ul>
       </CardContent>
     </Card>
   );
