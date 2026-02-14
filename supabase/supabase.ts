@@ -54,6 +54,8 @@ export type Database = {
           name: string | null
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
+          stripe_product_id: string | null
+          plan_name: string | null
           subscription_status: string | null
           subscription_current_period_end: string | null
         }
@@ -63,6 +65,8 @@ export type Database = {
           name?: string | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
+          stripe_product_id?: string | null
+          plan_name?: string | null
           subscription_status?: string | null
           subscription_current_period_end?: string | null
         }
@@ -72,6 +76,8 @@ export type Database = {
           name?: string | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
+          stripe_product_id?: string | null
+          plan_name?: string | null
           subscription_status?: string | null
           subscription_current_period_end?: string | null
         }

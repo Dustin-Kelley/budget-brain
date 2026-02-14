@@ -7,20 +7,22 @@ import { cache } from 'react';
  */
 export const getHouseholdSubscription = cache(
   async (householdId: string | null) => {
-    if (!householdId) return { household: null };
+    if (!householdId) return { HouseholdSubscription: null };
 
     const supabase = await createClient();
     const { data, error } = await supabase
       .from('household')
-      .select('subscription_status, stripe_subscription_id, subscription_current_period_end')
+      .select(
+        'subscription_status, stripe_subscription_id, plan_name, stripe_product_id',
+      )
       .eq('id', householdId)
       .maybeSingle();
 
     if (error) {
       console.error('getHouseholdSubscription:', error);
-      return { household: null };
+      return { HouseholdSubscription: null };
     }
 
-    return { household: data };
-  }
+    return { HouseholdSubscription: data };
+  },
 );
