@@ -8,8 +8,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { CreditCard } from 'lucide-react';
 
-import { getStripePrices, getStripeProducts } from '@/lib/payments/utils';
 import { getHouseholdSubscription } from '@/app/queries/getHouseholdSubscription';
+import { getStripePrices, getStripeProducts } from '@/lib/payments/utils';
 
 function formatPrice(unitAmount: number | null, currency: string) {
   if (unitAmount == null) return '—';
@@ -48,6 +48,11 @@ export async function ManageSubscriptionCard({
             Your subscription is active. You can manage it below.
           </CardDescription>
         </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          <p className="text-muted-foreground text-sm">
+            Update your payment method, view invoices, or cancel your plan.
+          </p>
+        </CardContent>
       </Card>
     );
   }
@@ -64,6 +69,9 @@ export async function ManageSubscriptionCard({
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
+        <div className="rounded-lg border bg-muted/30 px-3 py-2 text-sm text-muted-foreground">
+          No subscription yet — choose a plan below to get started.
+        </div>
         <ul className="grid gap-3 sm:grid-cols-2">
           {prices.map((price) => {
             const product = products.find((p) => p.id === price.productId);
