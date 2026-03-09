@@ -10,7 +10,7 @@ export const getBudgetSummary = cache(
     const supabase = await createClient();
 
     if (!currentUser) {
-      redirect('/login');
+      redirect('/welcome');
     }
 
     const { monthNumber, yearNumber } = getMonthAndYearNumberFromDate(date);

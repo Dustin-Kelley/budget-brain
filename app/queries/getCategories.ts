@@ -9,7 +9,7 @@ export const getCategories = cache(async ({ date }: { date: string | undefined }
   const { currentUser } = await getCurrentUser();
 
   if (!currentUser) {
-    redirect('/login');
+    redirect('/welcome');
   }
 
   const { monthNumber, yearNumber } = getMonthAndYearNumberFromDate(date);

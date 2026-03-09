@@ -106,16 +106,15 @@ export default function LandingPage() {
   return (
     <div className='flex min-h-[100dvh] flex-col'>
       <header
-        className={`sticky top-0 z-50 w-full backdrop-blur-lg transition-all duration-300 ${
-          isScrolled ? 'bg-background/80 shadow-sm' : 'bg-transparent'
-        }`}
+        className={`sticky top-0 z-50 w-full backdrop-blur-lg transition-all duration-300 ${isScrolled ? 'bg-background/80 shadow-sm' : 'bg-transparent'
+          }`}
       >
         <div className='container flex h-16 items-center justify-between'>
           <Link
             href='/welcome'
             className='flex items-center gap-2 font-medium'
           >
-         <Logo />
+            <Logo />
             Budget Brain
           </Link>
           <nav className='hidden md:flex gap-8'>
@@ -556,11 +555,10 @@ export default function LandingPage() {
                         transition={{ duration: 0.5, delay: i * 0.1 }}
                       >
                         <Card
-                          className={`relative overflow-hidden h-full ${
-                            plan.popular
+                          className={`relative overflow-hidden h-full ${plan.popular
                               ? 'border-primary shadow-lg'
                               : 'border-border/40 shadow-md'
-                          } bg-gradient-to-b from-background to-muted/10 backdrop-blur`}
+                            } bg-gradient-to-b from-background to-muted/10 backdrop-blur`}
                         >
                           {plan.popular && (
                             <div className='absolute top-0 right-0 bg-primary text-primary-foreground px-3 py-1 text-xs font-medium rounded-bl-lg'>
@@ -592,11 +590,10 @@ export default function LandingPage() {
                               ))}
                             </ul>
                             <Button
-                              className={`w-full mt-auto rounded-full ${
-                                plan.popular
+                              className={`w-full mt-auto rounded-full ${plan.popular
                                   ? 'bg-primary hover:bg-primary/90'
                                   : 'bg-muted hover:bg-muted/80'
-                              }`}
+                                }`}
                               variant={plan.popular ? 'default' : 'outline'}
                             >
                               {plan.cta}
@@ -660,11 +657,10 @@ export default function LandingPage() {
                         transition={{ duration: 0.5, delay: i * 0.1 }}
                       >
                         <Card
-                          className={`relative overflow-hidden h-full ${
-                            plan.popular
+                          className={`relative overflow-hidden h-full ${plan.popular
                               ? 'border-primary shadow-lg'
                               : 'border-border/40 shadow-md'
-                          } bg-gradient-to-b from-background to-muted/10 backdrop-blur`}
+                            } bg-gradient-to-b from-background to-muted/10 backdrop-blur`}
                         >
                           {plan.popular && (
                             <div className='absolute top-0 right-0 bg-primary text-primary-foreground px-3 py-1 text-xs font-medium rounded-bl-lg'>
@@ -696,11 +692,10 @@ export default function LandingPage() {
                               ))}
                             </ul>
                             <Button
-                              className={`w-full mt-auto rounded-full ${
-                                plan.popular
+                              className={`w-full mt-auto rounded-full ${plan.popular
                                   ? 'bg-primary hover:bg-primary/90'
                                   : 'bg-muted hover:bg-muted/80'
-                              }`}
+                                }`}
                               variant={plan.popular ? 'default' : 'outline'}
                             >
                               {plan.cta}

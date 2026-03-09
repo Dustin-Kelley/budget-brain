@@ -14,7 +14,7 @@ export const addCategory = async ({
   const { currentUser } = await getCurrentUser();
 
   if (!currentUser) {
-    redirect('/login');
+    redirect('/welcome');
   }
 
   const supabase = await createClient();

@@ -17,7 +17,7 @@ export default async function Page({
   const { currentUser } = await getCurrentUser();
 
   if (!currentUser) {
-    redirect('/login');
+    redirect('/welcome');
   }
 
 

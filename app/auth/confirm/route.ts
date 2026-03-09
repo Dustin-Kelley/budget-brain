@@ -57,6 +57,6 @@ export async function GET(request: NextRequest) {
   }
 
   // If we get here, verification was successful
-  console.log('Verification successful, redirecting to login');
-  return redirect('/login');
+  console.log('Verification successful, redirecting to welcome');
+  return redirect('/welcome');
 }

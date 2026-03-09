@@ -17,7 +17,7 @@ import { redirect } from 'next/navigation';
 export async function HouseHold() {
   const { currentUser } = await getCurrentUser();
   if (!currentUser) {
-    redirect('/login');
+    redirect('/welcome');
   }
   const { household, householdError } = await getHouseHoldById({
     householdId: currentUser.household_id,
