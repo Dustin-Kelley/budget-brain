@@ -10,7 +10,7 @@ export const rolloverBudget = async ({ fromDate, toDate }: { fromDate: string; t
   const { currentUser } = await getCurrentUser();
 
   if (!currentUser) {
-    redirect('/login');
+    redirect('/welcome');
   }
 
   // Parse months/years

@@ -9,7 +9,7 @@ export const getTotalIncomePerMonth = cache(async ({ date }: { date: string | un
   const { currentUser } = await getCurrentUser();
 
   if (!currentUser) {
-    redirect('/login');
+    redirect('/welcome');
   }
 
   const { monthNumber, yearNumber } = getMonthAndYearNumberFromDate(date);

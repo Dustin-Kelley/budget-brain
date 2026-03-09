@@ -18,7 +18,7 @@ export const updateLineItem = async ({
   const { currentUser } = await getCurrentUser();
 
   if (!currentUser) {
-    redirect('/login');
+    redirect('/welcome');
   }
 
   const supabase = await createClient();

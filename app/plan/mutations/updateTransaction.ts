@@ -25,7 +25,7 @@ export const updateTransaction = async ({
   const { currentUser } = await getCurrentUser();
 
   if (!currentUser) {
-    redirect('/login');
+    redirect('/welcome');
   }
 
   const { monthNumber, yearNumber } = getMonthAndYearNumberFromDate(dateOfInput);

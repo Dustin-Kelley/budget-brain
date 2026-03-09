@@ -9,7 +9,7 @@ export const deleteIncome = async ({ incomeId }: { incomeId: string }) => {
   const supabase = await createClient();
 
   if (!currentUser) {
-    redirect('/login');
+    redirect('/welcome');
   }
 
   const { error } = await supabase
