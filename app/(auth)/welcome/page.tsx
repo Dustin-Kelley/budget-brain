@@ -853,22 +853,16 @@ export default function LandingPage() {
             </p>
             <div className='flex gap-4'>
               <Link
-                href='#'
+                href='/privacy'
                 className='text-xs text-muted-foreground hover:text-foreground transition-colors'
               >
                 Privacy Policy
               </Link>
               <Link
-                href='#'
+                href='/support'
                 className='text-xs text-muted-foreground hover:text-foreground transition-colors'
               >
-                Terms of Service
-              </Link>
-              <Link
-                href='#'
-                className='text-xs text-muted-foreground hover:text-foreground transition-colors'
-              >
-                Cookie Policy
+                Support
               </Link>
             </div>
           </section>
