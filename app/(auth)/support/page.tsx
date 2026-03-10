@@ -38,10 +38,10 @@ export default function SupportPage() {
                 soon as possible.
               </p>
               <a
-                href='mailto:support@budgetbrain.app'
+                href='mailto:kellydustin2018@gmail.com'
                 className='text-primary font-medium underline underline-offset-4 hover:text-primary/80'
               >
-                support@budgetbrain.app
+                kellydustin2018@gmail.com
               </a>
             </div>
           </div>

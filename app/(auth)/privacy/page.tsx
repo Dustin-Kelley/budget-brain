@@ -118,10 +118,10 @@ export default function PrivacyPolicyPage() {
               You can request deletion of your account and all associated data at
               any time by contacting us at{' '}
               <a
-                href='mailto:support@budgetbrain.app'
+                href='mailto:kellydustin2018@gmail.com'
                 className='text-primary underline underline-offset-4 hover:text-primary/80'
               >
-                support@budgetbrain.app
+                kellydustin2018@gmail.com
               </a>
               . We will process your request and permanently delete your data
               within 30 days.
@@ -145,10 +145,10 @@ export default function PrivacyPolicyPage() {
               If you have any questions about this Privacy Policy, please contact
               us at{' '}
               <a
-                href='mailto:support@budgetbrain.app'
+                href='mailto:kellydustin2018@gmail.com'
                 className='text-primary underline underline-offset-4 hover:text-primary/80'
               >
-                support@budgetbrain.app
+                kellydustin2018@gmail.com
               </a>
               .
             </p>
