@@ -41,7 +41,7 @@ export default function LandingPage() {
 
       <main className='flex-1 flex flex-col items-center justify-center'>
         {/* Hero */}
-        <section className='w-full py-20 md:py-32 lg:py-40'>
+        <section className='w-full flex-1 flex items-center py-12 md:py-16'>
           <div className='container px-4 md:px-6'>
             <div className='flex flex-col lg:flex-row items-center gap-12 lg:gap-20'>
               {/* Copy */}
@@ -127,38 +127,18 @@ export default function LandingPage() {
           </p>
           <div className='flex gap-4'>
             <Link
-              href='#'
+              href='/privacy'
               className='text-xs text-muted-foreground hover:text-foreground transition-colors'
             >
               Privacy Policy
             </Link>
             <Link
-              href='#'
+              href='/support'
               className='text-xs text-muted-foreground hover:text-foreground transition-colors'
             >
-              Terms of Service
+              Support
             </Link>
           </div>
-          <section className='flex flex-col gap-4 sm:flex-row justify-between items-center border-t border-border/40 pt-8'>
-            <p className='text-xs text-muted-foreground'>
-              &copy; {new Date().getFullYear()} Budget Brain. All rights
-              reserved.
-            </p>
-            <div className='flex gap-4'>
-              <Link
-                href='/privacy'
-                className='text-xs text-muted-foreground hover:text-foreground transition-colors'
-              >
-                Privacy Policy
-              </Link>
-              <Link
-                href='/support'
-                className='text-xs text-muted-foreground hover:text-foreground transition-colors'
-              >
-                Support
-              </Link>
-            </div>
-          </section>
         </div>
       </footer>
     </div>
