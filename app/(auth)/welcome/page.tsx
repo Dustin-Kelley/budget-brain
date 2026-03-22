@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -101,22 +102,13 @@ export default function LandingPage() {
                 <div className='relative mx-auto w-[260px] md:w-[300px]'>
                   <div className='relative rounded-[3rem] border-[8px] border-foreground/90 bg-black shadow-2xl overflow-hidden aspect-[9/19.5]'>
                     <div className='absolute top-2 left-1/2 -translate-x-1/2 w-[90px] h-[28px] bg-black rounded-full z-20'></div>
-                    {/* Placeholder screenshot */}
-                    <div className='w-full h-full bg-gradient-to-b from-primary/20 via-background to-muted flex flex-col items-center justify-center p-6 text-center'>
-                      <div className='mt-8'>
-                        <Logo />
-                      </div>
-                      <p className='text-xs text-muted-foreground mt-4'>
-                        Screenshot coming soon
-                      </p>
-                      <div className='w-full mt-6 space-y-3'>
-                        <div className='h-3 bg-primary/20 rounded-full w-3/4 mx-auto'></div>
-                        <div className='h-3 bg-primary/15 rounded-full w-1/2 mx-auto'></div>
-                        <div className='mt-4 h-24 bg-primary/10 rounded-2xl w-full'></div>
-                        <div className='h-16 bg-primary/10 rounded-2xl w-full'></div>
-                        <div className='h-16 bg-primary/10 rounded-2xl w-full'></div>
-                      </div>
-                    </div>
+                    <Image
+                      src='/icons/app-screenshot.png'
+                      alt='Budget Brain app screenshot'
+                      fill
+                      className='object-cover object-top'
+                      priority
+                    />
                   </div>
                   <div className='absolute -bottom-6 -right-6 -z-10 h-[200px] w-[200px] rounded-full bg-gradient-to-br from-primary/30 to-secondary/30 blur-3xl opacity-70'></div>
                   <div className='absolute -top-6 -left-6 -z-10 h-[200px] w-[200px] rounded-full bg-gradient-to-br from-secondary/30 to-primary/30 blur-3xl opacity-70'></div>
