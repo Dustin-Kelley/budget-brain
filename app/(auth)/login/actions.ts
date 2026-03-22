@@ -5,44 +5,70 @@ import { redirect } from 'next/navigation'
 
 import { createClient } from '@/utils/supabase/server'
 
-export async function login(data: { email: string; password: string }) {
+export async function sendOtp(email: string) {
   const supabase = await createClient()
 
-  const { error } = await supabase.auth.signInWithPassword(data)
-
-  console.log("🚀 ~ login ~ error:", error)
- 
-
-  if (!error) {
-    revalidatePath('/', 'layout')
-    redirect('/')
-  }
-
-  return {error}
-}
-
-export async function signup(data: { email: string; password: string }) {
-  const supabase = await createClient()
-
-  console.log('Starting signup process for:', data.email)
-  
-  const { error, data: signupData } = await supabase.auth.signUp({
-    email: data.email,
-    password: data.password,
+  const { error } = await supabase.auth.signInWithOtp({
+    email,
     options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`,
+      shouldCreateUser: true,
     },
   })
 
-  console.log('Signup response:', { error, signupData })
-
   if (error) {
-    console.error('Signup error:', error)
-    redirect('/error')
+    return { error: error.message }
   }
 
-  // Redirect to verify-email page after successful signup
-  redirect('/verify-email')
+  return { error: null }
+}
+
+export async function verifyOtp(email: string, token: string) {
+  const supabase = await createClient()
+
+  const { error, data } = await supabase.auth.verifyOtp({
+    email,
+    token,
+    type: 'email',
+  })
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  // Check if user record exists in our users table
+  if (data.user) {
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('id')
+      .eq('id', data.user.id)
+      .single()
+
+    // If no user record, this is a new sign-up — create household and user
+    if (!existingUser) {
+      const { data: householdData, error: householdError } = await supabase
+        .from('household')
+        .insert({ name: 'Your Household' })
+        .select()
+        .single()
+
+      if (householdError || !householdData) {
+        return { error: 'Failed to create household' }
+      }
+
+      const { error: userError } = await supabase.from('users').insert({
+        id: data.user.id,
+        email: data.user.email,
+        household_id: householdData.id,
+      })
+
+      if (userError) {
+        return { error: 'Failed to create user profile' }
+      }
+    }
+  }
+
+  revalidatePath('/', 'layout')
+  redirect('/')
 }
 
 export async function signOut() {
