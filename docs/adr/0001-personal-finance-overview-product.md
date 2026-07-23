@@ -18,8 +18,9 @@ The goal is to use BudgetBrain as a **personal** Buddy replacement — not to sh
 
 1. **Reposition** BudgetBrain as a personal high-level finance overview and cash-flow tracker spanning linked accounts.
 2. **Primary UX questions** the app must answer every period:
-   - Allocation: what % of spending (and optionally income) goes to each category?
-   - Cash flow: inflows − outflows; am I net positive?
+   - Cash flow: inflows − lifestyle outflows; am I net positive?
+   - Fixed vs discretionary: Wealthfront bills/subs vs Crew variable spend
+   - Allocation: what % of lifestyle spending goes to each category?
 3. **Remove Stripe / paywall surface area** (API routes, settings card, deps, env, docs). Keep auth for private access only.
 4. **Deprioritize** App Store / marketing-first framing for this phase; the authenticated overview is the product.
 5. **Optionally retain** the existing Plan/envelope UI as a secondary tool for discretionary budgeting, not as the main dashboard.
