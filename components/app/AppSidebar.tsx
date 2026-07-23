@@ -1,4 +1,4 @@
-import { Home, Settings, NotebookPen } from 'lucide-react';
+import { Home, Settings, NotebookPen, Wallet, List } from 'lucide-react';
 
 import {
   Sidebar,
@@ -19,6 +19,16 @@ const items = [
     title: 'Overview',
     url: '/',
     icon: Home,
+  },
+  {
+    title: 'Accounts',
+    url: '/accounts',
+    icon: Wallet,
+  },
+  {
+    title: 'Transactions',
+    url: '/transactions',
+    icon: List,
   },
   {
     title: 'Plan',

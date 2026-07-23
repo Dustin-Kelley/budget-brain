@@ -48,13 +48,9 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 ### Key Architecture Patterns
 
 #### Database Schema
-The application uses a household-based multi-tenancy model:
-- `household` - Top-level organization unit
-- `users` - Users belong to households
-- `categories` - Budget categories per household/month
-- `line_items` - Individual budget line items within categories
-- `income` - Income tracking per household
-- `transactions` - Expense transactions linked to line items
+Household-based multi-tenancy with two layers:
+- **Ledger (overview):** `accounts`, `spend_categories`, `ledger_transactions`, `category_rules`
+- **Plan (envelopes):** `categories`, `line_items`, `income`, `transactions` (legacy plan expenses)
 
 #### Authentication Flow
 - Uses Supabase Auth with SSR support
