@@ -202,9 +202,20 @@ Validate Plaid Transactions coverage for the owner’s institutions before relyi
 | Transfer mis-count | Explicit transfer pairing + purpose tags |
 | Plaid delay | Phase A import ships first |
 | SaaS security debt | Checklist before public launch (RLS, token encryption, rate limits) |
+| Live Vercel dogfood | Auth-gated routes; production Supabase env on Vercel; don’t ship half-broken Stripe removal (build must not require live Stripe keys) |
+| Production auth URLs | Supabase `site_url` / redirect allowlist must include `https://budget-brain-kappa.vercel.app` (and preview URLs if used) |
 
 ---
 
-## 10. Next step
+## 10. Hosting
+
+- **Production:** Vercel auto-deploys from `main`.
+- **URL:** https://budget-brain-kappa.vercel.app
+- **Dogfood path:** merge feature work → `main` → live. Preview deploys on PRs are fine for UI checks; real bank data stays on production Supabase.
+- **Env on Vercel:** Supabase URL/keys, `NEXT_PUBLIC_APP_URL`; Stripe vars removable after WS0 (use placeholders only if something still imports Stripe during transition).
+
+---
+
+## 11. Next step
 
 Turn WS0–WS3 into a concrete implementation plan (schema DDL, ticket list, UI notes) and start building. Plaid (WS4) follows once import-fed Overview is trusted with real months of data.
