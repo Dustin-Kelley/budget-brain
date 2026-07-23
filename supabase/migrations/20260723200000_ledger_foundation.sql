@@ -64,7 +64,15 @@ create table if not exists public.category_rules (
   priority integer not null default 100
 );
 
-grant all on table public.accounts to anon, authenticated, service_role;
-grant all on table public.spend_categories to anon, authenticated, service_role;
-grant all on table public.ledger_transactions to anon, authenticated, service_role;
-grant all on table public.category_rules to anon, authenticated, service_role;
+grant select, insert, update, delete on table public.accounts to authenticated;
+grant select, insert, update, delete on table public.spend_categories to authenticated;
+grant select, insert, update, delete on table public.ledger_transactions to authenticated;
+grant select, insert, update, delete on table public.category_rules to authenticated;
+
+grant all on table public.accounts to service_role;
+grant all on table public.spend_categories to service_role;
+grant all on table public.ledger_transactions to service_role;
+grant all on table public.category_rules to service_role;
+
+-- RLS is applied in 20260723210000_ledger_rls.sql (household-scoped policies).
+

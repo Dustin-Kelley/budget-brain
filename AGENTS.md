@@ -34,9 +34,11 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 Production deploys from `main` to Vercel (`https://budget-brain-kappa.vercel.app`).
-After pulling ledger migrations, apply
-`supabase/migrations/20260723200000_ledger_foundation.sql` on the **hosted**
-Supabase project (SQL editor or CLI) so production matches local.
+- After pulling ledger migrations, apply both
+  `20260723200000_ledger_foundation.sql` and `20260723210000_ledger_rls.sql` on
+  the **hosted** Supabase project (SQL editor or CLI) so production matches
+  local. See `docs/PRODUCTION_LEDGER_MIGRATION.md`. Ledger tables use
+  household-scoped RLS.
 
 ### Non-obvious gotchas
 
