@@ -24,9 +24,9 @@ export default function LandingPage() {
             <Logo />
             Budget Brain
           </Link>
-          <Link href={appStoreLink}>
+          <Link href='/login'>
             <Button size='sm'>
-              Download
+              Sign in
               <ChevronRight className='ml-1 size-4' />
             </Button>
           </Link>
@@ -49,19 +49,29 @@ export default function LandingPage() {
                   className='mb-4 rounded-full px-4 py-1.5 text-sm font-medium'
                   variant='secondary'
                 >
-                  Now Available on iOS
+                  Now on web & iOS
                 </Badge>
                 <h1 className='text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70'>
                   Budgeting made simple.
                 </h1>
                 <p className='text-lg md:text-xl text-muted-foreground mb-8 max-w-lg mx-auto lg:mx-0'>
                   Track spending, set goals, and build better financial habits
-                  — all from your iPhone.
+                  — on the web or your iPhone.
                 </p>
                 <div className='flex flex-col sm:flex-row gap-3 justify-center lg:justify-start'>
+                  <Link href='/login'>
+                    <Button
+                      size='lg'
+                      className='rounded-full h-12 px-6 text-base'
+                    >
+                      Get started
+                      <ChevronRight className='ml-1 size-4' />
+                    </Button>
+                  </Link>
                   <Link href={appStoreLink}>
                     <Button
                       size='lg'
+                      variant='outline'
                       className='rounded-full h-12 px-6 text-base gap-2'
                     >
                       <svg

@@ -30,8 +30,16 @@ const emailSchema = z.object({
 });
 
 const otpSchema = z.object({
-  token: z.string().min(6, 'Please enter the 6-digit code'),
+  token: z
+    .string()
+    .regex(/^\d{6}$/, 'Please enter the 6-digit code'),
 });
+
+function sanitizeOtpValue(value: string) {
+  // Autofill often dumps the email into this field; drop that entirely
+  if (/[a-zA-Z@]/.test(value)) return '';
+  return value.replace(/\D/g, '').slice(0, 6);
+}
 
 type EmailFormValues = z.infer<typeof emailSchema>;
 type OtpFormValues = z.infer<typeof otpSchema>;
@@ -60,6 +68,7 @@ export function LoginForm({
       return;
     }
     setEmail(data.email);
+    otpForm.reset({ token: '' });
     setStep('otp');
     toast.success('Check your email for a verification code');
   };
@@ -124,13 +133,39 @@ export function LoginForm({
                 className='grid gap-6'
                 autoComplete='off'
               >
+                {/* Hidden decoy so managers fill this instead of the real OTP field */}
+                <input
+                  type='text'
+                  name='username'
+                  autoComplete='username'
+                  tabIndex={-1}
+                  aria-hidden='true'
+                  className='sr-only'
+                  defaultValue={email}
+                  readOnly
+                />
                 <FormField
                   control={otpForm.control}
                   name='token'
                   render={({ field }) => (
                     <FormItem className='flex flex-col items-center'>
                       <FormControl>
-                        <InputOTP maxLength={6} autoComplete='off' name='otp-code' inputMode='numeric' value={field.value} onChange={field.onChange}>
+                        <InputOTP
+                          key={`otp-${email}`}
+                          maxLength={6}
+                          autoComplete='one-time-code'
+                          name='otp'
+                          inputMode='numeric'
+                          autoCorrect='off'
+                          autoCapitalize='off'
+                          spellCheck={false}
+                          pushPasswordManagerStrategy='none'
+                          pasteTransformer={sanitizeOtpValue}
+                          value={field.value}
+                          onChange={(value) =>
+                            field.onChange(sanitizeOtpValue(value))
+                          }
+                        >
                           <InputOTPGroup>
                             <InputOTPSlot index={0} />
                             <InputOTPSlot index={1} />
