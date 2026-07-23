@@ -52,36 +52,247 @@ export type Database = {
           created_at: string
           id: string
           name: string | null
-          stripe_customer_id: string | null
-          stripe_subscription_id: string | null
-          stripe_product_id: string | null
-          plan_name: string | null
-          subscription_status: string | null
-          subscription_current_period_end: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           name?: string | null
-          stripe_customer_id?: string | null
-          stripe_subscription_id?: string | null
-          stripe_product_id?: string | null
-          plan_name?: string | null
-          subscription_status?: string | null
-          subscription_current_period_end?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           name?: string | null
-          stripe_customer_id?: string | null
-          stripe_subscription_id?: string | null
-          stripe_product_id?: string | null
-          plan_name?: string | null
-          subscription_status?: string | null
-          subscription_current_period_end?: string | null
         }
         Relationships: []
+      }
+      accounts: {
+        Row: {
+          id: string
+          created_at: string
+          updated_at: string | null
+          household_id: string
+          name: string
+          institution: string | null
+          account_type: string
+          purpose: string
+          currency: string
+          current_balance: number | null
+          external_id: string | null
+          is_active: boolean
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          updated_at?: string | null
+          household_id: string
+          name: string
+          institution?: string | null
+          account_type?: string
+          purpose?: string
+          currency?: string
+          current_balance?: number | null
+          external_id?: string | null
+          is_active?: boolean
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          updated_at?: string | null
+          household_id?: string
+          name?: string
+          institution?: string | null
+          account_type?: string
+          purpose?: string
+          currency?: string
+          current_balance?: number | null
+          external_id?: string | null
+          is_active?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accounts_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "household"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      spend_categories: {
+        Row: {
+          id: string
+          created_at: string
+          household_id: string
+          name: string
+          group_kind: string
+          is_system: boolean
+          sort_order: number
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          household_id: string
+          name: string
+          group_kind?: string
+          is_system?: boolean
+          sort_order?: number
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          household_id?: string
+          name?: string
+          group_kind?: string
+          is_system?: boolean
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "spend_categories_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "household"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ledger_transactions: {
+        Row: {
+          id: string
+          created_at: string
+          updated_at: string | null
+          household_id: string
+          account_id: string
+          spend_category_id: string | null
+          amount: number
+          posted_at: string
+          description: string | null
+          merchant: string | null
+          source: string
+          external_id: string | null
+          transfer_group_id: string | null
+          created_by: string | null
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          updated_at?: string | null
+          household_id: string
+          account_id: string
+          spend_category_id?: string | null
+          amount: number
+          posted_at: string
+          description?: string | null
+          merchant?: string | null
+          source?: string
+          external_id?: string | null
+          transfer_group_id?: string | null
+          created_by?: string | null
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          updated_at?: string | null
+          household_id?: string
+          account_id?: string
+          spend_category_id?: string | null
+          amount?: number
+          posted_at?: string
+          description?: string | null
+          merchant?: string | null
+          source?: string
+          external_id?: string | null
+          transfer_group_id?: string | null
+          created_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ledger_transactions_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ledger_transactions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ledger_transactions_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "household"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ledger_transactions_spend_category_id_fkey"
+            columns: ["spend_category_id"]
+            isOneToOne: false
+            referencedRelation: "spend_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      category_rules: {
+        Row: {
+          id: string
+          created_at: string
+          household_id: string
+          match_field: string
+          match_type: string
+          match_value: string
+          spend_category_id: string
+          account_id: string | null
+          priority: number
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          household_id: string
+          match_field?: string
+          match_type?: string
+          match_value: string
+          spend_category_id: string
+          account_id?: string | null
+          priority?: number
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          household_id?: string
+          match_field?: string
+          match_type?: string
+          match_value?: string
+          spend_category_id?: string
+          account_id?: string | null
+          priority?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_rules_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "category_rules_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "household"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "category_rules_spend_category_id_fkey"
+            columns: ["spend_category_id"]
+            isOneToOne: false
+            referencedRelation: "spend_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       income: {
         Row: {

@@ -4,6 +4,7 @@
 
 - [Overhaul plan](./OVERHAUL_PLAN.md) — product north star, workstreams, success criteria
 - [Research: Crew, Buddy, Wealthfront](./research/crew-buddy-wealthfront.md)
+- [Production ledger migration](./PRODUCTION_LEDGER_MIGRATION.md) — run on hosted Supabase before/at merge to `main`
 
 ### Architecture Decision Records
 
@@ -15,4 +16,4 @@
 
 ## Legacy
 
-- ~~Stripe setup~~ — removed from product direction; see ADR 0001. File may still exist until WS0 cleanup.
+- Stripe was removed in the finance-overview overhaul (see ADR 0001). Reintroduce when packaging SaaS.

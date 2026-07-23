@@ -14,9 +14,7 @@ import LogoutButton from '@/components/app/LogoutButton';
 import { ResetBudgetButton } from '../components/ResetBudgetButton';
 import { HouseHold } from './components/HouseHold';
 
-import { getCurrentUser } from '@/app/queries/getCurrentUser';
 import { Profile } from './components/Profile';
-import { ManageSubscriptionCard } from './components/ManageSubscriptionCard';
 
 export default async function SettingsPage({
   searchParams,
@@ -24,8 +22,6 @@ export default async function SettingsPage({
   searchParams: Promise<{ month?: string }>;
 }) {
   const { month } = await searchParams;
-  const { currentUser } = await getCurrentUser();
-  const householdId = currentUser?.household_id ?? null;
 
   return (
     <div className='container mx-auto py-8'>
@@ -43,7 +39,6 @@ export default async function SettingsPage({
         <ResetBudgetButton month={month} />
         <HouseHold />
         <Profile />
-        <ManageSubscriptionCard householdId={householdId} />
 
         <Card>
           <CardHeader>

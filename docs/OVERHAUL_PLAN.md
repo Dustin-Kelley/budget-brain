@@ -1,6 +1,6 @@
 # BudgetBrain overhaul plan
 
-**Status:** Recommendations accepted for planning  
+**Status:** Implementation in progress (WS0–WS3 shipped on branch)  
 **Date:** 2026-07-23  
 **Goal:** Multi-account finance overview (Buddy replacement) — dogfood on owner’s banks now, architecture ready for SaaS bank-link later.
 

@@ -9,13 +9,7 @@ create extension if not exists "pgcrypto";
 create table if not exists public.household (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
-  name text,
-  stripe_customer_id text,
-  stripe_subscription_id text,
-  stripe_product_id text,
-  plan_name text,
-  subscription_status text,
-  subscription_current_period_end timestamptz
+  name text
 );
 
 create table if not exists public.users (
