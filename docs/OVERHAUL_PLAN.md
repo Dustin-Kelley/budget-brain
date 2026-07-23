@@ -15,13 +15,24 @@ Supporting research & ADRs:
 
 ## 1. Product north star
 
+### Confirmed money model
+
+| Where | Job |
+|-------|-----|
+| **Wealthfront** | Long-term wealth home: checking, emergency fund, investments. Pays **all subscriptions and real bills** (fixed costs). |
+| **Crew** | **Discretionary / variable** only — gas, groceries, non-fixed amounts. |
+| **Buddy** | Replaced by BudgetBrain overview. |
+
+Income and fixed costs live on Wealthfront; variable spend lives on Crew. Funding Crew from Wealthfront is a **transfer**, not spending twice.
+
 BudgetBrain should answer, for any selected period (default: current month):
 
-1. **Am I net positive?** — Total in, total out, net (excluding internal transfers).
-2. **Where does money go?** — % allocation by category (housing, groceries, …).
-3. **What’s the picture across accounts?** — Crew + Wealthfront (and later others) in one ledger.
+1. **Am I net positive?** — Inflows − lifestyle outflows (exclude transfers + investment/emergency moves).
+2. **Where does money go?** — % allocation by category across *lifestyle* spend.
+3. **Fixed vs discretionary?** — Wealthfront bills/subs vs Crew variable, as a clear split.
+4. **Account picture** — Checking / emergency / investments / Crew balances (net worth can wait).
 
-Crew remains the day-to-day discretionary controller; BudgetBrain does not need to recreate pockets/Autopilot. Wealthfront remains the primary bank/brokerage; BudgetBrain does not need to recreate investing UI.
+Crew stays the discretionary controller (no need to recreate pockets/Autopilot). Wealthfront stays the wealth + bills system (no need to recreate investing UI).
 
 ---
 
@@ -51,10 +62,11 @@ Crew remains the day-to-day discretionary controller; BudgetBrain does not need 
 
 ### Overview widgets (v1)
 
-1. **Cash flow card** — In | Out | Net + sparkline or simple month comparison  
-2. **Allocation** — pie or stacked bar: category % of spend  
-3. **Accounts** — Crew, Wealthfront balances (when available)  
-4. **Recent activity** — last N transactions across accounts  
+1. **Cash flow card** — In | Lifestyle out | Net  
+2. **Fixed vs discretionary** — Wealthfront bills/subs vs Crew variable (amounts + %)  
+3. **Allocation** — category % of lifestyle spend (housing, groceries, subscriptions, …)  
+4. **Accounts** — Wealthfront checking / emergency / investments + Crew  
+5. **Recent activity** — last N txns (filterable by account or fixed/variable)  
 
 ---
 
@@ -105,9 +117,10 @@ Ordered so each slice leaves the app usable.
 
 ### WS1 — Ledger foundation
 
-- Migrations: `accounts`, evolved `transactions`, stable categories, `category_rules`.
-- Seed default category taxonomy (Housing, Groceries, Dining, Transport, Utilities, Health, Entertainment, Shopping, Subscriptions, Income, Transfer, Other).
-- Server queries: period cash flow, allocation %, transaction list by account.
+- Migrations: `accounts` (with `purpose`), evolved `transactions`, stable categories, `category_rules`.
+- Seed accounts: Wealthfront Checking (`fixed_spend`), Emergency (`emergency`), Investments (`investment`), Crew (`discretionary_spend`).
+- Seed categories split mentally into **fixed** (Housing, Utilities, Insurance, Subscriptions, …) and **variable** (Groceries, Gas, Dining, Entertainment, …) plus system (Income, Transfer, Savings, Investment).
+- Server queries: lifestyle cash flow, fixed vs discretionary split, allocation %, txn list by account.
 
 ### WS2 — Overview UI rebuild
 
@@ -157,19 +170,24 @@ Ordered so each slice leaves the app usable.
 | Risk / question | Notes |
 |-----------------|-------|
 | Does Crew expose pocket names via Plaid? | May only get merchant/amount; rules/manual map needed |
-| Wealthfront cash vs investment accounts | May need multiple `accounts` rows; investment buys ≠ lifestyle spend |
-| Transfer detection | Critical so Crew funding from Wealthfront isn’t double-counted |
+| Wealthfront multi-account split | Checking vs emergency vs investments must map cleanly from Plaid/QFX |
+| Transfer detection | **Critical:** Wealthfront → Crew funding must not count as spend |
+| Wealth moves vs spend | Emergency top-ups and investment contributions excluded from lifestyle out |
 | Plaid personal-use cost / ToS | Confirm Development tier limits; Production approval if hosting publicly |
-| Keep Plan UI? | Recommend yes initially; revisit after Overview is trusted |
+| Keep Plan UI? | Best fit for **Crew discretionary** envelopes; keep initially |
 | Single-user vs household | Build ledger per household; don’t invest in invites yet |
 
-**Questions for the next planning pass (with you):**
+### Resolved
 
-1. Is Wealthfront **Cash** the primary spending account, or mostly bills/transfers while Crew is the spend card?
-2. Do you care about **net worth / investment balances**, or only cash-flow + allocation for now?
-3. Preferred first ingest: **manual QFX/CSV** this week, or go straight to **Plaid**?
-4. Should internal transfers to investment goals count as “out” or be excluded like transfers?
-5. Any other accounts (credit cards, 401k) in scope for v1?
+1. **Wealthfront vs Crew roles** — Wealthfront = wealth home + all fixed bills/subs; Crew = discretionary/variable only.
+2. **Investment / emergency moves** — Exclude from lifestyle “out” (treat as transfer/wealth move). Still show balances on Accounts when available.
+
+### Still open (for next planning pass)
+
+1. Do you want **net worth / investment balances** on Overview in v1, or only cash-flow + allocation + account strip?
+2. Preferred first ingest: **manual QFX/CSV**, or straight to **Plaid**?
+3. Any other accounts (credit cards, 401k) in v1, or strictly Wealthfront + Crew?
+4. Should `/plan` focus only on Crew discretionary targets, with Wealthfront bills tracked as recurring ledger categories only?
 
 ---
 

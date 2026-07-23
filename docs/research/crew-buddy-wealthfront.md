@@ -7,17 +7,37 @@
 
 ## Current user workflow
 
+**Confirmed money topology (2026-07-23):**
+
+```
+Income ──► Wealthfront (home base)
+              ├── Checking — day-to-day bills & subscriptions (fixed)
+              ├── Emergency fund — reserves (not lifestyle spend)
+              ├── Investments — long-term wealth (not lifestyle spend)
+              └── Transfers ──► Crew — discretionary card (variable)
+                                    gas, groceries, non-fixed amounts
+```
+
 | Tool | Role today | What BudgetBrain should absorb |
 |------|------------|--------------------------------|
-| **Crew** ([trycrew.com](https://www.trycrew.com/)) | Discretionary spending / envelope-style “pockets” (groceries, gas, fun money). High-yield checking with real authorization controls. | Category-level discretionary spend; pocket → category mapping; transactions from Crew debit activity. |
-| **Wealthfront** | Primary account (cash + investments). Broader money movement. | Core inflows/outflows, transfers, bills paid from primary account, investment/cash activity where useful for cash-flow. |
-| **Buddy** ([buddy.download](https://buddy.download/)) | High-level overview across accounts (Crew + Wealthfront + others): budgets, category %, income vs spend, multi-account / net-worth style view. | **Replace entirely** as the all-accounts tracker and allocation dashboard. |
+| **Crew** ([trycrew.com](https://www.trycrew.com/)) | **Discretionary only** — variable spend (gas, groceries, non-fixed). Pocket/envelope control. | Variable spend categories; Crew debit ledger; optional pocket → category map. |
+| **Wealthfront** | **Home base for long-term wealth** — checking, emergency fund, investments. Also pays **all subscriptions and real bills** (fixed costs). | Fixed-cost categories (rent/mortgage, utilities, subs); multi-account balances; exclude internal wealth moves from “spend.” |
+| **Buddy** ([buddy.download](https://buddy.download/)) | High-level overview across accounts: budgets, category %, income vs spend. | **Replace entirely** as the all-accounts tracker and allocation dashboard. |
+
+**Spend buckets that matter in Overview:**
+
+| Bucket | Typical source | Examples |
+|--------|----------------|----------|
+| **Fixed** | Wealthfront checking | Rent/mortgage, utilities, insurance, subscriptions, known bills |
+| **Discretionary / variable** | Crew | Gas, groceries, dining, fun money |
+| **Not lifestyle spend** | Wealthfront internal | Emergency-fund top-ups, investment buys/sells, Crew funding transfers |
 
 **Target product job:** BudgetBrain becomes the Buddy replacement — a personal, high-level finance overview that answers:
 
-1. **Allocation** — What % of my money goes to housing, groceries, etc.?
-2. **Cash flow** — Am I net positive this period (in − out)?
-3. **Source truth** — Pull real activity from Crew + Wealthfront instead of (or in addition to) manual envelope entry.
+1. **Allocation** — What % of lifestyle spend goes to housing, groceries, subscriptions, etc.?
+2. **Cash flow** — Am I net positive this period (in − out), with transfers/wealth moves excluded?
+3. **Fixed vs discretionary** — How much of outflow is Wealthfront bills vs Crew variable spend?
+4. **Source truth** — Real activity from Crew + Wealthfront (multi-account under Wealthfront).
 
 ---
 
