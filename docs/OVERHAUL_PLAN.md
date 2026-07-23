@@ -57,6 +57,7 @@ Other SaaS users may put bills on Chase and discretionary on a credit card — s
 | **`/plan`** | Keep as **generic envelope module** | Useful for discretionary targets; SaaS feature later |
 | **Stripe** | **Remove now**, re-add for SaaS launch | Dead weight while dogfooding |
 | **Auth / household** | Keep | Already the right SaaS tenancy root |
+| **Hosting** | **Vercel** — `main` deploys live | Existing app: `https://budget-brain-kappa.vercel.app` |
 
 ---
 
