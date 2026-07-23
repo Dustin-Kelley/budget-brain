@@ -1,7 +1,9 @@
 # Research: Crew, Buddy, and Wealthfront
 
 **Date:** 2026-07-23  
-**Purpose:** Ground the BudgetBrain overhaul in how the user actually manages money today, and what data-access paths exist.
+**Purpose:** Ground the BudgetBrain overhaul in how the *owner* manages money today (reference setup), while keeping the product institution-agnostic for a future multi-bank SaaS.
+
+> **Note:** Crew and Wealthfront are the first institutions we dogfood against. They are not the product. Any user should eventually link their preferred banks through the same ledger + ingest layer.
 
 ---
 
@@ -131,10 +133,10 @@ We do **not** need Buddy’s social split, App Store marketing, or subscription 
 
 ## Recommended direction (summary)
 
-1. **Product:** Personal all-accounts overview (Buddy replacement), not a SaaS paywall product.
-2. **Ingest:** Prefer **Plaid** for both Crew and Wealthfront; support **file import (QFX/CSV)** as day-one fallback; expose a **generic ingest webhook** if using Finicom-style tools.
-3. **Domain:** Introduce accounts, canonical categories, signed transactions, and period rollups for allocation + cash flow.
-4. **Preserve:** Auth, household tenancy, month navigation patterns, and optionally the existing Plan UI for envelope budgeting of discretionary spend.
+1. **Product:** Institution-agnostic multi-account overview (Buddy replacement); dogfood on owner’s Crew + Wealthfront; SaaS bank-link later.
+2. **Ingest:** CSV/QFX first → Plaid Link (SaaS precursor) → optional generic webhook.
+3. **Domain:** Accounts with `purpose`, signed ledger, transfers/wealth moves excluded from lifestyle metrics.
+4. **Preserve:** Auth, household tenancy, optional Plan module; remove Stripe until SaaS packaging.
 
 See also:
 

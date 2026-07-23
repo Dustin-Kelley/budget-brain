@@ -1,8 +1,8 @@
 # BudgetBrain overhaul plan
 
-**Status:** Draft for review  
+**Status:** Recommendations accepted for planning  
 **Date:** 2026-07-23  
-**Goal:** Replace Buddy as the personal all-accounts finance overview, fed by Crew + Wealthfront.
+**Goal:** Multi-account finance overview (Buddy replacement) — dogfood on owner’s banks now, architecture ready for SaaS bank-link later.
 
 Supporting research & ADRs:
 
@@ -15,62 +15,86 @@ Supporting research & ADRs:
 
 ## 1. Product north star
 
-### Confirmed money model
+### Two horizons
+
+| Now (dogfood) | Later (SaaS) |
+|---------------|--------------|
+| Replace Buddy for the owner | Anyone links their preferred banks |
+| First institutions: Crew + Wealthfront | Same ledger + Plaid-class Link for any supported bank |
+| No paywall | Reintroduce Stripe (or similar) when packaging |
+
+**Crew / Wealthfront describe how the owner allocates money today** — they are not the product. UI and schema speak in generic terms: accounts, purposes (fixed / discretionary / emergency / investment), categories, transfers.
+
+### Reference money model (owner)
 
 | Where | Job |
 |-------|-----|
-| **Wealthfront** | Long-term wealth home: checking, emergency fund, investments. Pays **all subscriptions and real bills** (fixed costs). |
-| **Crew** | **Discretionary / variable** only — gas, groceries, non-fixed amounts. |
-| **Buddy** | Replaced by BudgetBrain overview. |
+| **Wealthfront** | Wealth home: checking, emergency, investments. Pays subscriptions & real bills (**fixed**). |
+| **Crew** | **Discretionary / variable** — gas, groceries, non-fixed. |
+| Funding Crew from Wealthfront | **Transfer**, not spend |
 
-Income and fixed costs live on Wealthfront; variable spend lives on Crew. Funding Crew from Wealthfront is a **transfer**, not spending twice.
+Other SaaS users may put bills on Chase and discretionary on a credit card — same `purpose` tags, different institutions.
 
-BudgetBrain should answer, for any selected period (default: current month):
+### Questions the product answers (every period)
 
-1. **Am I net positive?** — Inflows − lifestyle outflows (exclude transfers + investment/emergency moves).
-2. **Where does money go?** — % allocation by category across *lifestyle* spend.
-3. **Fixed vs discretionary?** — Wealthfront bills/subs vs Crew variable, as a clear split.
-4. **Account picture** — Checking / emergency / investments / Crew balances (net worth can wait).
-
-Crew stays the discretionary controller (no need to recreate pockets/Autopilot). Wealthfront stays the wealth + bills system (no need to recreate investing UI).
+1. **Am I net positive?** — Inflows − lifestyle outflows (exclude transfers + wealth moves).
+2. **Where does money go?** — % allocation by category (lifestyle spend).
+3. **Fixed vs discretionary?** — by account purpose / category group (not branded “Crew vs Wealthfront”).
+4. **Account picture** — balances for linked accounts.
 
 ---
 
-## 2. What we keep vs change vs remove
+## 2. Recommendations (decided)
+
+| Topic | Suggestion | Why |
+|-------|------------|-----|
+| **Architecture** | Generic accounts + ingest from day one | Avoid rewrite when opening to other banks |
+| **v1 scope** | Cash flow + allocation + account balances strip | Core Buddy-replacement job; net-worth deep dive can wait |
+| **Net worth** | **Defer** full net-worth UI; still store balances | Investments matter later for SaaS; don’t block overview |
+| **First ingest** | **CSV/QFX import first**, Plaid Link next | Get real data in fast; Plaid is the SaaS bank-connect path |
+| **Institutions in dogfood** | Owner’s Wealthfront + Crew only | Enough to prove transfers + fixed/variable split |
+| **Hardcoding** | No Crew-/WF-only code paths | Optional seed accounts/rules for the owner OK |
+| **`/plan`** | Keep as **generic envelope module** | Useful for discretionary targets; SaaS feature later |
+| **Stripe** | **Remove now**, re-add for SaaS launch | Dead weight while dogfooding |
+| **Auth / household** | Keep | Already the right SaaS tenancy root |
+
+---
+
+## 3. What we keep vs change vs remove
 
 | Area | Action |
 |------|--------|
-| Supabase auth (email OTP) | **Keep** — private personal access |
-| Household tenancy | **Keep** (single-user is fine) |
+| Supabase auth (email OTP) | **Keep** |
+| Household tenancy | **Keep** (invites/billing later) |
 | Overview dashboard (`/`) | **Rebuild** around cash flow + allocation |
-| Plan (`/plan`) | **Keep as secondary** envelope tool, or park behind a “Budget plan” nav item |
-| Stripe / pricing / checkout | **Remove** |
-| Marketing App Store welcome | **Simplify** later; not blocking |
-| Manual add expense | **Keep** as fallback + adjustments |
+| Plan (`/plan`) | **Keep** as secondary generic envelope tool |
+| Stripe / pricing / checkout | **Remove now** (return for SaaS) |
+| Marketing App Store welcome | Simplify later; not blocking |
+| Manual add expense | **Keep** as fallback |
 
 ---
 
-## 3. Target information architecture
+## 4. Target information architecture
 
 ```
-/                Overview — net cash flow, allocation pie/%, account strip
-/accounts        Linked accounts, balances, last sync / import
-/transactions    Unified searchable ledger (filter by account, category, source)
-/plan            (optional) Existing envelope planner for discretionary targets
-/settings        Profile, theme, reset, link/import credentials — no subscription
+/                Overview — net cash flow, fixed vs discretionary, allocation %, account strip
+/accounts        Linked accounts, balances, connect bank / import
+/transactions    Unified ledger (filter account, category, purpose)
+/plan            Optional envelope planner (discretionary targets)
+/settings        Profile, theme — no subscription (for now)
 ```
 
 ### Overview widgets (v1)
 
-1. **Cash flow card** — In | Lifestyle out | Net  
-2. **Fixed vs discretionary** — Wealthfront bills/subs vs Crew variable (amounts + %)  
-3. **Allocation** — category % of lifestyle spend (housing, groceries, subscriptions, …)  
-4. **Accounts** — Wealthfront checking / emergency / investments + Crew  
-5. **Recent activity** — last N txns (filterable by account or fixed/variable)  
+1. **Cash flow** — In | Lifestyle out | Net  
+2. **Fixed vs discretionary** — by purpose (amounts + %)  
+3. **Allocation** — category % of lifestyle spend  
+4. **Accounts** — linked balances  
+5. **Recent activity** — filterable ledger slice  
 
 ---
 
-## 4. Data architecture (target)
+## 5. Data architecture (target)
 
 ```
                     ┌─────────────┐
@@ -85,114 +109,101 @@ Crew stays the discretionary controller (no need to recreate pockets/Autopilot).
                     └─────────────────────┘
 ```
 
-See ADR 0003 for tables. Migration approach:
+Institution-agnostic. Owner dogfoods with two Links/imports; SaaS users add N institutions the same way.
+
+Migration approach:
 
 1. Add new tables alongside existing ones.
 2. Backfill historical manual expenses → ledger with account `Manual`.
-3. Point Overview at ledger; leave Plan on old tables until a later consolidation.
+3. Point Overview at ledger; leave Plan on old tables until consolidation.
 
 ---
 
-## 5. Ingestion roadmap
+## 6. Ingestion roadmap
 
 | Phase | Deliverable | Unlocks |
 |-------|-------------|---------|
-| **A** | CSV + QFX import UI; category mapping on import | Wealthfront via QFX; any Crew CSV/export; Overview with real data |
-| **B** | Plaid Link for Crew + Wealthfront; sync job + webhooks | Hands-off updates |
-| **C** | Generic HMAC webhook ingest | Finicom/Buddy-like “push” workflow if preferred over Plaid |
+| **A** | CSV + QFX import → any account | Dogfood with Wealthfront QFX + Crew CSV/export immediately |
+| **B** | Plaid Link + sync + webhooks | Hands-off updates; **future SaaS “connect your bank”** |
+| **C** | Generic HMAC webhook ingest | Optional third-party sync tools |
 
-**Open validation before Phase B:** Confirm in a Plaid developer account that **Transactions** product works for both institutions under this app’s keys.
+Validate Plaid Transactions coverage for the owner’s institutions before relying on Phase B alone.
 
 ---
 
-## 6. Workstreams (implementation slices)
-
-Ordered so each slice leaves the app usable.
+## 7. Workstreams (implementation slices)
 
 ### WS0 — Personal-tool cleanup
 
-- Remove Stripe package usage, `/api/stripe/*`, checkout success, subscription settings card, `docs/STRIPE_SETUP.md`.
-- Drop Stripe env requirements from runbooks (`AGENTS.md`, `WARP.md`).
-- Optional DB migration to drop unused Stripe columns on `household`.
+- Remove Stripe surface area; update runbooks.
+- Optional drop of Stripe columns on `household`.
 
-### WS1 — Ledger foundation
+### WS1 — Ledger foundation (SaaS-shaped)
 
-- Migrations: `accounts` (with `purpose`), evolved `transactions`, stable categories, `category_rules`.
-- Seed accounts: Wealthfront Checking (`fixed_spend`), Emergency (`emergency`), Investments (`investment`), Crew (`discretionary_spend`).
-- Seed categories split mentally into **fixed** (Housing, Utilities, Insurance, Subscriptions, …) and **variable** (Groceries, Gas, Dining, Entertainment, …) plus system (Income, Transfer, Savings, Investment).
-- Server queries: lifestyle cash flow, fixed vs discretionary split, allocation %, txn list by account.
+- `accounts` with `purpose` (`fixed_spend` \| `discretionary_spend` \| `emergency` \| `investment` \| `other`)
+- Stable categories, rules, signed transactions, transfer pairs
+- Seed **owner presets** (Wealthfront ×3 + Crew) as data, not code branches
+- Queries: lifestyle cash flow, fixed vs discretionary, allocation %
 
 ### WS2 — Overview UI rebuild
 
-- Replace Planned/Spent/Remaining-as-primary with In/Out/Net + allocation.
-- Month selector stays.
-- Account filter chips.
+- In/Out/Net + fixed/discretionary + allocation
+- Generic copy (no “Crew” / “Wealthfront” required in chrome)
 
-### WS3 — Import path (Phase A ingest)
+### WS3 — Import path (Phase A)
 
-- Upload QFX/CSV → parse → preview → confirm categories → commit.
-- Deduping and “Transfers” detection heuristics (same amount, close dates, two accounts).
+- Upload → parse → map to account → categorize → commit
+- Transfer detection heuristics
 
-### WS4 — Automation (Phase B/C)
+### WS4 — Bank Link (Phase B) — SaaS precursor
 
-- Plaid Link button on `/accounts`.
-- Sync + webhook handlers.
-- Optional generic ingest webhook.
+- Plaid Link on `/accounts`
+- Sync + webhooks
+- Same normalizer as import
 
 ### WS5 — Categorization quality
 
-- Rules engine (contains merchant X → Groceries).
-- Review queue for uncategorized txns (biggest lever for accurate %).
-- Optional: map Crew pocket names when present in memo/metadata.
+- Account-aware rules; uncategorized review queue
 
-### WS6 — Plan coexistence / docs
+### WS6 — Docs / coexistence
 
-- Clarify nav labels: Overview vs Budget plan.
-- Update README / WARP / AGENTS for new mental model.
-- Retire or freeze dead stubs (pricing, password reset, invite).
+- Nav: Overview vs Plan
+- Document dogfood vs future SaaS in README/WARP/AGENTS
 
----
+### Later (post-dogfood SaaS track — not v1)
 
-## 7. Success criteria
-
-| Metric | Definition of done |
-|--------|--------------------|
-| Replace Buddy for overview | User can see Crew + Wealthfront activity in one place without opening Buddy |
-| Allocation | Category % of spend for the selected month, editable via recategorize |
-| Cash flow | Clear In / Out / Net; transfers don’t distort the story |
-| Personal tool | No Stripe; app runs with Supabase auth only |
-| Trust | Imports are idempotent; sync doesn’t duplicate transactions |
+- Harden RLS for true multi-tenant
+- Onboarding (“connect your banks”)
+- Reintroduce Stripe / plans
+- Net-worth dashboard
+- Household invites
 
 ---
 
-## 8. Risks and open questions
+## 8. Success criteria (dogfood)
 
-| Risk / question | Notes |
-|-----------------|-------|
-| Does Crew expose pocket names via Plaid? | May only get merchant/amount; rules/manual map needed |
-| Wealthfront multi-account split | Checking vs emergency vs investments must map cleanly from Plaid/QFX |
-| Transfer detection | **Critical:** Wealthfront → Crew funding must not count as spend |
-| Wealth moves vs spend | Emergency top-ups and investment contributions excluded from lifestyle out |
-| Plaid personal-use cost / ToS | Confirm Development tier limits; Production approval if hosting publicly |
-| Keep Plan UI? | Best fit for **Crew discretionary** envelopes; keep initially |
-| Single-user vs household | Build ledger per household; don’t invest in invites yet |
-
-### Resolved
-
-1. **Wealthfront vs Crew roles** — Wealthfront = wealth home + all fixed bills/subs; Crew = discretionary/variable only.
-2. **Investment / emergency moves** — Exclude from lifestyle “out” (treat as transfer/wealth move). Still show balances on Accounts when available.
-
-### Still open (for next planning pass)
-
-1. Do you want **net worth / investment balances** on Overview in v1, or only cash-flow + allocation + account strip?
-2. Preferred first ingest: **manual QFX/CSV**, or straight to **Plaid**?
-3. Any other accounts (credit cards, 401k) in v1, or strictly Wealthfront + Crew?
-4. Should `/plan` focus only on Crew discretionary targets, with Wealthfront bills tracked as recurring ledger categories only?
+| Metric | Done when |
+|--------|-----------|
+| Replace Buddy | Owner runs month overview without Buddy |
+| Allocation | Category % of lifestyle spend, editable |
+| Cash flow | In / out / net; transfers & wealth moves don’t distort |
+| Generic core | Second hypothetical bank could plug in without schema change |
+| No paywall | Stripe removed; auth-only access |
+| Trust | Idempotent import/sync |
 
 ---
 
-## 9. Suggested next step
+## 9. Risks
 
-After you review this pack, we turn §6 into a concrete implementation plan (ticket-sized tasks, schema DDL sketch, and UI wireframe notes) and start with **WS0 + WS1** unless you prefer ingest-first with a thinner schema.
+| Risk | Mitigation |
+|------|------------|
+| Accidental Crew/WF hardcoding | Code review against ADR 0001; presets as seed data |
+| Transfer mis-count | Explicit transfer pairing + purpose tags |
+| Plaid delay | Phase A import ships first |
+| SaaS security debt | Checklist before public launch (RLS, token encryption, rate limits) |
 
-No application code has been changed in this documentation pass — research and decisions only.
+---
+
+## 10. Next step
+
+Turn WS0–WS3 into a concrete implementation plan (schema DDL, ticket list, UI notes) and start building. Plaid (WS4) follows once import-fed Overview is trusted with real months of data.

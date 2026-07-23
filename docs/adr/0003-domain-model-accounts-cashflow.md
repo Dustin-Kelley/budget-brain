@@ -20,33 +20,35 @@ There is no notion of **bank accounts**, **transfers**, or **signed cash flow**.
 
 Evolve toward a **ledger-first** model, while allowing the existing plan tables to remain for optional envelope budgeting.
 
-### Confirmed account roles
+### Confirmed account roles (owner reference setup)
 
-| Account | Institution | Role | Default spend treatment |
-|---------|-------------|------|-------------------------|
-| Wealthfront Checking | Wealthfront | Bills + subscriptions (fixed) | Lifestyle **outflow** when categorized as bill/sub |
-| Wealthfront Emergency Fund | Wealthfront | Reserves | **Transfer / savings** — not lifestyle spend |
-| Wealthfront Investments | Wealthfront | Long-term wealth | **Wealth move** — not lifestyle spend |
-| Crew | Crew | Discretionary / variable (gas, groceries, non-fixed) | Lifestyle **outflow** |
+These are **seed examples**, not hardcoded product types. SaaS users create whatever accounts their banks expose and assign `purpose` themselves (or via onboarding defaults).
 
-Seed these four accounts (or however Wealthfront splits them in Plaid/QFX) on first setup. Tag accounts with `purpose`: `fixed_spend` | `discretionary_spend` | `emergency` | `investment`.
+| Account (example) | Institution | Role | Default `purpose` |
+|-------------------|-------------|------|-------------------|
+| Checking | Wealthfront | Bills + subscriptions (fixed) | `fixed_spend` |
+| Emergency Fund | Wealthfront | Reserves | `emergency` |
+| Investments | Wealthfront | Long-term wealth | `investment` |
+| Spending | Crew | Discretionary / variable | `discretionary_spend` |
+
+Tag accounts with `purpose`: `fixed_spend` | `discretionary_spend` | `emergency` | `investment` | `other`.
 
 ### Core entities (new / evolved)
 
 | Entity | Responsibility |
 |--------|----------------|
-| `accounts` | Named money pots above. `institution`, `type`, `purpose`, `currency`, `current_balance`, `external_ids`. |
-| `category_taxonomy` (stable, not month-scoped) | Fixed: Housing, Utilities, Insurance, Subscriptions, … · Variable: Groceries, Gas/Transport, Dining, Entertainment, … · System: Income, Transfer, Savings, Investment. |
+| `accounts` | Named money pots. `institution`, `type`, `purpose`, `currency`, `current_balance`, `external_ids`. |
+| `category_taxonomy` (stable, not month-scoped) | Fixed-leaning: Housing, Utilities, Insurance, Subscriptions, … · Variable-leaning: Groceries, Gas/Transport, Dining, Entertainment, … · System: Income, Transfer, Savings, Investment. |
 | `transactions` (evolved) | Canonical ledger rows: `account_id`, `amount` (signed: +in / −out), `posted_at`, `description`, `merchant`, `category_id`, `transfer_pair_id?`, `source` (`manual` \| `plaid` \| `import` \| `webhook`), `external_id`. |
-| `category_rules` | Prefer account-aware rules: Wealthfront merchants → fixed categories; Crew merchants → variable categories. |
+| `category_rules` | Account-aware rules (purpose + merchant/description → category). |
 | `period_snapshots` (optional) | Cached monthly rollups: income, fixed out, discretionary out, net, allocation JSON. |
 
 ### Cash-flow semantics
 
-- **Inflow:** paycheck, interest, refunds (usually lands in Wealthfront).
-- **Lifestyle outflow:** Crew spend + Wealthfront bill/subscription payments.
-- **Transfer:** Wealthfront → Crew funding; checking ↔ emergency; etc. Excluded from lifestyle spend and from net “am I positive?” unless we show a separate savings rate.
-- **Wealth move:** buys/sells inside investments; contributions to emergency/investment from checking. Excluded from lifestyle allocation; may appear in a future net-worth view.
+- **Inflow:** paycheck, interest, refunds.
+- **Lifestyle outflow:** spend on `fixed_spend` / `discretionary_spend` accounts (or categories marked lifestyle).
+- **Transfer:** movement between own accounts (e.g. funding discretionary from checking). Excluded from lifestyle spend.
+- **Wealth move:** activity on `emergency` / `investment` purposes (contributions, buys/sells). Excluded from lifestyle allocation; reserved for future net-worth views.
 
 **Net positive check (period) — lifestyle cash flow:**
 
@@ -61,22 +63,20 @@ net = sum(inflows) − sum(|lifestyle outflows|)
 allocation[category] = sum(|outflows in category|) / sum(|all lifestyle outflows|)
 ```
 
-**Fixed vs discretionary split (first-class Overview metric):**
+**Fixed vs discretionary split:**
 
 ```
-fixed %         = Wealthfront lifestyle outflows / total lifestyle outflows
-discretionary % = Crew lifestyle outflows       / total lifestyle outflows
+fixed %         = outflows on fixed_spend purposes (or fixed categories) / total lifestyle outflows
+discretionary % = outflows on discretionary_spend purposes / total lifestyle outflows
 ```
 
-(Refine later if some Wealthfront txns are discretionary or some Crew txns are fixed.)
-
-Optionally also show `% of income` for planning comparison (Buddy-like).
+Optionally also show `% of income` for planning comparison.
 
 ### Relationship to existing Plan UI
 
-- Keep `categories` / `line_items` / planned `income` as **budget plan** artifacts — strongest fit for **Crew discretionary** envelopes.
-- New overview reads from the **ledger**, not from planned amounts.
-- Optional bridge: map Crew pocket spend onto plan line items; Wealthfront fixed bills can stay ledger-only or get simple recurring rules.
+- Keep plan tables as a **generic envelope module** (strong fit for discretionary targets).
+- Overview reads from the **ledger**, not planned amounts.
+- Optional later bridge: map discretionary account spend onto plan line items.
 
 ### Stripe columns on `household`
 

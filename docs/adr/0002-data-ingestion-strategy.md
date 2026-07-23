@@ -15,30 +15,32 @@ The user expected a Crew webhook; that is achievable as **our** ingest endpoint 
 
 ## Decision
 
-Adopt a **layered ingest** strategy:
+Adopt a **layered, institution-agnostic ingest** strategy. Crew and Wealthfront are the first connected institutions for dogfooding — not special-cased product modules.
 
 ### Phase A — Manual import (unblocks overview immediately)
 
-- Accept **QFX/OFX** (Wealthfront) and **CSV** (generic / Crew exports if available).
+- Accept **QFX/OFX** and **CSV**.
+- User picks (or creates) the destination `account` on import.
 - Normalize into a single internal transaction shape (see ADR 0003).
 - Deduplicate on `(account_id, external_id)` or content hash when no external id.
 
-### Phase B — Automated sync (preferred steady state)
+### Phase B — Aggregator sync (preferred steady state + SaaS bank-link path)
 
-- Integrate **Plaid Link + Transactions** (`/transactions/sync`) for both Crew and Wealthfront.
+- Integrate **Plaid Link + Transactions** (`/transactions/sync`) — or equivalent aggregator later.
+- One Link flow works for any supported institution (owner’s Crew + Wealthfront first; SaaS users bring their own banks).
 - Store `plaid_item_id` / `access_token` (encrypted at rest) per linked item.
-- Handle Plaid webhooks (`SYNC_UPDATES_AVAILABLE`, etc.) to refresh.
+- Handle aggregator webhooks (`SYNC_UPDATES_AVAILABLE`, etc.) to refresh.
 
 ### Phase C — Optional generic webhook
 
-- Expose `POST /api/ingest/transactions` (HMAC-signed) so tools like Finicom can push Crew (or other) activity without Plaid if preferred.
+- Expose `POST /api/ingest/transactions` (HMAC-signed) so third-party sync tools can push activity.
 - Same normalizer as file/Plaid paths.
 
-### Non-goals
+### Non-goals (for ingest)
 
-- Scraping Crew/Wealthfront UIs
+- Scraping bank UIs
 - Moving money / payment initiation
-- Relying on unofficial private APIs
+- Hardcoding institution-specific parsers as the long-term path (presets/rules OK)
 
 ## Consequences
 
