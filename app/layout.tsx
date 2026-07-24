@@ -1,15 +1,17 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Source_Serif_4, Geist_Mono } from 'next/font/google';
 
 import './globals.css';
-import { SidebarProvider } from '@/components/ui/sidebar';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from 'sonner';
-import { SidebarWrapper } from '@/components/app/SidebarWrapper';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+/**
+ * The Broadsheet design system sets one family for headings and body alike.
+ */
+const sourceSerif = Source_Serif_4({
+  variable: '--font-source-serif',
   subsets: ['latin'],
+  display: 'swap',
 });
 
 const geistMono = Geist_Mono({
@@ -44,26 +46,18 @@ export default async function RootLayout({
           rel='apple-touch-icon'
           href='/icons/budget-brain-pwa-logo.png'
         />
-        <link
-          rel='icon'
-          href='/icons/budget-brain-pwa-logo.png'
-        />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${sourceSerif.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider
           attribute='class'
-          defaultTheme='light'
+          defaultTheme='system'
           enableSystem
           disableTransitionOnChange
         >
-          <SidebarProvider>
-            <SidebarWrapper>
-              {children}
-              <Toaster richColors />
-            </SidebarWrapper>
-          </SidebarProvider>
+          {children}
+          <Toaster richColors />
         </ThemeProvider>
       </body>
     </html>

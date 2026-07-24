@@ -1,12 +1,13 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-source-serif);
+  --font-serif: var(--font-source-serif);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -16,11 +17,11 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
   --color-chart-6: var(--chart-6);
   --color-chart-7: var(--chart-7);
   --color-chart-8: var(--chart-8);
@@ -48,85 +49,133 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   Design tokens — from the Claude Design project "Budget Brain App".
+   The --bb-* set is the source of truth; the shadcn names below are bridged
+   onto it so every existing component inherits the palette.
+   ══════════════════════════════════════════════════════════════════════════ */
+
 :root {
   --radius: 0.625rem;
-  --background: #f5f5f5;
-  --foreground: #2D2D2D;
-  --card: #FDFDFF;
-  --card-foreground: #2D2D2D;
---popover: #FDFDFF;
-  --popover-foreground: #2D2D2D;
-  --primary: #0ea5e9;
-  --primary-foreground: #FDFDFF;
-  --secondary: #2D2D2D;
-  --tertiary: #3B4B8C;
-  --secondary-foreground: #FDFDFF;
-  --muted: #FDFDFF;
-  --muted-foreground: #6B7280;
-  --accent: #0ea5e9;
-  --accent-foreground: #FFFFFF;
-  --destructive: #FF4D4F;
-  --border: #E5E7EB;
-  --input: #d9d9da;
-  --ring: #D1D5DB;
-  --chart-1: #0ea5e9;
-  --chart-2: #3B4B8C;
-  --chart-3: #9BA3B9;
-  --chart-4: #E5989B;
-  --chart-5: #C7B7A3;
-  --chart-6: #B5838D;
-  --chart-7: #A3B18A;
-  --chart-8: #6D6875;
-  --chart-9: #F6BD60;
-  --chart-10: #355070;
-  --sidebar: #FDFDFF;
-  --sidebar-foreground: #2D2D2D;
-  --sidebar-primary: #0ea5e9;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #7FB7A3;
-  --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: rgba(255, 255, 255, 0.2);
+
+  /* Ground and surfaces — warm paper */
+  --bb-bg: #f4f3f2;
+  --bb-surface: #ffffff;
+  --bb-surface-2: #efeeec;
+  --bb-side: #efeeec;
+  --bb-line: rgba(32, 30, 29, 0.1);
+  --bb-line-2: rgba(32, 30, 29, 0.06);
+  --bb-track: #e9e7e5;
+
+  /* Ink */
+  --bb-text: #201e1d;
+  --bb-sub: #5f5a54;
+  --bb-dim: #8a847c;
+
+  /* Accents — the T ("text") variants carry the contrast */
+  --bb-cy: #0f7ba0;
+  --bb-cy-text: #005a77;
+  --bb-cy-tint: #e2f1f7;
+  --bb-mg: #e33f83;
+  --bb-mg-text: #c11563;
+  --bb-mg-tint: #fce4ee;
+
+  /* Needs ramp */
+  --bb-n1: #005a77;
+  --bb-n2: #0f7ba0;
+  --bb-n3: #2a97bf;
+  --bb-n4: #58bde0;
+  --bb-n5: #8fd6f0;
+  --bb-n6: #bfe9fa;
+
+  /* Wants ramp */
+  --bb-w1: #c11563;
+  --bb-w2: #e33f83;
+  --bb-w3: #ff6ba0;
+  --bb-w4: #ffa3c4;
+  --bb-w5: #ffd0e0;
+
+  /* ── shadcn bridge ── */
+  --background: var(--bb-bg);
+  --foreground: var(--bb-text);
+  --card: var(--bb-surface);
+  --card-foreground: var(--bb-text);
+  --popover: var(--bb-surface);
+  --popover-foreground: var(--bb-text);
+  --primary: var(--bb-cy);
+  --primary-foreground: #ffffff;
+  --secondary: var(--bb-surface-2);
+  --secondary-foreground: var(--bb-text);
+  --tertiary: var(--bb-mg);
+  --muted: var(--bb-surface-2);
+  --muted-foreground: var(--bb-sub);
+  --accent: var(--bb-cy-tint);
+  --accent-foreground: var(--bb-cy-text);
+  --destructive: var(--bb-mg-text);
+  --border: var(--bb-line);
+  --input: var(--bb-line);
+  --ring: var(--bb-cy);
+  --chart-1: var(--bb-n1);
+  --chart-2: var(--bb-n2);
+  --chart-3: var(--bb-n3);
+  --chart-4: var(--bb-n4);
+  --chart-5: var(--bb-n5);
+  --chart-6: var(--bb-n6);
+  --chart-7: var(--bb-w1);
+  --chart-8: var(--bb-w2);
+  --chart-9: var(--bb-w3);
+  --chart-10: var(--bb-w4);
+  --sidebar: var(--bb-side);
+  --sidebar-foreground: var(--bb-text);
+  --sidebar-primary: var(--bb-cy);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--bb-cy-tint);
+  --sidebar-accent-foreground: var(--bb-cy-text);
+  --sidebar-border: var(--bb-line);
+  --sidebar-ring: var(--bb-cy);
 }
 
 .dark {
-  --background: #1A1A1A;
-  --foreground: #F7F7FA;
-  --card: #2D2D2D;
-  --card-foreground: #F7F7FA;
-  --popover: #2D2D2D;
-  --popover-foreground: #F7F7FA;
-  --primary: #0ea5e9;
-  --primary-foreground: #1A2F28;
-  --secondary: #333333;
-  --secondary-foreground: #F7F7FA;
-  --tertiary: #3B4B8C;  
-  --muted: #333333;
-  --muted-foreground: #9CA3AF;
-  --accent: #0ea5e9;
-  --accent-foreground: #FFFFFF;
-  --destructive: #FF4D4F;
-  --border: rgba(255, 255, 255, 0.1);
-  --input: rgba(255, 255, 255, 0.15);
-  --ring: #6B7280;
-  --chart-1: #0ea5e9;
-  --chart-2: #3B4B8C;
-  --chart-3: #9BA3B9;
-  --chart-4: #E5989B;
-  --chart-5: #C7B7A3;
-  --chart-6: #B5838D;
-  --chart-7: #A3B18A;
-  --chart-8: #6D6875;
-  --chart-9: #F6BD60;
-  --chart-10: #355070;
-  --sidebar: #2C3036;
-  --sidebar-foreground: #F7F7FA;
-  --sidebar-primary: #0ea5e9;
-  --sidebar-primary-foreground: #F7F7FA;
-  --sidebar-accent: #333333;
-  --sidebar-accent-foreground: #F7F7FA;
-  --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: rgba(255, 255, 255, 0.2);
+  /* Ground and surfaces — cool ink */
+  --bb-bg: #15181b;
+  --bb-surface: #1e2225;
+  --bb-surface-2: #262b2f;
+  --bb-side: #1e2225;
+  --bb-line: rgba(224, 234, 242, 0.11);
+  --bb-line-2: rgba(224, 234, 242, 0.07);
+  --bb-track: #2b3136;
+
+  /* Ink */
+  --bb-text: #e9edf0;
+  --bb-sub: #99a2aa;
+  --bb-dim: #78828a;
+
+  /* Accents */
+  --bb-cy: #2aa4c9;
+  --bb-cy-text: #6cc7e4;
+  --bb-cy-tint: rgba(42, 164, 201, 0.15);
+  --bb-mg: #e5478d;
+  --bb-mg-text: #ff8ab5;
+  --bb-mg-tint: rgba(229, 71, 141, 0.15);
+
+  /* Needs ramp */
+  --bb-n1: #0e6a89;
+  --bb-n2: #1a89ad;
+  --bb-n3: #2aa4c9;
+  --bb-n4: #5cc0dd;
+  --bb-n5: #93d8ec;
+  --bb-n6: #c3e9f6;
+
+  /* Wants ramp */
+  --bb-w1: #a8155a;
+  --bb-w2: #c92b74;
+  --bb-w3: #e5478d;
+  --bb-w4: #f477ab;
+  --bb-w5: #fca6c8;
+
+  /* The bridge re-resolves automatically — only the few that differ in dark. */
+  --primary-foreground: #08171d;
+  --destructive: #ff8ab5;
 }
 
 @layer base {
@@ -134,12 +183,257 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-sidebar text-foreground;
+    @apply bg-background text-foreground;
+    /* Tailwind v4 registers the token but does not apply it — the design
+       system sets one serif for headings and body alike. */
+    font-family: var(--font-source-serif), ui-serif, Georgia, serif;
+    font-size: 15px;
+    line-height: 1.55;
   }
-  main {
-    @apply bg-background;
-    @apply flex-1 flex-col gap-4;
-    @apply p-4 md:p-8;
-    @apply rounded-b-xl;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    letter-spacing: -0.015em;
   }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Component classes — lifted from the design at their exact values. These
+   carry sizes Tailwind cannot express cleanly (11.5px, .12em, 13.5px).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+@layer components {
+  /* — surfaces — */
+  .bb-card {
+    background: var(--bb-surface);
+    border: 1px solid var(--bb-line);
+    border-radius: 16px;
+  }
+  .bb-card-accent {
+    border-color: var(--bb-cy);
+  }
+
+  /* — type — */
+  .bb-kicker {
+    font-size: 11.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--bb-dim);
+  }
+  .bb-num {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .bb-display {
+    font-size: 38px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .bb-title {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+
+  /* — rows — */
+  .bb-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--bb-line-2);
+    font-size: 13.5px;
+  }
+  .bb-row-last {
+    border-bottom: none;
+  }
+
+  /* — navigation — */
+  .bb-navi {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-size: 14.5px;
+    color: var(--bb-sub);
+    cursor: pointer;
+    transition:
+      background 0.12s,
+      color 0.12s;
+  }
+  .bb-navi:hover {
+    background: var(--bb-line-2);
+    color: var(--bb-text);
+  }
+  .bb-navi[data-on='true'],
+  .bb-navi[data-on='true']:hover {
+    background: var(--bb-cy-tint);
+    color: var(--bb-cy-text);
+  }
+
+  .bb-tab {
+    padding: 6px 2px;
+    font-size: 14px;
+    color: var(--bb-sub);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.12s;
+  }
+  .bb-tab:hover {
+    color: var(--bb-text);
+  }
+  .bb-tab[data-on='true'] {
+    color: var(--bb-cy-text);
+    border-bottom-color: var(--bb-cy);
+  }
+
+  .bb-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    color: var(--bb-sub);
+    cursor: pointer;
+    transition:
+      background 0.12s,
+      color 0.12s;
+  }
+  .bb-chip:hover {
+    background: var(--bb-line-2);
+    color: var(--bb-text);
+  }
+  .bb-chip[data-on='true'],
+  .bb-chip[data-on='true']:hover {
+    background: var(--bb-cy-tint);
+    color: var(--bb-cy-text);
+  }
+
+  /* — buttons — */
+  .bb-solid {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 9px 16px;
+    background: var(--bb-cy);
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .bb-solid:hover {
+    background: var(--bb-cy-text);
+  }
+  .dark .bb-solid {
+    color: #08171d;
+  }
+
+  .bb-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 9px 14px;
+    background: transparent;
+    border: 1px solid var(--bb-line);
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--bb-text);
+    cursor: pointer;
+    transition:
+      border-color 0.12s,
+      color 0.12s;
+  }
+  .bb-ghost:hover {
+    border-color: var(--bb-cy);
+    color: var(--bb-cy-text);
+  }
+
+  /* — selectable option card (Settings) — */
+  .bb-opt {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+    background: var(--bb-surface);
+    border: 1.5px solid var(--bb-line);
+    border-radius: 14px;
+    cursor: pointer;
+    text-align: left;
+    transition:
+      border-color 0.12s,
+      box-shadow 0.12s;
+  }
+  .bb-opt:hover {
+    border-color: var(--bb-cy);
+  }
+  .bb-opt[data-on='true'] {
+    border-color: var(--bb-cy);
+    box-shadow: 0 0 0 3px var(--bb-cy-tint);
+  }
+
+  /* — bucket dot — */
+  .bb-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex: none;
+  }
+  .bb-dot[data-bucket='needs'] {
+    background: var(--bb-n2);
+  }
+  .bb-dot[data-bucket='wants'] {
+    background: var(--bb-w2);
+  }
+  .bb-dot[data-bucket='savings'] {
+    background: var(--bb-w1);
+  }
+  .bb-dot[data-bucket='income'] {
+    background: var(--bb-cy);
+  }
+  .bb-dot[data-bucket='uncategorized'] {
+    background: var(--bb-dim);
+  }
+
+  /* — amounts — */
+  .bb-amount[data-income='true'] {
+    color: var(--bb-cy-text);
+    font-weight: 600;
+  }
+
+  /* — page container — */
+  .bb-page {
+    padding: 28px 32px 34px;
+  }
+  [data-nav='top'] .bb-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  @media (max-width: 640px) {
+    .bb-page {
+      padding: 20px 16px 28px;
+    }
+  }
+}
+
+a {
+  color: var(--bb-cy-text);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--bb-cy);
 }

@@ -23,6 +23,10 @@ export type CashFlowSummary = {
   transferVolume: number;
   wealthMoveVolume: number;
   uncategorizedOutflow: number;
+  /** Count of lifestyle outflows with no category — drives the Overview nudge. */
+  uncategorizedCount: number;
+  /** Share of income moved to emergency/investment accounts, 0–100. */
+  savingsRate: number;
   periodLabel: string;
   startDate: string;
   endDate: string;
@@ -41,6 +45,8 @@ export const getCashFlowSummary = cache(
       transferVolume: 0,
       wealthMoveVolume: 0,
       uncategorizedOutflow: 0,
+      uncategorizedCount: 0,
+      savingsRate: 0,
       periodLabel: period.label,
       startDate: period.startDate,
       endDate: period.endDate,
@@ -88,6 +94,7 @@ export const getCashFlowSummary = cache(
     let transferVolume = 0;
     let wealthMoveVolume = 0;
     let uncategorizedOutflow = 0;
+    let uncategorizedCount = 0;
     const allocationMap = new Map<
       string,
       { name: string; groupKind: string; amount: number }
@@ -169,6 +176,7 @@ export const getCashFlowSummary = cache(
 
       if (!category) {
         uncategorizedOutflow += outflow;
+        uncategorizedCount += 1;
         const key = 'uncategorized';
         const existing = allocationMap.get(key) ?? {
           name: 'Uncategorized',
@@ -210,6 +218,8 @@ export const getCashFlowSummary = cache(
       transferVolume,
       wealthMoveVolume,
       uncategorizedOutflow,
+      uncategorizedCount,
+      savingsRate: inflow > 0 ? (wealthMoveVolume / inflow) * 100 : 0,
       periodLabel: period.label,
       startDate: period.startDate,
       endDate: period.endDate,
