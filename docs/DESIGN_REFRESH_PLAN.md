@@ -3,7 +3,7 @@
 **Source:** Claude Design project `7e6d0b14-a499-4eda-8cd2-6e0ff56f9d45`, file `Budget Brain App.dc.html`
 (design system: `broadsheet-90b7ba2d-db60-49f5-bec1-355b958e747c`)
 **Date:** 2026-07-24
-**Status:** plan
+**Status:** implemented on `design/app-refresh`
 
 The design is a six-screen app prototype (Overview, Allocation, Accounts, Transactions,
 Plan, Settings) with its own token set layered on the Broadsheet design system. This
@@ -167,6 +167,20 @@ server action from Settings.
 
 `npm run lint`, `npm run build`, and a pass over each screen in both themes and both nav
 modes. Then PR.
+
+**How the screens were checked.** The app redirects unauthenticated traffic before any
+page renders, and this machine had no session, so the six screens were exercised behind a
+temporary fixture harness — an env-gated short-circuit in each ledger query plus a
+middleware bypass — driven in a real browser at desktop and mobile widths, in both themes
+and both nav modes. The harness was reverted before commit; nothing of it is in the diff.
+
+What that pass caught: a hydration mismatch in the theme toggle, link-buttons rendering
+accent text on an accent fill, sparklines flattened by a single rent-sized day, a
+verb-agreement bug in the insight copy, and unlabelled Settings option cards. All fixed.
+
+Still unverified: the screens against the owner's real data. Numbers came from fixtures,
+so shape and layout are confirmed but real-world values, edge cases, and the legacy
+envelope planner's own queries are not.
 
 ---
 
