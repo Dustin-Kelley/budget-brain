@@ -430,10 +430,12 @@
   }
 }
 
-a {
+/* Bare links take the accent — but not when they are dressed as buttons, which
+   carry their own colour. */
+a:not(.bb-solid):not(.bb-ghost):not(.bb-navi):not(.bb-tab):not(.bb-chip) {
   color: var(--bb-cy-text);
   text-decoration: none;
 }
-a:hover {
+a:not(.bb-solid):not(.bb-ghost):not(.bb-navi):not(.bb-tab):not(.bb-chip):hover {
   color: var(--bb-cy);
 }

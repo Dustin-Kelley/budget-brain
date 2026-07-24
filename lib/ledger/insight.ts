@@ -17,9 +17,10 @@ export function deriveInsight(summary: CashFlowSummary): Insight | null {
   if (summary.uncategorizedCount > 0) {
     return {
       icon: 'warning',
-      title: `${summary.uncategorizedCount} transaction${
-        summary.uncategorizedCount === 1 ? '' : 's'
-      } still need a category`,
+      title:
+        summary.uncategorizedCount === 1
+          ? '1 transaction still needs a category'
+          : `${summary.uncategorizedCount} transactions still need a category`,
       body: `${formatCurrency(
         summary.uncategorizedOutflow,
       )} of spend is not counted in any allocation slice yet.`,

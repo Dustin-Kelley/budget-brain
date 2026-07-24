@@ -18,21 +18,22 @@ export function ThemeCycle({
 
   useEffect(() => setMounted(true), []);
 
-  const isDark = resolvedTheme === 'dark';
+  // The resolved theme is unknown on the server, so everything that depends on
+  // it — glyph and label alike — must wait for mount or hydration mismatches.
+  const isDark = mounted && resolvedTheme === 'dark';
 
   return (
     <button
       type='button'
-      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
       className={cn(
         'cursor-pointer text-[var(--bb-cy-text)] transition-opacity hover:opacity-70',
         className,
       )}
-      aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+      aria-label={mounted ? (isDark ? 'Switch to light theme' : 'Switch to dark theme') : 'Toggle theme'}
     >
-      {/* Render a stable glyph until mounted so the markup matches on hydration. */}
       <Icon
-        name={mounted && isDark ? 'sun' : 'moon'}
+        name={isDark ? 'sun' : 'moon'}
         size={size}
       />
     </button>

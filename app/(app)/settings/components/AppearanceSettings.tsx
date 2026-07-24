@@ -164,6 +164,9 @@ function Option({
       data-on={selected}
       disabled={disabled}
       aria-pressed={selected}
+      // The visible label sits inside a preview-heavy card; name the control
+      // explicitly so it does not read as an unlabelled button.
+      aria-label={title}
       onClick={onSelect}
     >
       {preview}
