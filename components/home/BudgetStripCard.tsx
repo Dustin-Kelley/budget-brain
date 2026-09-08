@@ -35,7 +35,7 @@ export function BudgetStripCard({
 
   const leftoverLabel =
     leftoverSource === 'empty'
-      ? 'Add income on Plan to see what is left to assign'
+      ? 'Set this month\'s budget to see what is left to assign'
       : leftover >= 0
         ? `${formatCurrency(leftover)} left to assign`
         : `${formatCurrency(Math.abs(leftover))} over assigned`;

@@ -1,6 +1,7 @@
 import type { IconName } from '@/components/shell/Icon';
 
 export type SnapshotAccount = {
+  name?: string | null;
   account_type: string;
   purpose: string;
   current_balance: number | null;
@@ -98,6 +99,21 @@ export function groupAccountsForSnapshot(
     .filter((key) => (totals.get(key)?.count ?? 0) > 0)
     .map((key) => {
       const { balance, count } = totals.get(key)!;
-      return { key, ...GROUP_META[key], balance, count };
+      const meta = GROUP_META[key];
+      const looksLike401k =
+        key === 'investment' &&
+        accounts.some(
+          (account) =>
+            groupKeyFor(account) === 'investment' &&
+            /401/.test(account.name ?? ''),
+        );
+
+      return {
+        key,
+        ...meta,
+        label: looksLike401k ? '401k' : meta.label,
+        balance,
+        count,
+      };
     });
 }

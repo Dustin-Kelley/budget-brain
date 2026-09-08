@@ -28,11 +28,18 @@ export function MoneySnapshotCard({
       </div>
 
       {groups.length === 0 ? (
-        <p className='py-6 text-[13.5px] text-[var(--bb-sub)]'>
-          No accounts yet.{' '}
-          <Link href='/accounts'>Add one</Link> and import a file, or wait for
-          bank connect.
-        </p>
+        <div className='py-6'>
+          <p className='text-[13.5px] text-[var(--bb-sub)]'>
+            No accounts yet. Checking, cards, and retirement will show here
+            once you add them.
+          </p>
+          <Link
+            href='/accounts'
+            className='mt-3 inline-block text-[13px]'
+          >
+            Add an account →
+          </Link>
+        </div>
       ) : (
         groups.map((group, index) => (
           <div

@@ -100,7 +100,7 @@ function NavPicker({ current }: { current: NavMode }) {
           disabled={pending}
           onSelect={() => choose('sidebar')}
           title='Sidebar'
-          blurb='Every section visible — the default'
+          blurb='Every section visible on the left'
           preview={
             <div className='flex h-[74px] overflow-hidden rounded-md border border-[var(--bb-line)] bg-[var(--bb-bg)]'>
               <div className='flex w-[26%] flex-col gap-1 bg-[var(--bb-surface-2)] p-1.5'>
@@ -121,7 +121,7 @@ function NavPicker({ current }: { current: NavMode }) {
           disabled={pending}
           onSelect={() => choose('top')}
           title='Top bar'
-          blurb='Tabs across the top, wider content'
+          blurb='Home, Budget, Accounts, Goals — the default'
           preview={
             <div className='flex h-[74px] flex-col overflow-hidden rounded-md border border-[var(--bb-line)] bg-[var(--bb-bg)]'>
               <div className='flex h-4 items-center gap-1.5 bg-[var(--bb-surface-2)] px-1.5'>

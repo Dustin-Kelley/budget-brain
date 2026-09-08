@@ -1,8 +1,8 @@
 /**
  * Static FOO (Financial Order of Operations) chrome for the home shell.
  *
- * This is demo content only — it is not a diagnosis of the household's
- * accounts or debt. Live FOO logic is a later product step.
+ * Step names match the Product Concept. This is demo content only — it is
+ * not a diagnosis of the household's accounts or debt.
  */
 
 export const FOO_STEP_COUNT = 9;
@@ -10,8 +10,8 @@ export const FOO_STEP_COUNT = 9;
 export const FOO_STEPS = [
   {
     number: 1,
-    title: 'Starter emergency fund',
-    blurb: 'Set aside $1,000–$2,000 so a small surprise does not become new debt.',
+    title: 'Deductibles covered',
+    blurb: 'Fund insurance deductibles so a claim does not become new debt.',
   },
   {
     number: 2,
@@ -20,23 +20,23 @@ export const FOO_STEPS = [
   },
   {
     number: 3,
-    title: 'High-interest debt',
+    title: 'High-Interest Debt',
     blurb: 'Pay this down before building a full emergency fund.',
   },
   {
     number: 4,
-    title: 'Full emergency fund',
+    title: 'Emergency reserves',
     blurb: 'Three to six months of expenses, parked somewhere you can reach.',
   },
   {
     number: 5,
-    title: 'The rest of your debt',
-    blurb: 'Clear remaining consumer debt once the emergency fund is in place.',
+    title: 'Roth IRA & HSA',
+    blurb: 'Fill the tax-advantaged accounts that compound first.',
   },
   {
     number: 6,
-    title: 'Max-out retirement',
-    blurb: 'Fill tax-advantaged accounts up to the yearly limits.',
+    title: 'Max employer retirement',
+    blurb: 'Go up to the yearly limit on your workplace plan.',
   },
   {
     number: 7,
@@ -50,8 +50,8 @@ export const FOO_STEPS = [
   },
   {
     number: 9,
-    title: 'Generous living',
-    blurb: 'Give with a plan once the earlier steps are solid.',
+    title: 'Low-interest debt',
+    blurb: 'Mortgage and other cheap debt, last on the list.',
   },
 ] as const;
 
