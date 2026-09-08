@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label';
 import { CategoryWithLineItems } from '@/types/types';
 import { Badge } from '@/components/ui/badge';
 import { AddLineItemExpenseForm } from './AddLineItemExpenseForm';
+import { formatCurrency } from '@/lib/ledger/constants';
 
 export const RemainingSpentCards = ({
   spentByLineItem,
@@ -73,11 +74,14 @@ export const RemainingSpentCards = ({
           </CardHeader>
           <CardContent className='flex flex-col gap-2'>
             <div className='text-2xl font-bold'>
-              ${showSpent ? totalSpent : totalRemaining}
+              {formatCurrency(showSpent ? totalSpent : totalRemaining)}
             </div>
             <p className='text-xs text-muted-foreground'>
-              {showSpent ? percentSpent : percentRemaining}% of your budget{' '}
+              {showSpent ? percentSpent : percentRemaining}% of your income{' '}
               {showSpent ? 'spent' : 'remaining'}
+              {totalRemaining < 0
+                ? ` · ${formatCurrency(Math.abs(totalRemaining))} over`
+                : ''}
             </p>
             <Progress
               value={showSpent ? percentSpent : percentRemaining}
@@ -98,6 +102,7 @@ export const RemainingSpentCards = ({
             ) || 0;
           const spentAmt = getSpentForCategory(category);
           const remaining = planned - spentAmt;
+          const overBudget = planned > 0 && spentAmt > planned;
           const percentRemaining =
             planned > 0 ? Math.round((remaining / planned) * 100) : 0;
           const percentSpent =
@@ -115,14 +120,25 @@ export const RemainingSpentCards = ({
                   <div className='flex items-center justify-between text-sm mb-1'>
                     <Badge
                       variant='outline'
-                      className='font-medium'
+                      className={
+                        overBudget
+                          ? 'font-medium text-[var(--bb-mg-text)]'
+                          : 'font-medium'
+                      }
                     >
-                      {showSpent ? 'Spent' : 'Remaining'}: $
-                      {showSpent ? spentAmt : remaining} / ${planned}
+                      {overBudget
+                        ? `Over by ${formatCurrency(spentAmt - planned)}`
+                        : `${showSpent ? 'Spent' : 'Remaining'}: ${formatCurrency(
+                            showSpent ? spentAmt : remaining,
+                          )} / ${formatCurrency(planned)}`}
                     </Badge>
                     <Badge
                       variant='outline'
-                      className='font-medium'
+                      className={
+                        overBudget
+                          ? 'font-medium text-[var(--bb-mg-text)]'
+                          : 'font-medium'
+                      }
                     >
                       {showSpent ? percentSpent : percentRemaining}%
                     </Badge>
@@ -153,8 +169,21 @@ export const RemainingSpentCards = ({
                             {item.name}
                           </span>
                           <div className='flex items-center gap-2'>
-                            <span className='font-medium'>
-                              ${showSpent ? itemSpent : itemRemaining}
+                            <span
+                              className='font-medium'
+                              style={{
+                                color:
+                                  itemPlanned > 0 && itemSpent > itemPlanned
+                                    ? 'var(--bb-mg-text)'
+                                    : undefined,
+                              }}
+                            >
+                              {formatCurrency(
+                                showSpent ? itemSpent : itemRemaining,
+                              )}
+                              {itemPlanned > 0 && itemSpent > itemPlanned
+                                ? ' over'
+                                : ''}
                             </span>
                             <span className='text-xs text-muted-foreground'>
                               {showSpent

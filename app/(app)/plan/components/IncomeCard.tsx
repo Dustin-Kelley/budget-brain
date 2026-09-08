@@ -4,6 +4,7 @@ import { getTotalIncomePerMonth } from '@/app/queries/getTotalIncome';
 import { getTotalPlannedAmount } from '@/app/queries/getTotalPlannedAmount';
 import { AddIncomeForm } from './AddIncomeForm';
 import { EditIncome } from './EditIncome';
+import { formatCurrency } from '@/lib/ledger/constants';
 
 export async function IncomeCard({ month }: { month: string | undefined }) {
   const { income, totalIncome } = await getTotalIncomePerMonth({ date: month });
@@ -25,7 +26,7 @@ export async function IncomeCard({ month }: { month: string | undefined }) {
               <p className='text-sm font-medium'>
                 Total Income for: {parsedMonth}
               </p>
-              <p className='text-2xl font-bold'>${totalIncome.toFixed(2)}</p>
+              <p className='text-2xl font-bold'>{formatCurrency(totalIncome)}</p>
             </div>
             <div className='rounded-full bg-muted p-3'>
               <DollarSign className='h-6 w-6 text-muted-foreground' />
@@ -39,7 +40,9 @@ export async function IncomeCard({ month }: { month: string | undefined }) {
               >
                 <span className='font-medium'>{income.name}</span>
                 <div className='flex items-center gap-2'>
-                  <span className='font-medium'>${income.amount.toFixed(2)}</span>
+                  <span className='font-medium'>
+                    {formatCurrency(income.amount)}
+                  </span>
                   <EditIncome incomeId={income.id} incomeName={income.name} incomeAmount={income.amount} />
                 </div>
               </div>
@@ -48,11 +51,21 @@ export async function IncomeCard({ month }: { month: string | undefined }) {
           </div>
           <div className='flex items-center pt-2 border-t'>
             <div className='flex items-center gap-2'>
-              <p className='text-2xl font-bold text-muted-foreground'>
-                {remaining < 0 ? '-' : ''}${Math.abs(remaining).toFixed(2)}
+              <p
+                className='text-2xl font-bold'
+                style={{
+                  color:
+                    remaining < 0
+                      ? 'var(--bb-mg-text)'
+                      : 'var(--bb-sub)',
+                }}
+              >
+                {formatCurrency(Math.abs(remaining))}
               </p>
-              <span className='text-xs'>
-                {remaining < 0 ? 'over budget' : 'left to budget'}
+              <span className='text-xs text-muted-foreground'>
+                {remaining < 0
+                  ? 'over assigned — pull something back'
+                  : 'left to assign'}
               </span>
             </div>
           </div>

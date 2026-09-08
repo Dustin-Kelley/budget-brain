@@ -3,7 +3,7 @@ export type NavMode = 'sidebar' | 'top';
 export const NAV_MODE_COOKIE = 'bb-nav';
 
 export const NAV_ITEMS = [
-  { href: '/', label: 'Overview', icon: 'squares-four' },
+  { href: '/', label: 'Home', icon: 'house' },
   { href: '/allocation', label: 'Allocation', icon: 'chart-donut' },
   { href: '/accounts', label: 'Accounts', icon: 'bank' },
   { href: '/transactions', label: 'Transactions', icon: 'arrows-left-right' },

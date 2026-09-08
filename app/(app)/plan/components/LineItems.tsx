@@ -13,6 +13,7 @@ import { EditLineItemForm } from './EditLineItemForm';
 import { LineItem } from '@/types/types';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
+import { formatCurrency } from '@/lib/ledger/constants';
 
 export const LineItems = ({ lineItems }: { lineItems: LineItem }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +26,9 @@ export const LineItems = ({ lineItems }: { lineItems: LineItem }) => {
       >
         <span className='font-medium'>{lineItems.name}</span>
         <div className='flex items-center gap-2'>
-          <Badge variant='outline' className='font-medium'>${lineItems.planned_amount}</Badge>
+          <Badge variant='outline' className='font-medium'>
+            {formatCurrency(lineItems.planned_amount ?? 0)}
+          </Badge>
           <Popover
             open={isOpen}
             onOpenChange={setIsOpen}
