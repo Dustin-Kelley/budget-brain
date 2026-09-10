@@ -13,6 +13,7 @@ import { LineItems } from './LineItems';
 import { AddNewCategoryForm } from './AddNewCategoryForm';
 import { EditCategories } from './EditCategories';
 import { Separator } from '@/components/ui/separator';
+import { formatCurrency } from '@/lib/ledger/constants';
 
 export async function CategoryCards({ month }: { month: string | undefined }) {
   const { totalIncome } = await getTotalIncomePerMonth({ date: month });
@@ -58,10 +59,12 @@ export async function CategoryCards({ month }: { month: string | undefined }) {
               <CardFooter className='pt-0'>
                 <div className='flex w-full justify-between text-xs text-muted-foreground'>
                   <span>
-                    Total Category Budget: $
-                    {category.line_items?.reduce(
-                      (acc, item) => acc + (item?.planned_amount ?? 0),
-                      0
+                    Planned{' '}
+                    {formatCurrency(
+                      category.line_items?.reduce(
+                        (acc, item) => acc + (item?.planned_amount ?? 0),
+                        0,
+                      ) ?? 0,
                     )}
                   </span>
                   <span>

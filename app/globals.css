@@ -361,6 +361,68 @@
     border-color: var(--bb-cy);
     color: var(--bb-cy-text);
   }
+  .bb-ghost-accent {
+    border-color: var(--bb-cy);
+    color: var(--bb-cy-text);
+  }
+  .bb-ghost:disabled,
+  .bb-solid:disabled {
+    opacity: 0.65;
+    cursor: default;
+  }
+
+  /* — FOO path stepper (home) — */
+  .bb-foo-track {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 6px 0 0;
+  }
+  .bb-foo-step {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+  }
+  .bb-foo-step:last-child {
+    flex: 0;
+  }
+  .bb-foo-step:not(:last-child)::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    margin: 0 4px;
+    background: var(--bb-line);
+  }
+  .bb-foo-step[data-state='done']:not(:last-child)::after {
+    background: var(--bb-n3);
+  }
+  .bb-foo-node {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--bb-dim);
+    flex: none;
+  }
+  .bb-foo-step[data-state='done'] .bb-foo-node {
+    color: var(--bb-n2);
+  }
+  .bb-foo-step[data-state='now'] .bb-foo-node {
+    width: 34px;
+    height: 34px;
+    background: var(--bb-cy);
+    color: #fff;
+    font-size: 15px;
+  }
+  .dark .bb-foo-step[data-state='now'] .bb-foo-node {
+    color: #08171d;
+  }
 
   /* — selectable option card (Settings) — */
   .bb-opt {

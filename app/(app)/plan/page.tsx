@@ -26,9 +26,10 @@ export default async function PlanPage({
   return (
     <div className='flex flex-col gap-5'>
       <div>
-        <h1 className='bb-title'>Plan</h1>
+        <h1 className='bb-title'>Budget</h1>
         <p className='mt-1.5 text-[14px] text-[var(--bb-sub)]'>
-          The split you are holding yourself to, and what it is paying for
+          The split you are holding yourself to, and the envelopes that spend
+          against it
         </p>
       </div>
 

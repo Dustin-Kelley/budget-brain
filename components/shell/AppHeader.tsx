@@ -6,13 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Logo } from '@/components/ui/logo';
 import { ThemeCycle } from './ThemeCycle';
 import { MonthStepper } from './MonthStepper';
-import {
-  NAV_ITEMS,
-  SETTINGS_ITEM,
-  isNavActive,
-  screenTitle,
-  type NavMode,
-} from './nav';
+import { NAV_ITEMS, isNavActive, screenTitle, type NavMode } from './nav';
 
 /**
  * Sticky app header. In top-bar mode it carries the brand and the tab nav; in
@@ -28,7 +22,7 @@ export function AppHeader({
 }) {
   const pathname = usePathname();
   const isTop = mode === 'top';
-  const tabs = [...NAV_ITEMS, SETTINGS_ITEM];
+  const tabs = [...NAV_ITEMS];
 
   return (
     <header className='sticky top-0 z-10 flex min-h-[58px] flex-none flex-wrap items-center gap-x-5 gap-y-2 border-b border-[var(--bb-line)] bg-[var(--bb-surface)] px-4 py-2 sm:px-6'>
@@ -75,9 +69,13 @@ export function AppHeader({
           <MonthStepper />
         </Suspense>
         {isTop && (
-          <span className='hidden size-7 flex-none items-center justify-center rounded-full bg-[var(--bb-w2)] text-[12.5px] font-semibold text-white sm:flex'>
+          <Link
+            href='/settings'
+            className='flex size-8 flex-none items-center justify-center rounded-full bg-[var(--bb-w2)] text-[12px] font-semibold text-white hover:text-white'
+            aria-label='Settings'
+          >
             {initial}
-          </span>
+          </Link>
         )}
       </div>
 

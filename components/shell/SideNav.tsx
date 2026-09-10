@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Logo } from '@/components/ui/logo';
 import { Icon } from './Icon';
 import { ThemeCycle } from './ThemeCycle';
-import { NAV_ITEMS, SETTINGS_ITEM, isNavActive } from './nav';
+import { MORE_NAV_ITEMS, NAV_ITEMS, SETTINGS_ITEM, isNavActive } from './nav';
 
 export function SideNav({ initial }: { initial: string }) {
   const pathname = usePathname();
@@ -41,6 +41,24 @@ export function SideNav({ initial }: { initial: string }) {
             {item.label}
           </Link>
         ))}
+        <div className='mt-3 px-2'>
+          <span className='bb-kicker'>More</span>
+        </div>
+        {MORE_NAV_ITEMS.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className='bb-navi'
+            data-on={isNavActive(item.href, pathname)}
+            aria-current={isNavActive(item.href, pathname) ? 'page' : undefined}
+          >
+            <Icon
+              name={item.icon}
+              size={19}
+            />
+            {item.label}
+          </Link>
+        ))}
       </nav>
 
       <div className='mt-auto flex flex-col gap-[3px]'>
@@ -56,9 +74,13 @@ export function SideNav({ initial }: { initial: string }) {
           {SETTINGS_ITEM.label}
         </Link>
         <div className='mt-2 flex items-center gap-2.5 border-t border-[var(--bb-line)] px-2 pt-3 pb-1'>
-          <span className='flex size-[30px] flex-none items-center justify-center rounded-full bg-[var(--bb-w2)] text-[13px] font-semibold text-white'>
+          <Link
+            href='/settings'
+            className='flex size-[30px] flex-none items-center justify-center rounded-full bg-[var(--bb-w2)] text-[12px] font-semibold text-white hover:text-white'
+            aria-label='Settings'
+          >
             {initial}
-          </span>
+          </Link>
           <div className='min-w-0'>
             <div className='text-[13.5px] leading-tight font-semibold'>
               Household

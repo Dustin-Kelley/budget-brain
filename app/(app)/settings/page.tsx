@@ -136,7 +136,7 @@ async function Connections() {
           </div>
         ))
       )}
-      <div className='pt-4'>
+      <div className='flex flex-wrap items-center gap-2.5 pt-4'>
         <Link
           href='/accounts'
           className='bb-ghost'
@@ -145,8 +145,11 @@ async function Connections() {
             name='plus'
             size={15}
           />
-          Connect an account
+          Add or import
         </Link>
+        <span className='text-[12.5px] text-[var(--bb-dim)]'>
+          Connect bank — coming soon
+        </span>
       </div>
     </div>
   );

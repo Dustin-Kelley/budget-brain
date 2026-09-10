@@ -87,16 +87,25 @@ async function AccountsBody({ month }: { month: string | undefined }) {
                 }`}
           </p>
         </div>
-        <a
-          href='#add-account'
-          className='bb-solid'
-        >
-          <Icon
-            name='plus'
-            size={15}
-          />
-          Add an account
-        </a>
+        <div className='flex flex-wrap gap-2.5'>
+          <span
+            className='bb-ghost'
+            aria-disabled
+            title='Plaid bank link is not in this release'
+          >
+            Connect bank — coming soon
+          </span>
+          <a
+            href='#add-account'
+            className='bb-solid'
+          >
+            <Icon
+              name='plus'
+              size={15}
+            />
+            Add an account
+          </a>
+        </div>
       </div>
 
       {/* ── Account cards ── */}
@@ -237,8 +246,8 @@ async function AccountsBody({ month }: { month: string | undefined }) {
         <div>
           <span className='bb-kicker'>Import</span>
           <p className='mt-1 text-[13.5px] text-[var(--bb-sub)]'>
-            CSV, OFX, or QFX. Duplicates are skipped automatically. Bank Link
-            comes next.
+            CSV, OFX, or QFX. Duplicates are skipped automatically. Connecting
+            a bank through Plaid is coming soon.
           </p>
         </div>
         <form

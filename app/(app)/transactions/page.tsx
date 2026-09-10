@@ -137,6 +137,9 @@ async function TransactionsBody({ params }: { params: Params }) {
           <p className='mt-1.5 text-[14px] text-[var(--bb-sub)]'>
             {filtered.length} in this view · {formatCurrency(outflow)} out,{' '}
             {formatCurrency(inflow)} in
+            {counts.uncategorized
+              ? ` · ${counts.uncategorized} still need a category`
+              : ''}
           </p>
         </div>
         <div className='flex flex-wrap items-center gap-2.5'>

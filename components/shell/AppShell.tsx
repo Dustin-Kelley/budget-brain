@@ -6,7 +6,7 @@ import { NAV_MODE_COOKIE, type NavMode } from './nav';
 
 export async function getNavMode(): Promise<NavMode> {
   const store = await cookies();
-  return store.get(NAV_MODE_COOKIE)?.value === 'top' ? 'top' : 'sidebar';
+  return store.get(NAV_MODE_COOKIE)?.value === 'sidebar' ? 'sidebar' : 'top';
 }
 
 /**
@@ -19,9 +19,13 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
     getCurrentUser(),
   ]);
 
-  const initial = (currentUser?.first_name || currentUser?.email || 'B')
-    .charAt(0)
-    .toUpperCase();
+  const first = (currentUser?.first_name || '').charAt(0);
+  const last = (currentUser?.last_name || '').charAt(0);
+  const initial = (
+    first + last ||
+    currentUser?.email?.charAt(0) ||
+    'B'
+  ).toUpperCase();
 
   return (
     <div
