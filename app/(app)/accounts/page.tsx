@@ -91,9 +91,9 @@ async function AccountsBody({ month }: { month: string | undefined }) {
           <span
             className='bb-ghost'
             aria-disabled
-            title='Plaid bank link is not in this release'
+            title='Bank linking is not in this release'
           >
-            Connect bank — coming soon
+            Connect Wealthfront and Crew, coming soon
           </span>
           <a
             href='#add-account'

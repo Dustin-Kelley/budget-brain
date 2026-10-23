@@ -9,8 +9,15 @@ import { formatCurrency } from '@/lib/ledger/constants';
 import { BUCKET_LABELS, bucketFor, type Bucket } from '@/lib/ledger/buckets';
 import { Icon } from '@/components/shell/Icon';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getBudgetMonth } from '@/app/queries/getBudgetMonth';
+import { ensureBudgetDefaults } from '@/app/mutations/ensureBudgetDefaults';
+import { unassignedCount } from '@/lib/budget/math';
 import { CategorySelect } from './components/CategorySelect';
 import { SearchField } from './components/SearchField';
+import {
+  BudgetTransactionList,
+  SourceSwitch,
+} from './components/BudgetTransactionList';
 
 const PAGE_SIZE = 25;
 
@@ -20,6 +27,8 @@ type Params = {
   bucket?: string;
   q?: string;
   show?: string;
+  list?: string;
+  track?: string;
 };
 
 export default async function TransactionsPage({
@@ -32,15 +41,50 @@ export default async function TransactionsPage({
 
   if (!currentUser) redirect('/welcome');
 
+  const list = params.list === 'bank' ? 'bank' : 'budget';
+
   return (
     <div className='flex flex-col gap-[18px]'>
       <Suspense
         key={JSON.stringify(params)}
         fallback={<Skeleton className='h-[600px] rounded-2xl' />}
       >
-        <TransactionsBody params={params} />
+        {list === 'bank' ? (
+          <TransactionsBody params={params} />
+        ) : (
+          <BudgetTransactions
+            month={params.month}
+            track={params.track}
+          />
+        )}
       </Suspense>
     </div>
+  );
+}
+
+async function BudgetTransactions({
+  month,
+  track,
+}: {
+  month: string | undefined;
+  track: string | undefined;
+}) {
+  await ensureBudgetDefaults(month);
+  const budget = await getBudgetMonth(month);
+  const openCount = unassignedCount(budget.transactions);
+  const rows =
+    track === 'open'
+      ? budget.transactions.filter((txn) => !txn.lineItemId)
+      : budget.transactions;
+
+  return (
+    <BudgetTransactionList
+      rows={rows}
+      groups={budget.groups}
+      monthParam={budget.monthParam}
+      track={track}
+      unassigned={openCount}
+    />
   );
 }
 
@@ -143,6 +187,10 @@ async function TransactionsBody({ params }: { params: Params }) {
           </p>
         </div>
         <div className='flex flex-wrap items-center gap-2.5'>
+          <SourceSwitch
+            list='bank'
+            monthParam={params.month}
+          />
           <SearchField initial={params.q ?? ''} />
           <Link
             href='/accounts'

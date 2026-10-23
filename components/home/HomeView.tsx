@@ -7,7 +7,9 @@ import { NextUpCard } from '@/components/home/NextUpCard';
 import { MoneySnapshotCard } from '@/components/home/MoneySnapshotCard';
 import { BudgetStripCard } from '@/components/home/BudgetStripCard';
 import { FooUnlockBanner } from '@/components/home/FooUnlockBanner';
+import { PlanSummaryCard } from '@/components/home/PlanSummaryCard';
 import type { SnapshotAccount } from '@/lib/ledger/snapshot';
+import type { BudgetMonth } from '@/lib/budget/types';
 
 export function HomeView({
   accounts,
@@ -15,12 +17,14 @@ export function HomeView({
   leftover,
   leftoverSource,
   budgetInflow,
+  budget,
 }: {
   accounts: SnapshotAccount[];
   summary: CashFlowSummary;
   leftover: number;
   leftoverSource: 'plan' | 'ledger' | 'empty';
   budgetInflow: number;
+  budget: BudgetMonth;
 }) {
   const insight = deriveInsight(summary);
   const showInsight =
@@ -31,6 +35,7 @@ export function HomeView({
 
   return (
     <div className='flex flex-col gap-[18px]'>
+      <PlanSummaryCard budget={budget} />
       <FooPathCard />
       <NextUpCard />
 

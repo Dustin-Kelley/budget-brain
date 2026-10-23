@@ -5,12 +5,12 @@ export const NAV_MODE_COOKIE = 'bb-nav';
 export const NAV_ITEMS = [
   { href: '/', label: 'Home', icon: 'house' },
   { href: '/plan', label: 'Budget', icon: 'target' },
+  { href: '/transactions', label: 'Transactions', icon: 'arrows-left-right' },
   { href: '/accounts', label: 'Accounts', icon: 'bank' },
   { href: '/goals', label: 'Goals', icon: 'flag' },
 ] as const;
 
 export const MORE_NAV_ITEMS = [
-  { href: '/transactions', label: 'Transactions', icon: 'arrows-left-right' },
   { href: '/allocation', label: 'Allocation', icon: 'chart-donut' },
 ] as const;
 

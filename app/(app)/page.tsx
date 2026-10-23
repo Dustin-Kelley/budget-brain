@@ -3,8 +3,9 @@ import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/app/queries/getCurrentUser';
 import { getCashFlowSummary } from '@/app/queries/getCashFlowSummary';
 import { getAccounts } from '@/app/queries/getAccounts';
-import { getTotalIncomePerMonth } from '@/app/queries/getTotalIncome';
-import { getTotalPlannedAmount } from '@/app/queries/getTotalPlannedAmount';
+import { getBudgetMonth } from '@/app/queries/getBudgetMonth';
+import { ensureBudgetDefaults } from '@/app/mutations/ensureBudgetDefaults';
+import { budgetTotals } from '@/lib/budget/math';
 import { Skeleton } from '@/components/ui/skeleton';
 import { HomeView } from '@/components/home/HomeView';
 
@@ -29,25 +30,24 @@ export default async function HomePage({
 }
 
 async function HomeBody({ month }: { month: string | undefined }) {
-  const [summary, { accounts }, income, planned] = await Promise.all([
+  await ensureBudgetDefaults(month);
+  const [summary, { accounts }, budget] = await Promise.all([
     getCashFlowSummary(month),
     getAccounts(),
-    getTotalIncomePerMonth({ date: month }),
-    getTotalPlannedAmount({ date: month }),
+    getBudgetMonth(month),
   ]);
 
-  const planIncome = income.totalIncome ?? 0;
-  const planAssigned = planned.totalPlanned ?? 0;
-  const hasPlan = planIncome > 0 || planAssigned > 0;
+  const totals = budgetTotals(budget);
+  const hasPlan = totals.income > 0 || totals.budgeted > 0 || budget.groups.length > 0;
 
-  const leftover = hasPlan
-    ? planIncome - planAssigned
-    : summary.inflow - summary.lifestyleOutflow - summary.wealthMoveVolume;
-  const leftoverSource = hasPlan
-    ? 'plan'
-    : summary.inflow > 0
-      ? 'ledger'
-      : 'empty';
+  let leftover = summary.inflow - summary.lifestyleOutflow - summary.wealthMoveVolume;
+  let leftoverSource: 'plan' | 'ledger' | 'empty' = 'empty';
+  if (hasPlan) {
+    leftover = totals.left;
+    leftoverSource = 'plan';
+  } else if (summary.inflow > 0) {
+    leftoverSource = 'ledger';
+  }
 
   return (
     <HomeView
@@ -55,7 +55,8 @@ async function HomeBody({ month }: { month: string | undefined }) {
       summary={summary}
       leftover={leftover}
       leftoverSource={leftoverSource}
-      budgetInflow={planIncome > 0 ? planIncome : summary.inflow}
+      budgetInflow={totals.income > 0 ? totals.income : summary.inflow}
+      budget={budget}
     />
   );
 }
