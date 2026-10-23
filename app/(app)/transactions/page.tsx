@@ -9,8 +9,15 @@ import { formatCurrency } from '@/lib/ledger/constants';
 import { BUCKET_LABELS, bucketFor, type Bucket } from '@/lib/ledger/buckets';
 import { Icon } from '@/components/shell/Icon';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getBudgetMonth } from '@/app/queries/getBudgetMonth';
+import { ensureBudgetDefaults } from '@/app/mutations/ensureBudgetDefaults';
+import { unassignedCount } from '@/lib/budget/math';
 import { CategorySelect } from './components/CategorySelect';
 import { SearchField } from './components/SearchField';
+import {
+  BudgetTransactionList,
+  SourceSwitch,
+} from './components/BudgetTransactionList';
 
 const PAGE_SIZE = 25;
 
@@ -20,6 +27,8 @@ type Params = {
   bucket?: string;
   q?: string;
   show?: string;
+  list?: string;
+  track?: string;
 };
 
 export default async function TransactionsPage({
@@ -32,15 +41,61 @@ export default async function TransactionsPage({
 
   if (!currentUser) redirect('/welcome');
 
+  const list = params.list === 'bank' ? 'bank' : 'budget';
+
   return (
     <div className='flex flex-col gap-[18px]'>
       <Suspense
         key={JSON.stringify(params)}
         fallback={<Skeleton className='h-[600px] rounded-2xl' />}
       >
-        <TransactionsBody params={params} />
+        {list === 'bank' ? (
+          <TransactionsBody params={params} />
+        ) : (
+          <BudgetTransactions
+            month={params.month}
+            track={params.track}
+            accountId={params.account}
+          />
+        )}
       </Suspense>
     </div>
+  );
+}
+
+async function BudgetTransactions({
+  month,
+  track,
+  accountId,
+}: {
+  month: string | undefined;
+  track: string | undefined;
+  accountId: string | undefined;
+}) {
+  await ensureBudgetDefaults(month);
+  const budget = await getBudgetMonth(month);
+  const accountFilter = budget.accountsLinked ? accountId : undefined;
+  const scoped = budget.transactions.filter((txn) => {
+    if (!accountFilter) return true;
+    return txn.accountId === accountFilter;
+  });
+  const openCount = unassignedCount(scoped);
+  const rows = scoped.filter((txn) => {
+    if (track === 'open' && txn.lineItemId) return false;
+    return true;
+  });
+
+  return (
+    <BudgetTransactionList
+      rows={rows}
+      groups={budget.groups}
+      accounts={budget.accounts}
+      accountsLinked={budget.accountsLinked}
+      monthParam={budget.monthParam}
+      track={track}
+      accountId={accountFilter}
+      unassigned={openCount}
+    />
   );
 }
 
@@ -143,6 +198,11 @@ async function TransactionsBody({ params }: { params: Params }) {
           </p>
         </div>
         <div className='flex flex-wrap items-center gap-2.5'>
+          <SourceSwitch
+            list='bank'
+            monthParam={params.month}
+            accountId={params.account}
+          />
           <SearchField initial={params.q ?? ''} />
           <Link
             href='/accounts'
