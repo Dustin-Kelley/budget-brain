@@ -5,7 +5,11 @@ import Link from 'next/link';
 import { formatCurrency } from '@/lib/ledger/constants';
 import { transactionTitle } from '@/lib/budget/math';
 import { withMonth } from '@/lib/budget/month';
-import type { BudgetGroup, BudgetTransaction } from '@/lib/budget/types';
+import type {
+  BudgetAccount,
+  BudgetGroup,
+  BudgetTransaction,
+} from '@/lib/budget/types';
 import {
   TransactionFormDialog,
   draftForEdit,
@@ -16,21 +20,32 @@ import {
 export function BudgetTransactionList({
   rows,
   groups,
+  accounts,
+  accountsLinked,
   monthParam,
   track,
+  accountId,
   unassigned,
 }: {
   rows: BudgetTransaction[];
   groups: BudgetGroup[];
+  accounts: BudgetAccount[];
+  accountsLinked: boolean;
   monthParam: string;
   track?: string;
+  accountId?: string;
   unassigned: number;
 }) {
   const [editor, setEditor] = useState<TransactionEditor | null>(null);
   const openOnly = track === 'open';
+  const account = accounts.find((row) => row.id === accountId);
 
-  const allHref = withMonth('/transactions', monthParam);
-  const openHref = withMonth('/transactions?track=open', monthParam);
+  const allHref = withMonth(keepAccount('/transactions', accountId), monthParam);
+  const openHref = withMonth(
+    keepAccount('/transactions?track=open', accountId),
+    monthParam,
+  );
+  const clearAccountHref = withMonth('/transactions', monthParam);
 
   const grouped = groupByDate(rows);
 
@@ -41,6 +56,9 @@ export function BudgetTransactionList({
           <h1 className='bb-title'>Transactions</h1>
           <p className='mt-1.5 text-[14px] text-[var(--bb-sub)]'>
             Spending and income recorded on this month&apos;s budget.
+            {account
+              ? ` Showing ${account.name}.`
+              : ''}
             {unassigned > 0 ? ` ${unassigned} still unassigned.` : ''}
           </p>
         </div>
@@ -48,6 +66,7 @@ export function BudgetTransactionList({
           <SourceSwitch
             list='budget'
             monthParam={monthParam}
+            accountId={accountId}
           />
           <button
             type='button'
@@ -55,7 +74,7 @@ export function BudgetTransactionList({
             onClick={() =>
               setEditor({
                 token: Date.now(),
-                draft: draftForNew(monthParam),
+                draft: draftForNew(monthParam, undefined, accountId),
               })
             }
           >
@@ -65,6 +84,14 @@ export function BudgetTransactionList({
       </div>
 
       <div className='flex flex-wrap gap-2'>
+        {accountId ? (
+          <Link
+            href={clearAccountHref}
+            className='bb-chip'
+          >
+            All accounts
+          </Link>
+        ) : null}
         <Link
           href={allHref}
           className='bb-chip'
@@ -111,10 +138,7 @@ export function BudgetTransactionList({
                       {transactionTitle(txn.description)}
                     </span>
                     <span className='block truncate text-[12.5px] text-[var(--bb-dim)]'>
-                      {txn.lineItemName
-                        ? `${txn.groupName ? `${txn.groupName} · ` : ''}${txn.lineItemName}`
-                        : 'Unassigned'}
-                      {txn.kind === 'income' ? ' · Income' : ''}
+                      {transactionDetail(txn)}
                     </span>
                   </span>
                   <span
@@ -133,6 +157,8 @@ export function BudgetTransactionList({
       <TransactionFormDialog
         editor={editor}
         groups={groups}
+        accounts={accounts}
+        accountsLinked={accountsLinked}
         monthParam={monthParam}
         onClose={() => setEditor(null)}
       />
@@ -143,12 +169,20 @@ export function BudgetTransactionList({
 export function SourceSwitch({
   list,
   monthParam,
+  accountId,
 }: {
   list: 'budget' | 'bank';
   monthParam?: string;
+  accountId?: string;
 }) {
-  const budgetHref = withMonth('/transactions', monthParam);
-  const bankHref = withMonth('/transactions?list=bank', monthParam);
+  const budgetHref = withMonth(
+    keepAccount('/transactions', accountId),
+    monthParam,
+  );
+  const bankHref = withMonth(
+    keepAccount('/transactions?list=bank', accountId),
+    monthParam,
+  );
 
   return (
     <div className='flex gap-1'>
@@ -168,6 +202,25 @@ export function SourceSwitch({
       </Link>
     </div>
   );
+}
+
+function keepAccount(path: string, accountId: string | undefined) {
+  if (!accountId) return path;
+  const [pathname, query] = path.split('?');
+  const params = new URLSearchParams(query ?? '');
+  params.set('account', accountId);
+  return `${pathname}?${params.toString()}`;
+}
+
+function transactionDetail(txn: BudgetTransaction) {
+  let detail = 'Unassigned';
+  if (txn.lineItemName) {
+    detail = txn.lineItemName;
+    if (txn.groupName) detail = `${txn.groupName} · ${detail}`;
+  }
+  if (txn.accountName) detail = `${detail} · ${txn.accountName}`;
+  if (txn.kind === 'income') detail = `${detail} · Income`;
+  return detail;
 }
 
 function groupByDate(rows: BudgetTransaction[]) {

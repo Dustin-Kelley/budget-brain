@@ -13,6 +13,7 @@ import {
 import { defaultTransactionDate } from '@/lib/budget/month';
 import { money } from '@/lib/budget/math';
 import type {
+  BudgetAccount,
   BudgetGroup,
   BudgetKind,
   BudgetTransaction,
@@ -28,12 +29,14 @@ export type TransactionEditor = {
 export function draftForNew(
   monthParam: string,
   lineItemId?: string,
+  accountId?: string,
 ): TransactionDraft {
   return {
     amount: '',
     description: '',
     date: defaultTransactionDate(monthParam),
     lineItemId: lineItemId ?? '',
+    accountId: accountId ?? '',
     kind: 'expense',
   };
 }
@@ -48,6 +51,7 @@ export function draftForEdit(
     description: txn.description,
     date: txn.date ?? defaultTransactionDate(monthParam),
     lineItemId: txn.lineItemId ?? '',
+    accountId: txn.accountId ?? '',
     kind: txn.kind,
   };
 }
@@ -55,11 +59,15 @@ export function draftForEdit(
 export function TransactionFormDialog({
   editor,
   groups,
+  accounts,
+  accountsLinked,
   monthParam,
   onClose,
 }: {
   editor: TransactionEditor | null;
   groups: BudgetGroup[];
+  accounts: BudgetAccount[];
+  accountsLinked: boolean;
   monthParam: string;
   onClose: () => void;
 }) {
@@ -76,6 +84,8 @@ export function TransactionFormDialog({
             key={editor.token}
             initial={editor.draft}
             groups={groups}
+            accounts={accounts}
+            accountsLinked={accountsLinked}
             monthParam={monthParam}
             onClose={onClose}
           />
@@ -88,11 +98,15 @@ export function TransactionFormDialog({
 function TransactionForm({
   initial,
   groups,
+  accounts,
+  accountsLinked,
   monthParam,
   onClose,
 }: {
   initial: TransactionDraft;
   groups: BudgetGroup[];
+  accounts: BudgetAccount[];
+  accountsLinked: boolean;
   monthParam: string;
   onClose: () => void;
 }) {
@@ -106,12 +120,17 @@ function TransactionForm({
     event.preventDefault();
     const amount = money(form.amount.replace(/[$,\s]/g, ''));
     setPending(true);
+    let accountId: string | null | undefined;
+    if (accountsLinked) {
+      accountId = form.accountId || null;
+    }
     const result = await saveTransaction({
       id: form.id,
       amount,
       description: form.description,
       date: form.date,
       lineItemId: form.lineItemId || null,
+      accountId,
       kind: form.kind,
       monthParam,
     });
@@ -240,6 +259,39 @@ function TransactionForm({
             ))}
           </select>
         </label>
+        {accountsLinked ? (
+          <label className='flex flex-col gap-1 text-[13px] text-[var(--bb-sub)]'>
+            Account
+            <select
+              value={form.accountId}
+              onChange={(event) =>
+                setForm({ ...form, accountId: event.target.value })
+              }
+              className='rounded-[10px] border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px] text-[var(--bb-text)]'
+            >
+              <option value=''>No account</option>
+              {accounts.map((account) => (
+                <option
+                  key={account.id}
+                  value={account.id}
+                >
+                  {account.institution
+                    ? `${account.name} · ${account.institution}`
+                    : account.name}
+                </option>
+              ))}
+              {form.accountId &&
+              !accounts.some((account) => account.id === form.accountId) ? (
+                <option value={form.accountId}>Saved account</option>
+              ) : null}
+            </select>
+            {accounts.length === 0 ? (
+              <span className='text-[12px] text-[var(--bb-dim)]'>
+                Add an account if you want this tied to a balance.
+              </span>
+            ) : null}
+          </label>
+        ) : null}
         <div className='mt-2 flex items-center justify-between gap-3'>
           {editing ? (
             <button

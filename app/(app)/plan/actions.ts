@@ -6,6 +6,8 @@ import { createClient } from '@/utils/supabase/server';
 import { getCurrentUser } from '@/app/queries/getCurrentUser';
 import { getMonthAndYearNumberFromDate } from '@/lib/utils';
 import { money } from '@/lib/budget/math';
+import { isMissingAccountColumn } from '@/lib/budget/schema';
+import { transactionsHaveAccountLink } from '@/app/queries/budgetAccountLink';
 import { rolloverBudget } from '@/app/mutations/rolloverBudget';
 import type { BudgetKind } from '@/lib/budget/types';
 
@@ -13,6 +15,7 @@ function revalidateBudget() {
   revalidatePath('/');
   revalidatePath('/plan');
   revalidatePath('/transactions');
+  revalidatePath('/accounts');
 }
 
 async function context() {
@@ -71,6 +74,44 @@ async function lineItemOwned(
     .maybeSingle();
 
   return Boolean(category);
+}
+
+async function writeTransaction(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  row: {
+    amount: number;
+    description: string | null;
+    date: string;
+    line_item_id: string | null;
+    type: BudgetKind;
+    year: number;
+    month: number;
+    household_id: string;
+    account_id?: string | null;
+  },
+  userId: string,
+  id: string | undefined,
+) {
+  if (id) {
+    const { error } = await supabase
+      .from('transactions')
+      .update(row)
+      .eq('id', id)
+      .eq('household_id', row.household_id);
+    if (error) {
+      return { error, message: 'Could not update that transaction.' };
+    }
+    return { error: null, message: '' };
+  }
+
+  const { error } = await supabase.from('transactions').insert({
+    ...row,
+    created_by: userId,
+  });
+  if (error) {
+    return { error, message: 'Could not add that transaction.' };
+  }
+  return { error: null, message: '' };
 }
 
 export async function addIncomeLine(input: {
@@ -274,6 +315,7 @@ export async function saveTransaction(input: {
   description: string;
   date: string;
   lineItemId: string | null;
+  accountId?: string | null;
   kind: BudgetKind;
   monthParam: string;
 }) {
@@ -299,7 +341,17 @@ export async function saveTransaction(input: {
   const { monthNumber, yearNumber } = getMonthAndYearNumberFromDate(
     input.monthParam,
   );
-  const row = {
+  const row: {
+    amount: number;
+    description: string | null;
+    date: string;
+    line_item_id: string | null;
+    type: BudgetKind;
+    year: number;
+    month: number;
+    household_id: string;
+    account_id?: string | null;
+  } = {
     amount,
     description,
     date: input.date,
@@ -310,19 +362,33 @@ export async function saveTransaction(input: {
     household_id: householdId,
   };
 
-  if (input.id) {
-    const { error } = await supabase
-      .from('transactions')
-      .update(row)
-      .eq('id', input.id)
-      .eq('household_id', householdId);
-    if (error) return { error: 'Could not update that transaction.' };
-  } else {
-    const { error } = await supabase.from('transactions').insert({
-      ...row,
-      created_by: userId,
-    });
-    if (error) return { error: 'Could not add that transaction.' };
+  const wantsAccount = input.accountId !== undefined;
+  if (wantsAccount) {
+    const linked = await transactionsHaveAccountLink();
+    if (linked) {
+      const accountId = input.accountId || null;
+      if (accountId) {
+        const { data: account } = await supabase
+          .from('accounts')
+          .select('id')
+          .eq('id', accountId)
+          .eq('household_id', householdId)
+          .maybeSingle();
+        if (!account) {
+          return { error: 'That account is not in this household.' };
+        }
+      }
+      row.account_id = accountId;
+    }
+  }
+
+  const saved = await writeTransaction(supabase, row, userId, input.id);
+  if (saved.error && row.account_id !== undefined && isMissingAccountColumn(saved.error)) {
+    delete row.account_id;
+    const retry = await writeTransaction(supabase, row, userId, input.id);
+    if (retry.error) return { error: retry.message };
+  } else if (saved.error) {
+    return { error: saved.message };
   }
 
   revalidateBudget();

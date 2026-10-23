@@ -4,12 +4,15 @@ import { createClient } from '@/utils/supabase/server';
 import { getCurrentUser } from '@/app/queries/getCurrentUser';
 import { getMonthAndYearNumberFromDate } from '@/lib/utils';
 import { kindFromType, money } from '@/lib/budget/math';
+import { transactionsHaveAccountLink } from '@/app/queries/budgetAccountLink';
+import { isMissingAccountColumn } from '@/lib/budget/schema';
 import {
   monthLabel,
   shiftMonth,
   toMonthParam,
 } from '@/lib/budget/month';
 import type {
+  BudgetAccount,
   BudgetGroup,
   BudgetIncome,
   BudgetMonth,
@@ -38,6 +41,8 @@ function emptyMonth(
     income: [],
     groups: [],
     transactions: [],
+    accounts: [],
+    accountsLinked: false,
     loadError,
   };
 }
@@ -57,7 +62,9 @@ export const getBudgetMonth = cache(async function getBudgetMonth(
   const previousMonthParam = toMonthParam(previous.monthNumber, previous.year);
   const previousLabel = monthLabel(previous.monthNumber, previous.year);
 
-  const [incomeRes, categoryRes, txnRes, prevRes] = await Promise.all([
+  const linkedAtStart = await transactionsHaveAccountLink();
+
+  const [incomeRes, categoryRes, prevRes] = await Promise.all([
     supabase
       .from('income')
       .select('id, name, amount, created_at')
@@ -73,15 +80,6 @@ export const getBudgetMonth = cache(async function getBudgetMonth(
       .eq('year', yearNumber)
       .order('created_at', { ascending: true }),
     supabase
-      .from('transactions')
-      .select(
-        'id, amount, date, description, line_item_id, type, created_at, line_items(name, categories(name))',
-      )
-      .eq('household_id', householdId)
-      .eq('month', monthNumber)
-      .eq('year', yearNumber)
-      .order('date', { ascending: false }),
-    supabase
       .from('categories')
       .select('id', { count: 'exact', head: true })
       .eq('household_id', householdId)
@@ -89,7 +87,15 @@ export const getBudgetMonth = cache(async function getBudgetMonth(
       .eq('year', previous.year),
   ]);
 
-  const failed = incomeRes.error ?? categoryRes.error ?? txnRes.error;
+  const txnLoad = await loadMonthTransactions(
+    supabase,
+    householdId,
+    monthNumber,
+    yearNumber,
+    linkedAtStart,
+  );
+
+  const failed = incomeRes.error ?? categoryRes.error ?? txnLoad.error;
   if (failed) {
     console.error(failed);
     return emptyMonth(
@@ -122,7 +128,11 @@ export const getBudgetMonth = cache(async function getBudgetMonth(
     };
   });
 
-  const transactions: BudgetTransaction[] = [...(txnRes.data ?? [])]
+  const accountNames = new Map(
+    txnLoad.accounts.map((account) => [account.id, account.name]),
+  );
+
+  const transactions: BudgetTransaction[] = [...txnLoad.rows]
     .sort((a, b) => {
       const dateCompare = (b.date ?? '').localeCompare(a.date ?? '');
       if (dateCompare !== 0) return dateCompare;
@@ -131,6 +141,7 @@ export const getBudgetMonth = cache(async function getBudgetMonth(
     .map((row) => {
       const lineItem = asOne(row.line_items);
       const category = lineItem ? asOne(lineItem.categories) : null;
+      const accountId = row.account_id;
       return {
         id: row.id,
         amount: money(row.amount),
@@ -139,6 +150,8 @@ export const getBudgetMonth = cache(async function getBudgetMonth(
         lineItemId: row.line_item_id,
         lineItemName: lineItem?.name ?? null,
         groupName: category?.name ?? null,
+        accountId,
+        accountName: accountId ? (accountNames.get(accountId) ?? null) : null,
         kind: kindFromType(row.type),
       };
     });
@@ -154,6 +167,121 @@ export const getBudgetMonth = cache(async function getBudgetMonth(
     income,
     groups,
     transactions,
+    accounts: txnLoad.accounts,
+    accountsLinked: txnLoad.linked,
     loadError: null,
   };
 });
+
+type TxnRow = {
+  id: string;
+  amount: number | null;
+  date: string | null;
+  description: string | null;
+  line_item_id: string | null;
+  type: string | null;
+  created_at: string;
+  account_id: string | null;
+  line_items:
+    | {
+        name: string | null;
+        categories:
+          | { name: string | null }
+          | { name: string | null }[]
+          | null;
+      }
+    | {
+        name: string | null;
+        categories:
+          | { name: string | null }
+          | { name: string | null }[]
+          | null;
+      }[]
+    | null;
+};
+
+async function loadMonthTransactions(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  householdId: string,
+  monthNumber: number,
+  yearNumber: number,
+  linked: boolean,
+) {
+  const rows = await readTransactions(
+    supabase,
+    householdId,
+    monthNumber,
+    yearNumber,
+    linked,
+  );
+
+  let accounts: BudgetAccount[] = [];
+  if (rows.linked) {
+    const accountRes = await supabase
+      .from('accounts')
+      .select('id, name, institution')
+      .eq('household_id', householdId)
+      .eq('is_active', true)
+      .order('name', { ascending: true });
+    if (accountRes.error) {
+      console.error(accountRes.error);
+    } else {
+      accounts = (accountRes.data ?? []).map((account) => ({
+        id: account.id,
+        name: account.name,
+        institution: account.institution,
+      }));
+    }
+  }
+
+  return {
+    linked: rows.linked,
+    error: rows.error,
+    rows: rows.rows,
+    accounts,
+  };
+}
+
+async function readTransactions(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  householdId: string,
+  monthNumber: number,
+  yearNumber: number,
+  linked: boolean,
+): Promise<{ linked: boolean; error: { message: string } | null; rows: TxnRow[] }> {
+  if (linked) {
+    const withAccount = await supabase
+      .from('transactions')
+      .select(
+        'id, amount, date, description, line_item_id, type, created_at, account_id, line_items(name, categories(name))',
+      )
+      .eq('household_id', householdId)
+      .eq('month', monthNumber)
+      .eq('year', yearNumber)
+      .order('date', { ascending: false });
+
+    if (!withAccount.error) {
+      return { linked: true, error: null, rows: withAccount.data ?? [] };
+    }
+    if (!isMissingAccountColumn(withAccount.error)) {
+      return { linked: true, error: withAccount.error, rows: [] };
+    }
+  }
+
+  const plain = await supabase
+    .from('transactions')
+    .select(
+      'id, amount, date, description, line_item_id, type, created_at, line_items(name, categories(name))',
+    )
+    .eq('household_id', householdId)
+    .eq('month', monthNumber)
+    .eq('year', yearNumber)
+    .order('date', { ascending: false });
+
+  const rows = (plain.data ?? []).map((row) => ({
+    ...row,
+    account_id: null,
+  }));
+
+  return { linked: false, error: plain.error, rows };
+}

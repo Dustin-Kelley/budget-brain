@@ -133,3 +133,24 @@ export function unassignedCount(transactions: BudgetTransaction[]) {
   }
   return count;
 }
+
+export function accountActivity(
+  transactions: BudgetTransaction[],
+  accountId: string,
+) {
+  const rows = transactions.filter((txn) => txn.accountId === accountId);
+  let spent = 0;
+  let income = 0;
+  for (const txn of rows) {
+    if (txn.kind === 'income') {
+      income += txn.amount;
+    } else {
+      spent += txn.amount;
+    }
+  }
+  return {
+    rows,
+    spent: money(spent),
+    income: money(income),
+  };
+}

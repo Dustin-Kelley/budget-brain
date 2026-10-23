@@ -5,6 +5,8 @@ import { getCurrentUser } from '@/app/queries/getCurrentUser';
 import { getAccounts } from '@/app/queries/getAccounts';
 import { getSpendCategories } from '@/app/queries/getSpendCategories';
 import { getAccountActivity } from '@/app/queries/getAccountActivity';
+import { getBudgetMonth } from '@/app/queries/getBudgetMonth';
+import { accountActivity } from '@/lib/budget/math';
 import {
   createAccount,
   updateAccountBalance,
@@ -63,10 +65,11 @@ export default async function AccountsPage({
 }
 
 async function AccountsBody({ month }: { month: string | undefined }) {
-  const [{ accounts }, { categories }, activity] = await Promise.all([
+  const [{ accounts }, { categories }, activity, budget] = await Promise.all([
     getAccounts(),
     getSpendCategories(),
     getAccountActivity(month),
+    getBudgetMonth(month),
   ]);
 
   const totalBalance = accounts.reduce(
@@ -81,10 +84,10 @@ async function AccountsBody({ month }: { month: string | undefined }) {
           <h1 className='bb-title'>Accounts</h1>
           <p className='mt-1.5 text-[14px] text-[var(--bb-sub)]'>
             {accounts.length === 0
-              ? 'No accounts yet — add one below, then import a file.'
+              ? 'Add a checking, savings, or card account and type in today’s balance.'
               : `${formatCurrency(totalBalance)} across ${accounts.length} account${
                   accounts.length === 1 ? '' : 's'
-                }`}
+                }. You keep these balances by hand.`}
           </p>
         </div>
         <div className='flex flex-wrap gap-2.5'>
@@ -113,8 +116,18 @@ async function AccountsBody({ month }: { month: string | undefined }) {
         <div className='grid gap-4 lg:grid-cols-2'>
           {accounts.map((account) => {
             const stats = activity[account.id];
+            const budgetOnAccount = accountActivity(
+              budget.transactions,
+              account.id,
+            );
             const isDiscretionary =
               account.purpose === 'discretionary_spend';
+            const monthQuery = month
+              ? `&month=${encodeURIComponent(month)}`
+              : '';
+            const transactionsHref = budget.accountsLinked
+              ? `/transactions?account=${account.id}${monthQuery}`
+              : `/transactions?list=bank&account=${account.id}${monthQuery}`;
 
             return (
               <div
@@ -161,29 +174,80 @@ async function AccountsBody({ month }: { month: string | undefined }) {
                 </div>
 
                 <div className='flex flex-wrap gap-6 text-[13px]'>
-                  <div>
-                    <div className='bb-kicker'>Out this period</div>
-                    <div className='mt-0.5 text-[16px] font-semibold'>
-                      {formatCurrency(stats?.outflow ?? 0)}
-                    </div>
-                  </div>
-                  <div>
-                    <div className='bb-kicker'>Avg per day</div>
-                    <div className='mt-0.5 text-[16px] font-semibold'>
-                      {formatCurrency(stats?.averagePerDay ?? 0)}
-                    </div>
-                  </div>
-                  <div>
-                    <div className='bb-kicker'>
-                      {stats?.projected != null ? 'On track for' : 'Movements'}
-                    </div>
-                    <div className='mt-0.5 text-[16px] font-semibold'>
-                      {stats?.projected != null
-                        ? formatCurrency(stats.projected)
-                        : (stats?.transactionCount ?? 0)}
-                    </div>
-                  </div>
+                  {budget.accountsLinked ? (
+                    <>
+                      <div>
+                        <div className='bb-kicker'>Budget spent</div>
+                        <div className='mt-0.5 text-[16px] font-semibold'>
+                          {formatCurrency(budgetOnAccount.spent)}
+                        </div>
+                      </div>
+                      <div>
+                        <div className='bb-kicker'>Budget income</div>
+                        <div className='mt-0.5 text-[16px] font-semibold'>
+                          {formatCurrency(budgetOnAccount.income)}
+                        </div>
+                      </div>
+                      <div>
+                        <div className='bb-kicker'>Assigned</div>
+                        <div className='mt-0.5 text-[16px] font-semibold'>
+                          {budgetOnAccount.rows.length}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <div className='bb-kicker'>Out this period</div>
+                        <div className='mt-0.5 text-[16px] font-semibold'>
+                          {formatCurrency(stats?.outflow ?? 0)}
+                        </div>
+                      </div>
+                      <div>
+                        <div className='bb-kicker'>Avg per day</div>
+                        <div className='mt-0.5 text-[16px] font-semibold'>
+                          {formatCurrency(stats?.averagePerDay ?? 0)}
+                        </div>
+                      </div>
+                      <div>
+                        <div className='bb-kicker'>
+                          {stats?.projected != null
+                            ? 'On track for'
+                            : 'Movements'}
+                        </div>
+                        <div className='mt-0.5 text-[16px] font-semibold'>
+                          {stats?.projected != null
+                            ? formatCurrency(stats.projected)
+                            : (stats?.transactionCount ?? 0)}
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
+
+                {budget.accountsLinked ? (
+                  <div className='flex flex-col gap-1 text-[13.5px]'>
+                    {budgetOnAccount.rows.length === 0 ? (
+                      <p className='text-[var(--bb-sub)]'>
+                        No budget transactions on this account this month.
+                      </p>
+                    ) : (
+                      budgetOnAccount.rows.slice(0, 4).map((txn) => (
+                        <div
+                          key={txn.id}
+                          className='flex items-baseline justify-between gap-3'
+                        >
+                          <span className='truncate'>
+                            {txn.description.trim() || 'Transaction'}
+                          </span>
+                          <span className='flex-none font-semibold'>
+                            {formatCurrency(txn.amount)}
+                          </span>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                ) : null}
 
                 {stats && stats.daily.length > 0 && (
                   <Sparkline
@@ -194,9 +258,7 @@ async function AccountsBody({ month }: { month: string | undefined }) {
 
                 <div className='flex flex-wrap items-end gap-2.5'>
                   <Link
-                    href={`/transactions?account=${account.id}${
-                      month ? `&month=${month}` : ''
-                    }`}
+                    href={transactionsHref}
                     className='bb-ghost'
                   >
                     View transactions
@@ -246,8 +308,8 @@ async function AccountsBody({ month }: { month: string | undefined }) {
         <div>
           <span className='bb-kicker'>Import</span>
           <p className='mt-1 text-[13.5px] text-[var(--bb-sub)]'>
-            CSV, OFX, or QFX. Duplicates are skipped automatically. Connecting
-            a bank through Plaid is coming soon.
+            CSV, OFX, or QFX. Duplicates are skipped. Bank linking is coming
+            later.
           </p>
         </div>
         <form

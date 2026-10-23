@@ -5,6 +5,12 @@ migrations against the **production** Supabase project used by Vercel:
 
 1. `supabase/migrations/20260723200000_ledger_foundation.sql` — tables
 2. `supabase/migrations/20260723210000_ledger_rls.sql` — **RLS** (household-scoped)
+3. `supabase/migrations/20261023203956_budget_account_link_rls.sql` — nullable
+   `transactions.account_id`, plus household RLS on `categories`, `line_items`,
+   `income`, and `transactions`
+
+The app keeps working if step 3 lands a few minutes after the deploy. Until
+that column exists, budget transactions save without an account.
 
 ## Option A — Supabase SQL editor
 
@@ -24,6 +30,8 @@ supabase migration up --linked
 ## What RLS does
 
 - Enables RLS on `accounts`, `spend_categories`, `ledger_transactions`, `category_rules`
+- `20261023203956_budget_account_link_rls.sql` also enables RLS on `categories`,
+  `line_items`, `income`, and `transactions` (line items follow their group’s household)
 - Authenticated users only see/mutate rows where `household_id` matches their
   `users.household_id` (via `current_household_id()`)
 - Revokes anon access to ledger tables

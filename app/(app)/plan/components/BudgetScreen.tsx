@@ -198,6 +198,8 @@ export function BudgetScreen({ budget }: { budget: BudgetMonth }) {
       <TransactionFormDialog
         editor={editor}
         groups={budget.groups}
+        accounts={budget.accounts}
+        accountsLinked={budget.accountsLinked}
         monthParam={budget.monthParam}
         onClose={() => setEditor(null)}
       />
@@ -612,6 +614,7 @@ function ActivityList({
                 </span>
                 <span className='min-w-0 flex-1 truncate'>
                   {transactionTitle(txn.description)}
+                  {txn.accountName ? ` · ${txn.accountName}` : ''}
                 </span>
                 <span
                   className='bb-amount font-semibold'

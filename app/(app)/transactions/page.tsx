@@ -55,6 +55,7 @@ export default async function TransactionsPage({
           <BudgetTransactions
             month={params.month}
             track={params.track}
+            accountId={params.account}
           />
         )}
       </Suspense>
@@ -65,24 +66,34 @@ export default async function TransactionsPage({
 async function BudgetTransactions({
   month,
   track,
+  accountId,
 }: {
   month: string | undefined;
   track: string | undefined;
+  accountId: string | undefined;
 }) {
   await ensureBudgetDefaults(month);
   const budget = await getBudgetMonth(month);
-  const openCount = unassignedCount(budget.transactions);
-  const rows =
-    track === 'open'
-      ? budget.transactions.filter((txn) => !txn.lineItemId)
-      : budget.transactions;
+  const accountFilter = budget.accountsLinked ? accountId : undefined;
+  const scoped = budget.transactions.filter((txn) => {
+    if (!accountFilter) return true;
+    return txn.accountId === accountFilter;
+  });
+  const openCount = unassignedCount(scoped);
+  const rows = scoped.filter((txn) => {
+    if (track === 'open' && txn.lineItemId) return false;
+    return true;
+  });
 
   return (
     <BudgetTransactionList
       rows={rows}
       groups={budget.groups}
+      accounts={budget.accounts}
+      accountsLinked={budget.accountsLinked}
       monthParam={budget.monthParam}
       track={track}
+      accountId={accountFilter}
       unassigned={openCount}
     />
   );
@@ -190,6 +201,7 @@ async function TransactionsBody({ params }: { params: Params }) {
           <SourceSwitch
             list='bank'
             monthParam={params.month}
+            accountId={params.account}
           />
           <SearchField initial={params.q ?? ''} />
           <Link

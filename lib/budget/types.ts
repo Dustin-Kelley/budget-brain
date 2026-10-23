@@ -20,6 +20,12 @@ export type BudgetGroup = {
   items: BudgetItem[];
 };
 
+export type BudgetAccount = {
+  id: string;
+  name: string;
+  institution: string | null;
+};
+
 export type BudgetTransaction = {
   id: string;
   amount: number;
@@ -28,6 +34,8 @@ export type BudgetTransaction = {
   lineItemId: string | null;
   lineItemName: string | null;
   groupName: string | null;
+  accountId: string | null;
+  accountName: string | null;
   kind: BudgetKind;
 };
 
@@ -40,6 +48,8 @@ export type BudgetMonth = {
   income: BudgetIncome[];
   groups: BudgetGroup[];
   transactions: BudgetTransaction[];
+  accounts: BudgetAccount[];
+  accountsLinked: boolean;
   loadError: string | null;
 };
 
@@ -49,5 +59,6 @@ export type TransactionDraft = {
   description: string;
   date: string;
   lineItemId: string;
+  accountId: string;
   kind: BudgetKind;
 };
