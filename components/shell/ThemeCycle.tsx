@@ -27,7 +27,7 @@ export function ThemeCycle({
       type='button'
       onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
       className={cn(
-        'cursor-pointer text-[var(--bb-cy-text)] transition-opacity hover:opacity-70',
+        'cursor-pointer text-[var(--bb-text)] transition-opacity hover:opacity-70',
         className,
       )}
       aria-label={mounted ? (isDark ? 'Switch to light theme' : 'Switch to dark theme') : 'Toggle theme'}

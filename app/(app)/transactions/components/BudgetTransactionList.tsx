@@ -63,11 +63,6 @@ export function BudgetTransactionList({
           </p>
         </div>
         <div className='flex flex-wrap items-center gap-2'>
-          <SourceSwitch
-            list='budget'
-            monthParam={monthParam}
-            accountId={accountId}
-          />
           <button
             type='button'
             className='bb-solid'
@@ -83,7 +78,7 @@ export function BudgetTransactionList({
         </div>
       </div>
 
-      <div className='flex flex-wrap gap-2'>
+      <div className='flex flex-wrap items-center gap-2'>
         {accountId ? (
           <Link
             href={clearAccountHref}
@@ -92,20 +87,22 @@ export function BudgetTransactionList({
             All accounts
           </Link>
         ) : null}
-        <Link
-          href={allHref}
-          className='bb-chip'
-          data-on={!openOnly}
-        >
-          All
-        </Link>
-        <Link
-          href={openHref}
-          className='bb-chip'
-          data-on={openOnly}
-        >
-          Unassigned{unassigned > 0 ? ` · ${unassigned}` : ''}
-        </Link>
+        <div className='bb-segments'>
+          <Link
+            href={allHref}
+            className='bb-chip'
+            data-on={!openOnly}
+          >
+            All
+          </Link>
+          <Link
+            href={openHref}
+            className='bb-chip'
+            data-on={openOnly}
+          >
+            Unassigned{unassigned > 0 ? ` · ${unassigned}` : ''}
+          </Link>
+        </div>
       </div>
 
       <div className='bb-card px-6 pt-2 pb-4'>
@@ -163,44 +160,6 @@ export function BudgetTransactionList({
         onClose={() => setEditor(null)}
       />
     </>
-  );
-}
-
-export function SourceSwitch({
-  list,
-  monthParam,
-  accountId,
-}: {
-  list: 'budget' | 'bank';
-  monthParam?: string;
-  accountId?: string;
-}) {
-  const budgetHref = withMonth(
-    keepAccount('/transactions', accountId),
-    monthParam,
-  );
-  const bankHref = withMonth(
-    keepAccount('/transactions?list=bank', accountId),
-    monthParam,
-  );
-
-  return (
-    <div className='flex gap-1'>
-      <Link
-        href={budgetHref}
-        className='bb-chip'
-        data-on={list === 'budget'}
-      >
-        Budget
-      </Link>
-      <Link
-        href={bankHref}
-        className='bb-chip'
-        data-on={list === 'bank'}
-      >
-        Bank activity
-      </Link>
-    </div>
   );
 }
 

@@ -184,7 +184,7 @@ function TransactionForm({
             onChange={(event) =>
               setForm({ ...form, date: event.target.value })
             }
-            className='rounded-[10px] border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px] text-[var(--bb-text)]'
+            className='rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px] text-[var(--bb-text)]'
           />
         </label>
         <label className='flex flex-col gap-1 text-[13px] text-[var(--bb-sub)]'>
@@ -197,7 +197,7 @@ function TransactionForm({
             onChange={(event) =>
               setForm({ ...form, amount: event.target.value })
             }
-            className='rounded-[10px] border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px] text-[var(--bb-text)]'
+            className='rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px] text-[var(--bb-text)]'
           />
         </label>
         <label className='flex flex-col gap-1 text-[13px] text-[var(--bb-sub)]'>
@@ -208,7 +208,7 @@ function TransactionForm({
             onChange={(event) =>
               setForm({ ...form, description: event.target.value })
             }
-            className='rounded-[10px] border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px] text-[var(--bb-text)]'
+            className='rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px] text-[var(--bb-text)]'
           />
         </label>
         <div className='flex flex-col gap-1 text-[13px] text-[var(--bb-sub)]'>
@@ -239,7 +239,7 @@ function TransactionForm({
             onChange={(event) =>
               setForm({ ...form, lineItemId: event.target.value })
             }
-            className='rounded-[10px] border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px] text-[var(--bb-text)]'
+            className='rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px] text-[var(--bb-text)]'
           >
             <option value=''>Unassigned</option>
             {groups.map((group) => (
@@ -267,7 +267,7 @@ function TransactionForm({
               onChange={(event) =>
                 setForm({ ...form, accountId: event.target.value })
               }
-              className='rounded-[10px] border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px] text-[var(--bb-text)]'
+              className='rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px] text-[var(--bb-text)]'
             >
               <option value=''>No account</option>
               {accounts.map((account) => (

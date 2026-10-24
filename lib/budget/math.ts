@@ -7,18 +7,18 @@ import type {
   BudgetView,
 } from './types';
 
-/** Palette drawn from the Budget Brain ramps. Indexed with the group list. */
+/** Grayscale shades for group charts. Green and red stay semantic. */
 export const BUDGET_GROUP_COLORS = [
-  'var(--bb-n1)',
-  'var(--bb-n2)',
-  'var(--bb-n3)',
-  'var(--bb-n4)',
-  'var(--bb-w1)',
-  'var(--bb-w2)',
-  'var(--bb-w3)',
-  'var(--bb-n5)',
-  'var(--bb-cy)',
-  'var(--bb-mg)',
+  'var(--bb-g1)',
+  'var(--bb-g2)',
+  'var(--bb-g3)',
+  'var(--bb-g4)',
+  'var(--bb-g5)',
+  'var(--bb-g6)',
+  'var(--bb-g2)',
+  'var(--bb-g3)',
+  'var(--bb-g4)',
+  'var(--bb-g5)',
 ] as const;
 
 export function groupColor(index: number) {

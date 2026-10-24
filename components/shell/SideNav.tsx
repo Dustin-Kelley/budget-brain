@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Logo } from '@/components/ui/logo';
 import { Icon } from './Icon';
 import { ThemeCycle } from './ThemeCycle';
-import { MORE_NAV_ITEMS, NAV_ITEMS, SETTINGS_ITEM, isNavActive } from './nav';
+import { NAV_ITEMS, SETTINGS_ITEM, isNavActive } from './nav';
 
 export function SideNav({ initial }: { initial: string }) {
   const pathname = usePathname();
@@ -18,7 +18,7 @@ export function SideNav({ initial }: { initial: string }) {
       >
         <Logo
           size={30}
-          className='flex-none text-[var(--bb-cy-text)]'
+          className='flex-none text-[var(--bb-text)]'
         />
         <span className='text-[16.5px] font-semibold tracking-[-0.01em]'>
           Budget Brain
@@ -27,24 +27,6 @@ export function SideNav({ initial }: { initial: string }) {
 
       <nav className='flex flex-col gap-[3px]'>
         {NAV_ITEMS.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className='bb-navi'
-            data-on={isNavActive(item.href, pathname)}
-            aria-current={isNavActive(item.href, pathname) ? 'page' : undefined}
-          >
-            <Icon
-              name={item.icon}
-              size={19}
-            />
-            {item.label}
-          </Link>
-        ))}
-        <div className='mt-3 px-2'>
-          <span className='bb-kicker'>More</span>
-        </div>
-        {MORE_NAV_ITEMS.map((item) => (
           <Link
             key={item.href}
             href={item.href}
@@ -76,7 +58,7 @@ export function SideNav({ initial }: { initial: string }) {
         <div className='mt-2 flex items-center gap-2.5 border-t border-[var(--bb-line)] px-2 pt-3 pb-1'>
           <Link
             href='/settings'
-            className='flex size-[30px] flex-none items-center justify-center rounded-full bg-[var(--bb-w2)] text-[12px] font-semibold text-white hover:text-white'
+            className='flex size-[30px] flex-none items-center justify-center rounded-full bg-[var(--bb-text)] text-[12px] font-semibold text-[var(--bb-bg)] hover:text-[var(--bb-bg)]'
             aria-label='Settings'
           >
             {initial}

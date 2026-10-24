@@ -5,6 +5,12 @@ const nextConfig: NextConfig = {
   images: {
     domains: ['cdn.dribbble.com', 'gsilpsppthrhhqcuwzjw.supabase.co'],
   },
+  async redirects() {
+    return [
+      { source: '/goals', destination: '/', permanent: false },
+      { source: '/allocation', destination: '/', permanent: false },
+    ];
+  },
 };
 
 export default nextConfig;
