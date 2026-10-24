@@ -34,7 +34,7 @@ export function AppHeader({
           >
             <Logo
               size={25}
-              className='flex-none text-[var(--bb-cy-text)]'
+              className='flex-none text-[var(--bb-text)]'
             />
             <span className='text-[15.5px] font-semibold tracking-[-0.01em]'>
               Budget Brain
@@ -71,7 +71,7 @@ export function AppHeader({
         {isTop && (
           <Link
             href='/settings'
-            className='flex size-8 flex-none items-center justify-center rounded-full bg-[var(--bb-w2)] text-[12px] font-semibold text-white hover:text-white'
+            className='flex size-8 flex-none items-center justify-center rounded-full bg-[var(--bb-text)] text-[12px] font-semibold text-[var(--bb-bg)] hover:text-[var(--bb-bg)]'
             aria-label='Settings'
           >
             {initial}

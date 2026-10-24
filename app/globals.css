@@ -6,8 +6,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-source-serif);
-  --font-serif: var(--font-source-serif);
+  --font-sans: var(--font-geist-sans);
+  --font-serif: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -43,139 +43,147 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
 }
 
-/* ══════════════════════════════════════════════════════════════════════════
-   Design tokens — from the Claude Design project "Budget Brain App".
-   The --bb-* set is the source of truth; the shadcn names below are bridged
-   onto it so every existing component inherits the palette.
-   ══════════════════════════════════════════════════════════════════════════ */
+/* Neutral monochrome. Color is reserved for under-budget (green) and
+   over-budget (red). Accent is black in light mode and white in dark mode. */
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.75rem;
+  color-scheme: light;
+  accent-color: #0a0a0a;
 
-  /* Ground and surfaces — warm paper */
-  --bb-bg: #f4f3f2;
+  --bb-bg: #ffffff;
   --bb-surface: #ffffff;
-  --bb-surface-2: #efeeec;
-  --bb-side: #efeeec;
-  --bb-line: rgba(32, 30, 29, 0.1);
-  --bb-line-2: rgba(32, 30, 29, 0.06);
-  --bb-track: #e9e7e5;
+  --bb-surface-2: #f5f5f5;
+  --bb-side: #ffffff;
+  --bb-line: rgba(10, 10, 10, 0.1);
+  --bb-line-2: rgba(10, 10, 10, 0.06);
+  --bb-track: #ececec;
+  --bb-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
 
-  /* Ink */
-  --bb-text: #201e1d;
-  --bb-sub: #5f5a54;
-  --bb-dim: #8a847c;
+  --bb-text: #0a0a0a;
+  --bb-sub: #5c5c5c;
+  --bb-dim: #8a8a8a;
 
-  /* Accents — the T ("text") variants carry the contrast */
-  --bb-cy: #0f7ba0;
-  --bb-cy-text: #005a77;
-  --bb-cy-tint: #e2f1f7;
-  --bb-mg: #e33f83;
-  --bb-mg-text: #c11563;
-  --bb-mg-tint: #fce4ee;
+  --bb-accent: #0a0a0a;
+  --bb-accent-contrast: #ffffff;
 
-  /* Needs ramp */
-  --bb-n1: #005a77;
-  --bb-n2: #0f7ba0;
-  --bb-n3: #2a97bf;
-  --bb-n4: #58bde0;
-  --bb-n5: #8fd6f0;
-  --bb-n6: #bfe9fa;
+  --bb-good: #1f7a4d;
+  --bb-good-text: #14663c;
+  --bb-good-tint: #eef8f2;
+  --bb-bad: #d4524c;
+  --bb-bad-text: #b42318;
+  --bb-bad-tint: #fdf2f2;
 
-  /* Wants ramp */
-  --bb-w1: #c11563;
-  --bb-w2: #e33f83;
-  --bb-w3: #ff6ba0;
-  --bb-w4: #ffa3c4;
-  --bb-w5: #ffd0e0;
+  /* Grayscale chart ramp. Darker shades read first. */
+  --bb-g1: #171717;
+  --bb-g2: #3f3f3f;
+  --bb-g3: #525252;
+  --bb-g4: #737373;
+  --bb-g5: #a3a3a3;
+  --bb-g6: #d4d4d4;
+  --bb-g7: #e5e5e5;
+  --bb-g8: #f0f0f0;
 
-  /* ── shadcn bridge ── */
+  /* Older names kept so existing class references stay monochrome. */
+  --bb-cy: var(--bb-accent);
+  --bb-cy-text: var(--bb-text);
+  --bb-cy-tint: var(--bb-surface-2);
+  --bb-mg: var(--bb-bad);
+  --bb-mg-text: var(--bb-bad-text);
+  --bb-mg-tint: var(--bb-bad-tint);
+  --bb-n1: var(--bb-g1);
+  --bb-n2: var(--bb-g2);
+  --bb-n3: var(--bb-g3);
+  --bb-n4: var(--bb-g4);
+  --bb-n5: var(--bb-g5);
+  --bb-n6: var(--bb-g6);
+  --bb-w1: var(--bb-g2);
+  --bb-w2: var(--bb-g3);
+  --bb-w3: var(--bb-g4);
+  --bb-w4: var(--bb-g5);
+  --bb-w5: var(--bb-g6);
+
   --background: var(--bb-bg);
   --foreground: var(--bb-text);
   --card: var(--bb-surface);
   --card-foreground: var(--bb-text);
   --popover: var(--bb-surface);
   --popover-foreground: var(--bb-text);
-  --primary: var(--bb-cy);
-  --primary-foreground: #ffffff;
+  --primary: var(--bb-accent);
+  --primary-foreground: var(--bb-accent-contrast);
   --secondary: var(--bb-surface-2);
   --secondary-foreground: var(--bb-text);
-  --tertiary: var(--bb-mg);
+  --tertiary: var(--bb-text);
   --muted: var(--bb-surface-2);
   --muted-foreground: var(--bb-sub);
-  --accent: var(--bb-cy-tint);
-  --accent-foreground: var(--bb-cy-text);
-  --destructive: var(--bb-mg-text);
+  --accent: var(--bb-surface-2);
+  --accent-foreground: var(--bb-text);
+  --destructive: var(--bb-bad-text);
   --border: var(--bb-line);
   --input: var(--bb-line);
-  --ring: var(--bb-cy);
-  --chart-1: var(--bb-n1);
-  --chart-2: var(--bb-n2);
-  --chart-3: var(--bb-n3);
-  --chart-4: var(--bb-n4);
-  --chart-5: var(--bb-n5);
-  --chart-6: var(--bb-n6);
-  --chart-7: var(--bb-w1);
-  --chart-8: var(--bb-w2);
-  --chart-9: var(--bb-w3);
-  --chart-10: var(--bb-w4);
+  --ring: var(--bb-accent);
+  --chart-1: var(--bb-g1);
+  --chart-2: var(--bb-g2);
+  --chart-3: var(--bb-g3);
+  --chart-4: var(--bb-g4);
+  --chart-5: var(--bb-g5);
+  --chart-6: var(--bb-g6);
+  --chart-7: var(--bb-g2);
+  --chart-8: var(--bb-g3);
+  --chart-9: var(--bb-g4);
+  --chart-10: var(--bb-g5);
   --sidebar: var(--bb-side);
   --sidebar-foreground: var(--bb-text);
-  --sidebar-primary: var(--bb-cy);
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: var(--bb-cy-tint);
-  --sidebar-accent-foreground: var(--bb-cy-text);
+  --sidebar-primary: var(--bb-accent);
+  --sidebar-primary-foreground: var(--bb-accent-contrast);
+  --sidebar-accent: var(--bb-surface-2);
+  --sidebar-accent-foreground: var(--bb-text);
   --sidebar-border: var(--bb-line);
-  --sidebar-ring: var(--bb-cy);
+  --sidebar-ring: var(--bb-accent);
 }
 
 .dark {
-  /* Ground and surfaces — cool ink */
-  --bb-bg: #15181b;
-  --bb-surface: #1e2225;
-  --bb-surface-2: #262b2f;
-  --bb-side: #1e2225;
-  --bb-line: rgba(224, 234, 242, 0.11);
-  --bb-line-2: rgba(224, 234, 242, 0.07);
-  --bb-track: #2b3136;
+  color-scheme: dark;
+  accent-color: #fafafa;
 
-  /* Ink */
-  --bb-text: #e9edf0;
-  --bb-sub: #99a2aa;
-  --bb-dim: #78828a;
+  --bb-bg: #0a0a0a;
+  --bb-surface: #141414;
+  --bb-surface-2: #1c1c1c;
+  --bb-side: #0a0a0a;
+  --bb-line: rgba(255, 255, 255, 0.12);
+  --bb-line-2: rgba(255, 255, 255, 0.06);
+  --bb-track: #262626;
+  --bb-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
 
-  /* Accents */
-  --bb-cy: #2aa4c9;
-  --bb-cy-text: #6cc7e4;
-  --bb-cy-tint: rgba(42, 164, 201, 0.15);
-  --bb-mg: #e5478d;
-  --bb-mg-text: #ff8ab5;
-  --bb-mg-tint: rgba(229, 71, 141, 0.15);
+  --bb-text: #fafafa;
+  --bb-sub: #a3a3a3;
+  --bb-dim: #737373;
 
-  /* Needs ramp */
-  --bb-n1: #0e6a89;
-  --bb-n2: #1a89ad;
-  --bb-n3: #2aa4c9;
-  --bb-n4: #5cc0dd;
-  --bb-n5: #93d8ec;
-  --bb-n6: #c3e9f6;
+  --bb-accent: #ffffff;
+  --bb-accent-contrast: #0a0a0a;
 
-  /* Wants ramp */
-  --bb-w1: #a8155a;
-  --bb-w2: #c92b74;
-  --bb-w3: #e5478d;
-  --bb-w4: #f477ab;
-  --bb-w5: #fca6c8;
+  --bb-good: #3d9a6a;
+  --bb-good-text: #8fd4ae;
+  --bb-good-tint: rgba(61, 154, 106, 0.16);
+  --bb-bad: #e07a74;
+  --bb-bad-text: #f0b0ab;
+  --bb-bad-tint: rgba(224, 122, 116, 0.16);
 
-  /* The bridge re-resolves automatically — only the few that differ in dark. */
-  --primary-foreground: #08171d;
-  --destructive: #ff8ab5;
+  --bb-g1: #f5f5f5;
+  --bb-g2: #d4d4d4;
+  --bb-g3: #a3a3a3;
+  --bb-g4: #8a8a8a;
+  --bb-g5: #5c5c5c;
+  --bb-g6: #3a3a3a;
+  --bb-g7: #2a2a2a;
+  --bb-g8: #1c1c1c;
 }
 
 @layer base {
@@ -184,11 +192,10 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* Tailwind v4 registers the token but does not apply it — the design
-       system sets one serif for headings and body alike. */
-    font-family: var(--font-source-serif), ui-serif, Georgia, serif;
+    font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
     font-size: 15px;
-    line-height: 1.55;
+    line-height: 1.45;
+    letter-spacing: -0.011em;
   }
   h1,
   h2,
@@ -196,27 +203,26 @@
   h4,
   h5,
   h6 {
-    letter-spacing: -0.015em;
+    letter-spacing: -0.03em;
+    font-weight: 600;
+  }
+  ::selection {
+    background: var(--bb-accent);
+    color: var(--bb-accent-contrast);
   }
 }
 
-/* ══════════════════════════════════════════════════════════════════════════
-   Component classes — lifted from the design at their exact values. These
-   carry sizes Tailwind cannot express cleanly (11.5px, .12em, 13.5px).
-   ══════════════════════════════════════════════════════════════════════════ */
-
 @layer components {
-  /* — surfaces — */
   .bb-card {
     background: var(--bb-surface);
     border: 1px solid var(--bb-line);
     border-radius: 16px;
+    box-shadow: var(--bb-shadow);
   }
   .bb-card-accent {
-    border-color: var(--bb-cy);
+    border-color: var(--bb-text);
   }
 
-  /* — type — */
   .bb-kicker {
     font-size: 11.5px;
     letter-spacing: 0.12em;
@@ -226,22 +232,21 @@
   .bb-num {
     font-size: 26px;
     font-weight: 600;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.03em;
   }
   .bb-display {
     font-size: 38px;
     font-weight: 600;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.04em;
     line-height: 1;
   }
   .bb-title {
     font-size: 28px;
     font-weight: 600;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.035em;
     margin: 0;
   }
 
-  /* — rows — */
   .bb-row {
     display: flex;
     align-items: center;
@@ -254,13 +259,12 @@
     border-bottom: none;
   }
 
-  /* — navigation — */
   .bb-navi {
     display: flex;
     align-items: center;
     gap: 12px;
     padding: 9px 12px;
-    border-radius: 10px;
+    border-radius: 12px;
     font-size: 14.5px;
     color: var(--bb-sub);
     cursor: pointer;
@@ -269,13 +273,13 @@
       color 0.12s;
   }
   .bb-navi:hover {
-    background: var(--bb-line-2);
+    background: var(--bb-surface-2);
     color: var(--bb-text);
   }
   .bb-navi[data-on='true'],
   .bb-navi[data-on='true']:hover {
-    background: var(--bb-cy-tint);
-    color: var(--bb-cy-text);
+    background: var(--bb-accent);
+    color: var(--bb-accent-contrast);
   }
 
   .bb-tab {
@@ -290,8 +294,18 @@
     color: var(--bb-text);
   }
   .bb-tab[data-on='true'] {
-    color: var(--bb-cy-text);
-    border-bottom-color: var(--bb-cy);
+    color: var(--bb-text);
+    border-bottom-color: var(--bb-text);
+  }
+
+  .bb-segments {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 999px;
+    border: 1px solid var(--bb-line);
+    background: var(--bb-surface-2);
   }
 
   .bb-chip {
@@ -299,7 +313,7 @@
     align-items: center;
     gap: 8px;
     padding: 7px 14px;
-    border-radius: 20px;
+    border-radius: 999px;
     font-size: 13px;
     color: var(--bb-sub);
     cursor: pointer;
@@ -313,31 +327,27 @@
   }
   .bb-chip[data-on='true'],
   .bb-chip[data-on='true']:hover {
-    background: var(--bb-cy-tint);
-    color: var(--bb-cy-text);
+    background: var(--bb-accent);
+    color: var(--bb-accent-contrast);
   }
 
-  /* — buttons — */
   .bb-solid {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 9px;
     padding: 9px 16px;
-    background: var(--bb-cy);
+    background: var(--bb-accent);
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     font-size: 14px;
     font-family: inherit;
-    color: #fff;
+    color: var(--bb-accent-contrast);
     cursor: pointer;
-    transition: background 0.12s;
+    transition: opacity 0.12s;
   }
   .bb-solid:hover {
-    background: var(--bb-cy-text);
-  }
-  .dark .bb-solid {
-    color: #08171d;
+    opacity: 0.88;
   }
 
   .bb-ghost {
@@ -348,91 +358,38 @@
     padding: 9px 14px;
     background: transparent;
     border: 1px solid var(--bb-line);
-    border-radius: 10px;
+    border-radius: 12px;
     font-size: 14px;
     font-family: inherit;
     color: var(--bb-text);
     cursor: pointer;
     transition:
       border-color 0.12s,
-      color 0.12s;
+      background 0.12s;
   }
   .bb-ghost:hover {
-    border-color: var(--bb-cy);
-    color: var(--bb-cy-text);
+    border-color: var(--bb-text);
+    background: var(--bb-surface-2);
   }
   .bb-ghost-accent {
-    border-color: var(--bb-cy);
-    color: var(--bb-cy-text);
+    border-color: var(--bb-text);
+    color: var(--bb-text);
   }
   .bb-ghost:disabled,
   .bb-solid:disabled {
-    opacity: 0.65;
+    opacity: 0.45;
     cursor: default;
   }
 
-  /* — FOO path stepper (home) — */
-  .bb-foo-track {
-    display: flex;
-    align-items: center;
-    list-style: none;
-    margin: 0;
-    padding: 6px 0 0;
-  }
-  .bb-foo-step {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    min-width: 0;
-  }
-  .bb-foo-step:last-child {
-    flex: 0;
-  }
-  .bb-foo-step:not(:last-child)::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    margin: 0 4px;
-    background: var(--bb-line);
-  }
-  .bb-foo-step[data-state='done']:not(:last-child)::after {
-    background: var(--bb-n3);
-  }
-  .bb-foo-node {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--bb-dim);
-    flex: none;
-  }
-  .bb-foo-step[data-state='done'] .bb-foo-node {
-    color: var(--bb-n2);
-  }
-  .bb-foo-step[data-state='now'] .bb-foo-node {
-    width: 34px;
-    height: 34px;
-    background: var(--bb-cy);
-    color: #fff;
-    font-size: 15px;
-  }
-  .dark .bb-foo-step[data-state='now'] .bb-foo-node {
-    color: #08171d;
-  }
-
-  /* — selectable option card (Settings) — */
   .bb-opt {
     display: flex;
     flex-direction: column;
     gap: 10px;
     padding: 14px;
     background: var(--bb-surface);
-    border: 1.5px solid var(--bb-line);
-    border-radius: 14px;
+    border: 1px solid var(--bb-line);
+    border-radius: 16px;
+    box-shadow: var(--bb-shadow);
     cursor: pointer;
     text-align: left;
     transition:
@@ -440,14 +397,13 @@
       box-shadow 0.12s;
   }
   .bb-opt:hover {
-    border-color: var(--bb-cy);
+    border-color: var(--bb-text);
   }
   .bb-opt[data-on='true'] {
-    border-color: var(--bb-cy);
-    box-shadow: 0 0 0 3px var(--bb-cy-tint);
+    border-color: var(--bb-text);
+    box-shadow: 0 0 0 3px var(--bb-surface-2), var(--bb-shadow);
   }
 
-  /* — bucket dot — */
   .bb-dot {
     width: 9px;
     height: 9px;
@@ -455,28 +411,26 @@
     flex: none;
   }
   .bb-dot[data-bucket='needs'] {
-    background: var(--bb-n2);
+    background: var(--bb-g2);
   }
   .bb-dot[data-bucket='wants'] {
-    background: var(--bb-w2);
+    background: var(--bb-g4);
   }
   .bb-dot[data-bucket='savings'] {
-    background: var(--bb-w1);
+    background: var(--bb-g3);
   }
   .bb-dot[data-bucket='income'] {
-    background: var(--bb-cy);
+    background: var(--bb-good);
   }
   .bb-dot[data-bucket='uncategorized'] {
     background: var(--bb-dim);
   }
 
-  /* — amounts — */
   .bb-amount[data-income='true'] {
-    color: var(--bb-cy-text);
+    color: var(--bb-good-text);
     font-weight: 600;
   }
 
-  /* — page container — */
   .bb-page {
     padding: 28px 32px 34px;
   }
@@ -492,12 +446,11 @@
   }
 }
 
-/* Bare links take the accent — but not when they are dressed as buttons, which
-   carry their own colour. */
 a:not(.bb-solid):not(.bb-ghost):not(.bb-navi):not(.bb-tab):not(.bb-chip) {
-  color: var(--bb-cy-text);
+  color: inherit;
   text-decoration: none;
 }
 a:not(.bb-solid):not(.bb-ghost):not(.bb-navi):not(.bb-tab):not(.bb-chip):hover {
-  color: var(--bb-cy);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }

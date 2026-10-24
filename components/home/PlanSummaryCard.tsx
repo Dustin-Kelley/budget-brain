@@ -33,15 +33,16 @@ export function PlanSummaryCard({ budget }: { budget: BudgetMonth }) {
   }
 
   let status = `${formatCurrency(totals.left)} left to budget`;
-  let statusColor = 'var(--bb-sub)';
+  let statusColor = 'var(--bb-good-text)';
   if (zero && totals.income > 0) {
     status = 'Every dollar has a job';
-    statusColor = 'var(--bb-cy-text)';
+    statusColor = 'var(--bb-good-text)';
   } else if (over) {
     status = `${formatCurrency(Math.abs(totals.left))} over budget`;
-    statusColor = 'var(--bb-mg-text)';
+    statusColor = 'var(--bb-bad-text)';
   } else if (totals.income === 0 && totals.budgeted === 0) {
     status = 'Add income, then assign every dollar';
+    statusColor = 'var(--bb-sub)';
   }
 
   const hasGroups = groups.length > 0;
@@ -113,7 +114,7 @@ export function PlanSummaryCard({ budget }: { budget: BudgetMonth }) {
                     </span>
                     <span
                       style={{
-                        color: itemOver ? 'var(--bb-mg-text)' : 'var(--bb-sub)',
+                        color: itemOver ? 'var(--bb-bad-text)' : 'var(--bb-sub)',
                       }}
                     >
                       {formatCurrency(group.spent)} / {formatCurrency(group.planned)}
@@ -124,7 +125,7 @@ export function PlanSummaryCard({ budget }: { budget: BudgetMonth }) {
                       className='h-full rounded-[4px]'
                       style={{
                         width: `${width}%`,
-                        background: itemOver ? 'var(--bb-mg)' : group.color,
+                        background: itemOver ? 'var(--bb-bad)' : group.color,
                       }}
                     />
                   </div>

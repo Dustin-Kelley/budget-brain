@@ -36,26 +36,22 @@ export function bucketFor({
   return 'uncategorized';
 }
 
-/**
- * Slice colours for the allocation donut and category list. Needs walk down
- * the cyan ramp, wants down the magenta ramp — the design's two-family scheme,
- * so the chart reads as "how much of this is necessity" at a glance.
- */
+/** Grayscale slices. Green and red are reserved for under and over budget. */
 const NEEDS_RAMP = [
-  'var(--bb-n1)',
-  'var(--bb-n2)',
-  'var(--bb-n3)',
-  'var(--bb-n4)',
-  'var(--bb-n5)',
-  'var(--bb-n6)',
+  'var(--bb-g1)',
+  'var(--bb-g2)',
+  'var(--bb-g3)',
+  'var(--bb-g4)',
+  'var(--bb-g5)',
+  'var(--bb-g6)',
 ];
 
 const WANTS_RAMP = [
-  'var(--bb-w1)',
-  'var(--bb-w2)',
-  'var(--bb-w3)',
-  'var(--bb-w4)',
-  'var(--bb-w5)',
+  'var(--bb-g2)',
+  'var(--bb-g3)',
+  'var(--bb-g4)',
+  'var(--bb-g5)',
+  'var(--bb-g6)',
 ];
 
 export function rampColor(bucket: Bucket, indexWithinBucket: number): string {

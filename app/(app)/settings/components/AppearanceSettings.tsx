@@ -33,11 +33,11 @@ function ThemePicker() {
           selected={active === 'light'}
           onSelect={() => setTheme('light')}
           title='Light'
-          blurb='Paper ground, ink type'
+          blurb='White ground, black type'
           preview={
-            <div className='flex h-[74px] items-center justify-center gap-1.5 overflow-hidden rounded-md border border-[var(--bb-line)] bg-[#efeeec]'>
-              <span className='size-[22px] rounded-full bg-[#0f7ba0]' />
-              <span className='size-[22px] rounded-full bg-[#e33f83]' />
+            <div className='flex h-[74px] items-center justify-center gap-1.5 overflow-hidden rounded-xl border border-[var(--bb-line)] bg-white'>
+              <span className='size-[22px] rounded-full bg-[#0a0a0a]' />
+              <span className='size-[22px] rounded-full bg-[#d4d4d4]' />
             </div>
           }
         />
@@ -45,11 +45,11 @@ function ThemePicker() {
           selected={active === 'dark'}
           onSelect={() => setTheme('dark')}
           title='Dark'
-          blurb='Cool ink ground, brighter spots'
+          blurb='Near-black ground, white type'
           preview={
-            <div className='flex h-[74px] items-center justify-center gap-1.5 overflow-hidden rounded-md border border-[var(--bb-line)] bg-[#15181b]'>
-              <span className='size-[22px] rounded-full bg-[#2aa4c9]' />
-              <span className='size-[22px] rounded-full bg-[#e5478d]' />
+            <div className='flex h-[74px] items-center justify-center gap-1.5 overflow-hidden rounded-xl border border-[var(--bb-line)] bg-[#0a0a0a]'>
+              <span className='size-[22px] rounded-full bg-[#fafafa]' />
+              <span className='size-[22px] rounded-full bg-[#3a3a3a]' />
             </div>
           }
         />
@@ -63,12 +63,12 @@ function ThemePicker() {
               : 'Follows your device'
           }
           preview={
-            <div className='flex h-[74px] overflow-hidden rounded-md border border-[var(--bb-line)]'>
-              <div className='flex w-1/2 items-center justify-center bg-[#efeeec]'>
-                <span className='size-[22px] rounded-full bg-[#0f7ba0]' />
+            <div className='flex h-[74px] overflow-hidden rounded-xl border border-[var(--bb-line)]'>
+              <div className='flex w-1/2 items-center justify-center bg-white'>
+                <span className='size-[22px] rounded-full bg-[#0a0a0a]' />
               </div>
-              <div className='flex w-1/2 items-center justify-center bg-[#15181b]'>
-                <span className='size-[22px] rounded-full bg-[#2aa4c9]' />
+              <div className='flex w-1/2 items-center justify-center bg-[#0a0a0a]'>
+                <span className='size-[22px] rounded-full bg-[#fafafa]' />
               </div>
             </div>
           }
@@ -121,7 +121,7 @@ function NavPicker({ current }: { current: NavMode }) {
           disabled={pending}
           onSelect={() => choose('top')}
           title='Top bar'
-          blurb='Home, Budget, Accounts, Goals — the default'
+          blurb='Home, Budget, Transactions, and Accounts'
           preview={
             <div className='flex h-[74px] flex-col overflow-hidden rounded-md border border-[var(--bb-line)] bg-[var(--bb-bg)]'>
               <div className='flex h-4 items-center gap-1.5 bg-[var(--bb-surface-2)] px-1.5'>
@@ -173,7 +173,7 @@ function Option({
       <div className='flex items-start gap-2.5'>
         <span className='mt-0.5 flex size-[15px] flex-none items-center justify-center rounded-full border-[1.5px] border-[var(--bb-line)]'>
           <span
-            className='size-[7px] rounded-full bg-[var(--bb-cy)]'
+            className='size-[7px] rounded-full bg-[var(--bb-text)]'
             style={{ opacity: selected ? 1 : 0 }}
           />
         </span>

@@ -3,31 +3,21 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/app/queries/getCurrentUser';
 import { getAccounts } from '@/app/queries/getAccounts';
-import { getSpendCategories } from '@/app/queries/getSpendCategories';
-import { getAccountActivity } from '@/app/queries/getAccountActivity';
 import { getBudgetMonth } from '@/app/queries/getBudgetMonth';
 import { accountActivity } from '@/lib/budget/math';
 import {
   createAccount,
   updateAccountBalance,
 } from '@/app/mutations/accountMutations';
-import { importLedgerFile } from '@/app/mutations/importLedgerFile';
 import { ACCOUNT_PURPOSES, formatCurrency } from '@/lib/ledger/constants';
+import { withMonth } from '@/lib/budget/month';
 import { Icon } from '@/components/shell/Icon';
-import { Sparkline } from '@/components/bb/Sparkline';
 import { Skeleton } from '@/components/ui/skeleton';
-
-type Params = {
-  month?: string;
-  imported?: string;
-  skipped?: string;
-  error?: string;
-};
 
 export default async function AccountsPage({
   searchParams,
 }: {
-  searchParams: Promise<Params>;
+  searchParams: Promise<{ month?: string }>;
 }) {
   const params = await searchParams;
   const { currentUser } = await getCurrentUser();
@@ -36,24 +26,6 @@ export default async function AccountsPage({
 
   return (
     <div className='flex flex-col gap-5'>
-      {params.error && (
-        <p className='rounded-[14px] border border-[var(--bb-mg)] bg-[var(--bb-mg-tint)] px-4 py-3 text-[13.5px] text-[var(--bb-mg-text)]'>
-          {decodeURIComponent(params.error)}
-        </p>
-      )}
-      {params.imported && (
-        <p className='rounded-[14px] border border-[var(--bb-cy)] bg-[var(--bb-cy-tint)] px-4 py-3 text-[13.5px] text-[var(--bb-cy-text)]'>
-          Imported {params.imported} transaction
-          {params.imported === '1' ? '' : 's'}
-          {params.skipped && Number(params.skipped) > 0
-            ? ` — ${params.skipped} duplicate${
-                params.skipped === '1' ? '' : 's'
-              } skipped`
-            : ''}
-          .
-        </p>
-      )}
-
       <Suspense
         key={params.month ?? 'current'}
         fallback={<Skeleton className='h-[520px] rounded-2xl' />}
@@ -65,10 +37,8 @@ export default async function AccountsPage({
 }
 
 async function AccountsBody({ month }: { month: string | undefined }) {
-  const [{ accounts }, { categories }, activity, budget] = await Promise.all([
+  const [{ accounts }, budget] = await Promise.all([
     getAccounts(),
-    getSpendCategories(),
-    getAccountActivity(month),
     getBudgetMonth(month),
   ]);
 
@@ -90,44 +60,31 @@ async function AccountsBody({ month }: { month: string | undefined }) {
                 }. You keep these balances by hand.`}
           </p>
         </div>
-        <div className='flex flex-wrap gap-2.5'>
-          <span
-            className='bb-ghost'
-            aria-disabled
-            title='Bank linking is not in this release'
-          >
-            Connect Wealthfront and Crew, coming soon
-          </span>
-          <a
-            href='#add-account'
-            className='bb-solid'
-          >
-            <Icon
-              name='plus'
-              size={15}
-            />
-            Add an account
-          </a>
-        </div>
+        <a
+          href='#add-account'
+          className='bb-solid'
+        >
+          <Icon
+            name='plus'
+            size={15}
+          />
+          Add an account
+        </a>
       </div>
 
-      {/* ── Account cards ── */}
       {accounts.length > 0 && (
         <div className='grid gap-4 lg:grid-cols-2'>
           {accounts.map((account) => {
-            const stats = activity[account.id];
             const budgetOnAccount = accountActivity(
               budget.transactions,
               account.id,
             );
-            const isDiscretionary =
-              account.purpose === 'discretionary_spend';
-            const monthQuery = month
-              ? `&month=${encodeURIComponent(month)}`
-              : '';
             const transactionsHref = budget.accountsLinked
-              ? `/transactions?account=${account.id}${monthQuery}`
-              : `/transactions?list=bank&account=${account.id}${monthQuery}`;
+              ? withMonth(
+                  `/transactions?account=${account.id}`,
+                  budget.monthParam,
+                )
+              : withMonth('/transactions', budget.monthParam);
 
             return (
               <div
@@ -135,22 +92,10 @@ async function AccountsBody({ month }: { month: string | undefined }) {
                 className='bb-card flex flex-col gap-[18px] p-6'
               >
                 <div className='flex items-center gap-3'>
-                  <span
-                    className='flex size-[42px] flex-none items-center justify-center rounded-[11px]'
-                    style={{
-                      background: isDiscretionary
-                        ? 'var(--bb-mg-tint)'
-                        : 'var(--bb-cy-tint)',
-                    }}
-                  >
+                  <span className='flex size-[42px] flex-none items-center justify-center rounded-xl bg-[var(--bb-surface-2)]'>
                     <Icon
-                      name={isDiscretionary ? 'wallet' : 'bank'}
+                      name='bank'
                       size={22}
-                      color={
-                        isDiscretionary
-                          ? 'var(--bb-mg-text)'
-                          : 'var(--bb-cy-text)'
-                      }
                     />
                   </span>
                   <div className='min-w-0 flex-1'>
@@ -166,64 +111,39 @@ async function AccountsBody({ month }: { month: string | undefined }) {
                         .join(' · ')}
                     </div>
                   </div>
-                  <div className='text-[24px] font-semibold tracking-[-0.015em]'>
+                  <div className='text-[24px] font-semibold tracking-[-0.03em]'>
                     {account.current_balance == null
                       ? '—'
                       : formatCurrency(Number(account.current_balance))}
                   </div>
                 </div>
 
-                <div className='flex flex-wrap gap-6 text-[13px]'>
-                  {budget.accountsLinked ? (
-                    <>
-                      <div>
-                        <div className='bb-kicker'>Budget spent</div>
-                        <div className='mt-0.5 text-[16px] font-semibold'>
-                          {formatCurrency(budgetOnAccount.spent)}
-                        </div>
+                {budget.accountsLinked ? (
+                  <div className='flex flex-wrap gap-6 text-[13px]'>
+                    <div>
+                      <div className='bb-kicker'>Budget spent</div>
+                      <div className='mt-0.5 text-[16px] font-semibold'>
+                        {formatCurrency(budgetOnAccount.spent)}
                       </div>
-                      <div>
-                        <div className='bb-kicker'>Budget income</div>
-                        <div className='mt-0.5 text-[16px] font-semibold'>
-                          {formatCurrency(budgetOnAccount.income)}
-                        </div>
+                    </div>
+                    <div>
+                      <div className='bb-kicker'>Budget income</div>
+                      <div className='mt-0.5 text-[16px] font-semibold'>
+                        {formatCurrency(budgetOnAccount.income)}
                       </div>
-                      <div>
-                        <div className='bb-kicker'>Assigned</div>
-                        <div className='mt-0.5 text-[16px] font-semibold'>
-                          {budgetOnAccount.rows.length}
-                        </div>
+                    </div>
+                    <div>
+                      <div className='bb-kicker'>Assigned</div>
+                      <div className='mt-0.5 text-[16px] font-semibold'>
+                        {budgetOnAccount.rows.length}
                       </div>
-                    </>
-                  ) : (
-                    <>
-                      <div>
-                        <div className='bb-kicker'>Out this period</div>
-                        <div className='mt-0.5 text-[16px] font-semibold'>
-                          {formatCurrency(stats?.outflow ?? 0)}
-                        </div>
-                      </div>
-                      <div>
-                        <div className='bb-kicker'>Avg per day</div>
-                        <div className='mt-0.5 text-[16px] font-semibold'>
-                          {formatCurrency(stats?.averagePerDay ?? 0)}
-                        </div>
-                      </div>
-                      <div>
-                        <div className='bb-kicker'>
-                          {stats?.projected != null
-                            ? 'On track for'
-                            : 'Movements'}
-                        </div>
-                        <div className='mt-0.5 text-[16px] font-semibold'>
-                          {stats?.projected != null
-                            ? formatCurrency(stats.projected)
-                            : (stats?.transactionCount ?? 0)}
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
+                    </div>
+                  </div>
+                ) : (
+                  <p className='text-[13.5px] text-[var(--bb-sub)]'>
+                    Balance is kept by hand for this month.
+                  </p>
+                )}
 
                 {budget.accountsLinked ? (
                   <div className='flex flex-col gap-1 text-[13.5px]'>
@@ -248,13 +168,6 @@ async function AccountsBody({ month }: { month: string | undefined }) {
                     )}
                   </div>
                 ) : null}
-
-                {stats && stats.daily.length > 0 && (
-                  <Sparkline
-                    values={stats.daily}
-                    color={isDiscretionary ? 'var(--bb-w4)' : 'var(--bb-n4)'}
-                  />
-                )}
 
                 <div className='flex flex-wrap items-end gap-2.5'>
                   <Link
@@ -286,7 +199,7 @@ async function AccountsBody({ month }: { month: string | undefined }) {
                             ? String(account.current_balance)
                             : ''
                         }
-                        className='w-32 rounded-[10px] border border-[var(--bb-line)] bg-[var(--bb-surface-2)] px-3 py-2 text-[14px] outline-none focus-visible:border-[var(--bb-cy)]'
+                        className='w-32 rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface-2)] px-3 py-2 text-[14px] outline-none focus-visible:border-[var(--bb-text)]'
                       />
                     </label>
                     <button
@@ -303,98 +216,6 @@ async function AccountsBody({ month }: { month: string | undefined }) {
         </div>
       )}
 
-      {/* ── Import ── */}
-      <div className='bb-card flex flex-col gap-4 px-6 py-[22px]'>
-        <div>
-          <span className='bb-kicker'>Import</span>
-          <p className='mt-1 text-[13.5px] text-[var(--bb-sub)]'>
-            CSV, OFX, or QFX. Duplicates are skipped. Bank linking is coming
-            later.
-          </p>
-        </div>
-        <form
-          action={async (formData: FormData) => {
-            'use server';
-            const result = await importLedgerFile(formData);
-            const { redirect: redir } = await import('next/navigation');
-            if (result.error) {
-              redir(`/accounts?error=${encodeURIComponent(result.error)}`);
-            }
-            redir(
-              `/accounts?imported=${result.imported ?? 0}&skipped=${
-                result.skipped ?? 0
-              }`,
-            );
-          }}
-          className='grid gap-4 sm:grid-cols-2'
-        >
-          <Field
-            label='File'
-            className='sm:col-span-2'
-          >
-            <input
-              name='file'
-              type='file'
-              accept='.csv,.ofx,.qfx,text/csv,application/x-ofx,application/vnd.intu.qfx'
-              required
-              className='w-full rounded-[10px] border border-[var(--bb-line)] bg-[var(--bb-surface-2)] px-3 py-2 text-[13.5px] file:mr-3 file:rounded-md file:border-0 file:bg-[var(--bb-cy-tint)] file:px-3 file:py-1 file:text-[var(--bb-cy-text)]'
-            />
-          </Field>
-          <Field label='Destination account'>
-            <Select
-              name='account_id'
-              required
-              defaultValue=''
-            >
-              <option
-                value=''
-                disabled
-              >
-                Select account
-              </option>
-              {accounts.map((account) => (
-                <option
-                  key={account.id}
-                  value={account.id}
-                >
-                  {account.institution
-                    ? `${account.institution} — ${account.name}`
-                    : account.name}
-                </option>
-              ))}
-            </Select>
-          </Field>
-          <Field label='Default category for outflows'>
-            <Select
-              name='spend_category_id'
-              defaultValue='none'
-            >
-              <option value='none'>Leave uncategorised</option>
-              {categories
-                .filter((category) => category.group_kind !== 'system')
-                .map((category) => (
-                  <option
-                    key={category.id}
-                    value={category.id}
-                  >
-                    {category.name}
-                  </option>
-                ))}
-            </Select>
-          </Field>
-          <div className='sm:col-span-2'>
-            <button
-              type='submit'
-              className='bb-solid'
-              disabled={accounts.length === 0}
-            >
-              Import transactions
-            </button>
-          </div>
-        </form>
-      </div>
-
-      {/* ── Add account ── */}
       <div
         id='add-account'
         className='bb-card flex flex-col gap-4 px-6 py-[22px]'
@@ -417,7 +238,7 @@ async function AccountsBody({ month }: { month: string | undefined }) {
           <Field label='Institution'>
             <TextInput
               name='institution'
-              placeholder='e.g. Wealthfront, Crew, Chase'
+              placeholder='e.g. Chase'
             />
           </Field>
           <Field label='Purpose'>
@@ -486,7 +307,7 @@ function Field({
 }
 
 const CONTROL =
-  'w-full rounded-[10px] border border-[var(--bb-line)] bg-[var(--bb-surface-2)] px-3 py-2 text-[14px] outline-none transition-colors focus-visible:border-[var(--bb-cy)]';
+  'w-full rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface-2)] px-3 py-2 text-[14px] outline-none transition-colors focus-visible:border-[var(--bb-text)]';
 
 function TextInput(props: React.ComponentProps<'input'>) {
   return (

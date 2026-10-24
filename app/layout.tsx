@@ -1,15 +1,12 @@
 import type { Metadata } from 'next';
-import { Source_Serif_4, Geist_Mono } from 'next/font/google';
+import { Geist, Geist_Mono } from 'next/font/google';
 
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from 'sonner';
 
-/**
- * The Broadsheet design system sets one family for headings and body alike.
- */
-const sourceSerif = Source_Serif_4({
-  variable: '--font-source-serif',
+const geistSans = Geist({
+  variable: '--font-geist-sans',
   subsets: ['latin'],
   display: 'swap',
 });
@@ -48,7 +45,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${sourceSerif.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider
           attribute='class'
@@ -57,7 +54,7 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <Toaster richColors />
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

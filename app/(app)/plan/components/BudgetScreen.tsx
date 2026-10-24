@@ -107,7 +107,7 @@ export function BudgetScreen({ budget }: { budget: BudgetMonth }) {
 
       <div className='flex flex-wrap items-center justify-between gap-3'>
         <div
-          className='flex flex-wrap gap-2'
+          className='bb-segments'
           role='radiogroup'
           aria-label='Budget view'
         >
@@ -224,21 +224,24 @@ function BudgetBanner({
   const empty = income === 0 && budgeted === 0;
   let title = 'Left to budget';
   let detail = 'Assign the rest of this month’s income.';
-  let tone = 'var(--bb-cy-text)';
-  let background = 'var(--bb-cy-tint)';
-  let border = 'var(--bb-cy)';
+  let tone = 'var(--bb-good-text)';
+  let background = 'var(--bb-good-tint)';
+  let border = 'var(--bb-good)';
 
   if (empty) {
     detail = 'Add this month’s income, then assign every dollar.';
+    tone = 'var(--bb-text)';
+    background = 'var(--bb-surface)';
+    border = 'var(--bb-line)';
   } else if (zero) {
     title = 'Every dollar has a job';
     detail = 'Income and planned spending match.';
   } else if (over) {
     title = 'Over budget';
     detail = 'Planned spending is higher than income. Pull something back.';
-    tone = 'var(--bb-mg-text)';
-    background = 'var(--bb-mg-tint)';
-    border = 'var(--bb-mg)';
+    tone = 'var(--bb-bad-text)';
+    background = 'var(--bb-bad-tint)';
+    border = 'var(--bb-bad)';
   }
 
   return (
@@ -399,7 +402,7 @@ function AddIncomeForm({
         value={name}
         placeholder='Paycheck'
         onChange={(event) => setName(event.target.value)}
-        className='min-w-[140px] flex-1 rounded-[8px] border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-1.5 text-[14px]'
+        className='min-w-[140px] flex-1 rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-1.5 text-[14px]'
       />
       <input
         aria-label='New income amount'
@@ -407,7 +410,7 @@ function AddIncomeForm({
         value={amount}
         placeholder='0.00'
         onChange={(event) => setAmount(event.target.value)}
-        className='w-[108px] rounded-[8px] border border-[var(--bb-line)] bg-[var(--bb-surface)] px-2 py-1.5 text-right text-[14px]'
+        className='w-[108px] rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-2 py-1.5 text-right text-[14px]'
       />
       <button
         type='submit'
@@ -456,6 +459,12 @@ function GroupCard({
 }) {
   const headline = figureFor(view, planned, spentTotal);
   const over = view !== 'planned' && spentTotal > planned && planned > 0;
+  let headlineColor: string | undefined;
+  if (over) {
+    headlineColor = 'var(--bb-bad-text)';
+  } else if (view === 'remaining' && planned > 0) {
+    headlineColor = 'var(--bb-good-text)';
+  }
 
   return (
     <section className='bb-card px-5 py-4'>
@@ -472,7 +481,7 @@ function GroupCard({
         />
         <span
           className='text-[14px] font-semibold'
-          style={{ color: over ? 'var(--bb-mg-text)' : undefined }}
+          style={{ color: headlineColor }}
         >
           {formatCurrency(headline)}
         </span>
@@ -491,6 +500,12 @@ function GroupCard({
           const itemSpent = moneySafe(spentByItem.get(item.id));
           const shown = figureFor(view, item.planned, itemSpent);
           const itemOver = item.planned > 0 && itemSpent > item.planned;
+          let itemColor: string | undefined;
+          if (view !== 'planned' && itemOver) {
+            itemColor = 'var(--bb-bad-text)';
+          } else if (view === 'remaining' && item.planned > 0 && !itemOver) {
+            itemColor = 'var(--bb-good-text)';
+          }
           const open = activityId === item.id;
           const activity = itemActivity(transactions, item.id);
           return (
@@ -518,9 +533,7 @@ function GroupCard({
                 ) : (
                   <span
                     className='w-[108px] text-right text-[14px] font-semibold'
-                    style={{
-                      color: itemOver ? 'var(--bb-mg-text)' : undefined,
-                    }}
+                    style={{ color: itemColor }}
                   >
                     {formatCurrency(shown)}
                   </span>
@@ -675,7 +688,7 @@ function AddItemForm({
         value={name}
         placeholder='Add an item'
         onChange={(event) => setName(event.target.value)}
-        className='min-w-[160px] flex-1 rounded-[8px] border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-1.5 text-[14px]'
+        className='min-w-[160px] flex-1 rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-1.5 text-[14px]'
       />
       <button
         type='submit'
@@ -724,7 +737,7 @@ function AddGroupForm({
         value={name}
         placeholder='New group'
         onChange={(event) => setName(event.target.value)}
-        className='min-w-[180px] flex-1 rounded-[10px] border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px]'
+        className='min-w-[180px] flex-1 rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px]'
       />
       <button
         type='submit'

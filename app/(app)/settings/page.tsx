@@ -80,8 +80,8 @@ export default async function SettingsPage({
         <div className='bb-kicker mb-3'>Danger zone</div>
         <div className='bb-card flex flex-wrap items-center gap-3 px-6 py-5'>
           <p className='min-w-[220px] flex-1 text-[13px] text-[var(--bb-sub)]'>
-            Resetting clears the envelope plan for the selected month. It does
-            not touch imported ledger transactions.
+            Resetting clears the envelope plan for the selected month. Accounts
+            stay as they are.
           </p>
           <ResetBudgetButton month={month} />
           <LogoutButton />
@@ -104,7 +104,7 @@ async function Connections() {
     <div className='bb-card px-[22px] pt-2 pb-4'>
       {accounts.length === 0 ? (
         <p className='py-6 text-[13.5px] text-[var(--bb-sub)]'>
-          No accounts connected yet.
+          No accounts yet.
         </p>
       ) : (
         accounts.map((account) => (
@@ -118,11 +118,7 @@ async function Connections() {
               }
               size={19}
               className='flex-none'
-              color={
-                account.purpose === 'discretionary_spend'
-                  ? 'var(--bb-mg-text)'
-                  : 'var(--bb-cy-text)'
-              }
+              color='var(--bb-text)'
             />
             <span className='min-w-0 flex-1 truncate'>
               {account.institution
@@ -145,11 +141,8 @@ async function Connections() {
             name='plus'
             size={15}
           />
-          Add or import
+          Manage accounts
         </Link>
-        <span className='text-[12.5px] text-[var(--bb-dim)]'>
-          Connect bank — coming soon
-        </span>
       </div>
     </div>
   );
