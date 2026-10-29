@@ -4,13 +4,16 @@ import Link from 'next/link';
 
 export default function Page() {
   return (
-    <div className='flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10'>
-      <div className='flex w-full items-center justify-center max-w-lg flex-col gap-6'>
-        <Link href='/welcome' className='flex flex-col items-center gap-2 font-medium'>
+    <div className='flex min-h-svh flex-col items-center justify-center px-4 py-10 sm:px-6'>
+      <div className='flex w-full max-w-md flex-col items-center gap-8'>
+        <Link
+          href='/welcome'
+          className='flex flex-col items-center gap-2 text-base font-medium'
+        >
           <Logo />
           Budget Brain
         </Link>
-        <LoginForm />
+        <LoginForm className='w-full' />
       </div>
     </div>
   );

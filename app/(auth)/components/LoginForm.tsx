@@ -80,23 +80,23 @@ export function LoginForm({
     }
   };
 
+  const otpSlotClass =
+    'aspect-square h-auto w-full rounded-xl text-lg sm:text-xl';
+
   return (
-    <div
-      className={cn('flex flex-col gap-6', className)}
-      {...props}
-    >
-      <Card className=''>
-        <CardHeader className='text-center'>
-          <CardTitle className='text-2xl'>
+    <div className={cn('flex w-full flex-col', className)} {...props}>
+      <Card className='w-full gap-8 py-8 sm:py-10'>
+        <CardHeader className='gap-3 px-5 text-center sm:px-8'>
+          <CardTitle className='text-2xl font-semibold tracking-tight sm:text-3xl'>
             {step === 'email' ? 'Welcome' : 'Enter verification code'}
           </CardTitle>
-          <CardDescription>
+          <CardDescription className='text-base leading-relaxed text-balance'>
             {step === 'email'
               ? 'Enter your email to sign in or create an account'
-              : `We sent a code to ${email}`}
+              : `We sent a 6-digit code to ${email}`}
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className='px-5 sm:px-8'>
           {step === 'email' ? (
             <Form {...emailForm}>
               <form
@@ -108,12 +108,13 @@ export function LoginForm({
                   name='email'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel className='text-base'>Email</FormLabel>
                       <FormControl>
                         <Input
                           placeholder='m@example.com'
                           type='email'
                           autoComplete='email'
+                          className='h-11 px-3.5 text-base md:text-base'
                           {...field}
                         />
                       </FormControl>
@@ -121,7 +122,7 @@ export function LoginForm({
                     </FormItem>
                   )}
                 />
-                <Button type='submit' className='w-full'>
+                <Button type='submit' className='h-11 w-full text-base'>
                   {emailForm.formState.isSubmitting ? <Spinner /> : 'Continue'}
                 </Button>
               </form>
@@ -148,7 +149,7 @@ export function LoginForm({
                   control={otpForm.control}
                   name='token'
                   render={({ field }) => (
-                    <FormItem className='flex flex-col items-center'>
+                    <FormItem className='w-full'>
                       <FormControl>
                         <InputOTP
                           key={`otp-${email}`}
@@ -161,29 +162,30 @@ export function LoginForm({
                           spellCheck={false}
                           pushPasswordManagerStrategy='none'
                           pasteTransformer={sanitizeOtpValue}
+                          containerClassName='w-full'
                           value={field.value}
                           onChange={(value) =>
                             field.onChange(sanitizeOtpValue(value))
                           }
                         >
-                          <InputOTPGroup>
-                            <InputOTPSlot index={0} />
-                            <InputOTPSlot index={1} />
-                            <InputOTPSlot index={2} />
-                            <InputOTPSlot index={3} />
-                            <InputOTPSlot index={4} />
-                            <InputOTPSlot index={5} />
+                          <InputOTPGroup className='grid w-full grid-cols-6 gap-1.5 sm:gap-2.5'>
+                            <InputOTPSlot index={0} className={otpSlotClass} />
+                            <InputOTPSlot index={1} className={otpSlotClass} />
+                            <InputOTPSlot index={2} className={otpSlotClass} />
+                            <InputOTPSlot index={3} className={otpSlotClass} />
+                            <InputOTPSlot index={4} className={otpSlotClass} />
+                            <InputOTPSlot index={5} className={otpSlotClass} />
                           </InputOTPGroup>
                         </InputOTP>
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className='text-center' />
                     </FormItem>
                   )}
                 />
-                <Button type='submit' className='w-full'>
+                <Button type='submit' className='h-11 w-full text-base'>
                   {otpForm.formState.isSubmitting ? <Spinner /> : 'Verify'}
                 </Button>
-                <div className='flex justify-center gap-4 text-sm'>
+                <div className='flex flex-col items-center gap-3 text-base sm:flex-row sm:justify-center sm:gap-6'>
                   <button
                     type='button'
                     className='text-muted-foreground hover:text-foreground underline underline-offset-4'
