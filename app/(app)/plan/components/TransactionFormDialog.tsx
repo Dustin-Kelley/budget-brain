@@ -60,7 +60,7 @@ export function draftForEdit(
   };
 }
 
-export type TransactionFormSurface = 'dialog' | 'popover' | 'drawer';
+export type TransactionFormSurface = 'dialog' | 'drawer';
 
 export function TransactionFormDialog({
   editor,
@@ -105,24 +105,11 @@ function TransactionFormHeading({
   surface,
   title,
   description,
-  titleId,
-  descriptionId,
 }: {
   surface: TransactionFormSurface;
   title: string;
   description: string;
-  titleId?: string;
-  descriptionId?: string;
 }) {
-  if (surface === 'dialog') {
-    return (
-      <DialogHeader>
-        <DialogTitle>{title}</DialogTitle>
-        <DialogDescription>{description}</DialogDescription>
-      </DialogHeader>
-    );
-  }
-
   if (surface === 'drawer') {
     return (
       <div className='flex flex-col gap-1.5 pb-1 text-left'>
@@ -137,20 +124,10 @@ function TransactionFormHeading({
   }
 
   return (
-    <div className='flex flex-col gap-1.5 text-left'>
-      <h2
-        id={titleId}
-        className='text-[16px] font-semibold tracking-[-0.02em]'
-      >
-        {title}
-      </h2>
-      <p
-        id={descriptionId}
-        className='text-[13.5px] text-[var(--bb-sub)]'
-      >
-        {description}
-      </p>
-    </div>
+    <DialogHeader>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogDescription>{description}</DialogDescription>
+    </DialogHeader>
   );
 }
 
@@ -162,8 +139,6 @@ export function TransactionForm({
   monthParam,
   onClose,
   surface = 'dialog',
-  titleId,
-  descriptionId,
 }: {
   initial: TransactionDraft;
   groups: BudgetGroup[];
@@ -172,8 +147,6 @@ export function TransactionForm({
   monthParam: string;
   onClose: () => void;
   surface?: TransactionFormSurface;
-  titleId?: string;
-  descriptionId?: string;
 }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
@@ -232,8 +205,6 @@ export function TransactionForm({
         surface={surface}
         title={title}
         description={description}
-        titleId={titleId}
-        descriptionId={descriptionId}
       />
       <form
         onSubmit={(event) => {

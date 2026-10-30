@@ -1,17 +1,17 @@
 'use client';
 
-import { useId, useRef } from 'react';
+import { useRef } from 'react';
 import { Icon } from '@/components/shell/Icon';
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import {
   Drawer,
   DrawerContent,
   DrawerTrigger,
 } from '@/components/ui/drawer';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { cn } from '@/lib/utils';
 import {
@@ -43,8 +43,6 @@ export function AddTransactionFab({
   monthParam: string;
 }) {
   const isMobile = useMediaQuery('(max-width: 767px)');
-  const titleId = useId();
-  const descriptionId = useId();
   const latest = useRef<TransactionEditor | null>(null);
   if (editor) latest.current = editor;
   const shown = editor ?? latest.current;
@@ -58,9 +56,7 @@ export function AddTransactionFab({
       accountsLinked={accountsLinked}
       monthParam={monthParam}
       onClose={onClose}
-      surface={isMobile ? 'drawer' : 'popover'}
-      titleId={titleId}
-      descriptionId={descriptionId}
+      surface={isMobile ? 'drawer' : 'dialog'}
     />
   ) : null;
 
@@ -84,26 +80,17 @@ export function AddTransactionFab({
   }
 
   return (
-    <Popover
+    <Dialog
       open={open}
       onOpenChange={onOpenChange}
     >
-      <PopoverTrigger asChild>
+      <DialogTrigger asChild>
         <FabButton />
-      </PopoverTrigger>
-      <PopoverContent
-        side='top'
-        align='end'
-        sideOffset={12}
-        collisionPadding={16}
-        aria-labelledby={titleId}
-        aria-describedby={descriptionId}
-        className='w-[min(420px,calc(100vw-2rem))] max-h-[min(36rem,70vh)] overflow-y-auto overscroll-contain rounded-2xl border-[var(--bb-line)] bg-[var(--bb-surface)] p-5 text-[var(--bb-text)] shadow-none'
-        style={{ boxShadow: 'var(--bb-fab-shadow)' }}
-      >
+      </DialogTrigger>
+      <DialogContent className='max-h-[min(40rem,85vh)] overflow-y-auto sm:max-w-[440px]'>
         {form}
-      </PopoverContent>
-    </Popover>
+      </DialogContent>
+    </Dialog>
   );
 }
 
