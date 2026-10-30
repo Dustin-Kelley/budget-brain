@@ -10,6 +10,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  DrawerDescription,
+  DrawerTitle,
+} from '@/components/ui/drawer';
 import { defaultTransactionDate } from '@/lib/budget/month';
 import { money } from '@/lib/budget/math';
 import type {
@@ -56,6 +60,8 @@ export function draftForEdit(
   };
 }
 
+export type TransactionFormSurface = 'dialog' | 'popover' | 'drawer';
+
 export function TransactionFormDialog({
   editor,
   groups,
@@ -95,13 +101,69 @@ export function TransactionFormDialog({
   );
 }
 
-function TransactionForm({
+function TransactionFormHeading({
+  surface,
+  title,
+  description,
+  titleId,
+  descriptionId,
+}: {
+  surface: TransactionFormSurface;
+  title: string;
+  description: string;
+  titleId?: string;
+  descriptionId?: string;
+}) {
+  if (surface === 'dialog') {
+    return (
+      <DialogHeader>
+        <DialogTitle>{title}</DialogTitle>
+        <DialogDescription>{description}</DialogDescription>
+      </DialogHeader>
+    );
+  }
+
+  if (surface === 'drawer') {
+    return (
+      <div className='flex flex-col gap-1.5 pb-1 text-left'>
+        <DrawerTitle className='text-left text-[16px] font-semibold'>
+          {title}
+        </DrawerTitle>
+        <DrawerDescription className='text-left text-[13.5px]'>
+          {description}
+        </DrawerDescription>
+      </div>
+    );
+  }
+
+  return (
+    <div className='flex flex-col gap-1.5 text-left'>
+      <h2
+        id={titleId}
+        className='text-[16px] font-semibold tracking-[-0.02em]'
+      >
+        {title}
+      </h2>
+      <p
+        id={descriptionId}
+        className='text-[13.5px] text-[var(--bb-sub)]'
+      >
+        {description}
+      </p>
+    </div>
+  );
+}
+
+export function TransactionForm({
   initial,
   groups,
   accounts,
   accountsLinked,
   monthParam,
   onClose,
+  surface = 'dialog',
+  titleId,
+  descriptionId,
 }: {
   initial: TransactionDraft;
   groups: BudgetGroup[];
@@ -109,6 +171,9 @@ function TransactionForm({
   accountsLinked: boolean;
   monthParam: string;
   onClose: () => void;
+  surface?: TransactionFormSurface;
+  titleId?: string;
+  descriptionId?: string;
 }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
@@ -158,17 +223,18 @@ function TransactionForm({
     router.refresh();
   }
 
+  const title = editing ? 'Edit transaction' : 'Add transaction';
+  const description = `Record spending or income for ${monthName}. Expenses count against the budget item you assign.`;
+
   return (
     <>
-      <DialogHeader>
-        <DialogTitle>
-          {editing ? 'Edit transaction' : 'Add transaction'}
-        </DialogTitle>
-        <DialogDescription>
-          Record spending or income for {monthName}. Expenses count against
-          the budget item you assign.
-        </DialogDescription>
-      </DialogHeader>
+      <TransactionFormHeading
+        surface={surface}
+        title={title}
+        description={description}
+        titleId={titleId}
+        descriptionId={descriptionId}
+      />
       <form
         onSubmit={(event) => {
           void onSubmit(event);

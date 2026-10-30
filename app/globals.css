@@ -66,6 +66,7 @@
   --bb-line-2: rgba(10, 10, 10, 0.06);
   --bb-track: #ececec;
   --bb-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  --bb-fab-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.14);
 
   --bb-text: #0a0a0a;
   --bb-sub: #5c5c5c;
@@ -161,6 +162,7 @@
   --bb-line-2: rgba(255, 255, 255, 0.06);
   --bb-track: #262626;
   --bb-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --bb-fab-shadow: 0 1px 2px rgba(0, 0, 0, 0.45), 0 12px 32px rgba(0, 0, 0, 0.55);
 
   --bb-text: #fafafa;
   --bb-sub: #a3a3a3;
@@ -429,6 +431,33 @@
   .bb-amount[data-income='true'] {
     color: var(--bb-good-text);
     font-weight: 600;
+  }
+
+  .bb-fab {
+    position: fixed;
+    z-index: 30;
+    right: max(1.25rem, env(safe-area-inset-right, 0px));
+    bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    background: var(--bb-accent);
+    color: var(--bb-accent-contrast);
+    box-shadow: var(--bb-fab-shadow);
+    cursor: pointer;
+    transition: opacity 0.12s;
+  }
+  .bb-fab:hover {
+    opacity: 0.9;
+  }
+  .bb-fab:focus-visible {
+    outline: 2px solid var(--bb-text);
+    outline-offset: 3px;
   }
 
   .bb-page {
