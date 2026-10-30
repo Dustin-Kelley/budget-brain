@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { formatCurrency } from '@/lib/ledger/constants';
-import { Icon } from '@/components/shell/Icon';
 import {
   budgetTotals,
   figureFor,
@@ -28,6 +27,7 @@ import {
   saveItem,
 } from '../actions';
 import { MoneyField, NameField } from './BudgetFields';
+import { AddTransactionFab } from './AddTransactionFab';
 import {
   TransactionFormDialog,
   draftForEdit,
@@ -89,8 +89,21 @@ export function BudgetScreen({ budget }: { budget: BudgetMonth }) {
     if (saved) setConfirmCopy(false);
   }
 
+  const adding = editor !== null && !editor.draft.id;
+
+  function onAddOpenChange(next: boolean) {
+    if (next) {
+      openNew();
+      return;
+    }
+    setEditor((current) => {
+      if (current && !current.draft.id) return null;
+      return current;
+    });
+  }
+
   return (
-    <div className='flex flex-col gap-4'>
+    <div className='flex flex-col gap-4 pb-20'>
       {budget.loadError ? (
         <p className='rounded-[14px] border border-[var(--bb-mg)] bg-[var(--bb-mg-tint)] px-4 py-3 text-[13.5px] text-[var(--bb-mg-text)]'>
           {budget.loadError}
@@ -105,37 +118,24 @@ export function BudgetScreen({ budget }: { budget: BudgetMonth }) {
         zero={zero}
       />
 
-      <div className='flex flex-wrap items-center justify-between gap-3'>
-        <div
-          className='bb-segments'
-          role='radiogroup'
-          aria-label='Budget view'
-        >
-          {VIEWS.map((option) => (
-            <button
-              key={option.id}
-              type='button'
-              role='radio'
-              aria-checked={view === option.id}
-              className='bb-chip'
-              data-on={view === option.id}
-              onClick={() => setView(option.id)}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-        <button
-          type='button'
-          className='bb-solid'
-          onClick={() => openNew()}
-        >
-          <Icon
-            name='plus'
-            size={15}
-          />
-          Add transaction
-        </button>
+      <div
+        className='bb-segments'
+        role='radiogroup'
+        aria-label='Budget view'
+      >
+        {VIEWS.map((option) => (
+          <button
+            key={option.id}
+            type='button'
+            role='radio'
+            aria-checked={view === option.id}
+            className='bb-chip'
+            data-on={view === option.id}
+            onClick={() => setView(option.id)}
+          >
+            {option.label}
+          </button>
+        ))}
       </div>
 
       <IncomeSection
@@ -195,8 +195,19 @@ export function BudgetScreen({ budget }: { budget: BudgetMonth }) {
         onCommit={commit}
       />
 
+      <AddTransactionFab
+        open={adding}
+        editor={adding ? editor : null}
+        onOpenChange={onAddOpenChange}
+        onClose={() => setEditor(null)}
+        groups={budget.groups}
+        accounts={budget.accounts}
+        accountsLinked={budget.accountsLinked}
+        monthParam={budget.monthParam}
+      />
+
       <TransactionFormDialog
-        editor={editor}
+        editor={editor?.draft.id ? editor : null}
         groups={budget.groups}
         accounts={budget.accounts}
         accountsLinked={budget.accountsLinked}

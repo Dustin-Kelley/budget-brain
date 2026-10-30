@@ -10,6 +10,7 @@ import type {
   BudgetGroup,
   BudgetTransaction,
 } from '@/lib/budget/types';
+import { AddTransactionFab } from '@/app/(app)/plan/components/AddTransactionFab';
 import {
   TransactionFormDialog,
   draftForEdit,
@@ -48,34 +49,33 @@ export function BudgetTransactionList({
   const clearAccountHref = withMonth('/transactions', monthParam);
 
   const grouped = groupByDate(rows);
+  const adding = editor !== null && !editor.draft.id;
+
+  function onAddOpenChange(next: boolean) {
+    if (next) {
+      setEditor({
+        token: Date.now(),
+        draft: draftForNew(monthParam, undefined, accountId),
+      });
+      return;
+    }
+    setEditor((current) => {
+      if (current && !current.draft.id) return null;
+      return current;
+    });
+  }
 
   return (
     <>
-      <div className='flex flex-wrap items-end justify-between gap-3'>
-        <div>
-          <h1 className='bb-title'>Transactions</h1>
-          <p className='mt-1.5 text-[14px] text-[var(--bb-sub)]'>
-            Spending and income recorded on this month&apos;s budget.
-            {account
-              ? ` Showing ${account.name}.`
-              : ''}
-            {unassigned > 0 ? ` ${unassigned} still unassigned.` : ''}
-          </p>
-        </div>
-        <div className='flex flex-wrap items-center gap-2'>
-          <button
-            type='button'
-            className='bb-solid'
-            onClick={() =>
-              setEditor({
-                token: Date.now(),
-                draft: draftForNew(monthParam, undefined, accountId),
-              })
-            }
-          >
-            Add transaction
-          </button>
-        </div>
+      <div>
+        <h1 className='bb-title'>Transactions</h1>
+        <p className='mt-1.5 text-[14px] text-[var(--bb-sub)]'>
+          Spending and income recorded on this month&apos;s budget.
+          {account
+            ? ` Showing ${account.name}.`
+            : ''}
+          {unassigned > 0 ? ` ${unassigned} still unassigned.` : ''}
+        </p>
       </div>
 
       <div className='flex flex-wrap items-center gap-2'>
@@ -151,8 +151,19 @@ export function BudgetTransactionList({
         )}
       </div>
 
+      <AddTransactionFab
+        open={adding}
+        editor={adding ? editor : null}
+        onOpenChange={onAddOpenChange}
+        onClose={() => setEditor(null)}
+        groups={groups}
+        accounts={accounts}
+        accountsLinked={accountsLinked}
+        monthParam={monthParam}
+      />
+
       <TransactionFormDialog
-        editor={editor}
+        editor={editor?.draft.id ? editor : null}
         groups={groups}
         accounts={accounts}
         accountsLinked={accountsLinked}
