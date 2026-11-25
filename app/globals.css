@@ -82,19 +82,19 @@
   --bb-bad-text: #b42318;
   --bb-bad-tint: #fdf2f2;
 
-  /* Category identity tags. See lib/category-colors.ts. */
+  /* Category identity tags. Keys match lib/category-colors.ts. */
   --bb-cat-honey: #a16207;
-  --bb-cat-violet: #6d28d9;
-  --bb-cat-sage: #7d8a62;
-  --bb-cat-wine: #9d174d;
-  --bb-cat-clay: #6f3218;
-  --bb-cat-plum: #86198f;
-  --bb-cat-sand: #a68445;
-  --bb-cat-rose: #a21caf;
-  --bb-cat-slate: #57534e;
-  --bb-cat-berry: #6b1d3a;
-  --bb-cat-dusk: #3f5f7a;
-  --bb-cat-ash: #6e6a72;
+  --bb-cat-violet: #7c3aed;
+  --bb-cat-clay: #b87a18;
+  --bb-cat-plum: #6e2870;
+  --bb-cat-sand: #9a7a40;
+  --bb-cat-rose: #a84a98;
+  --bb-cat-mustard: #a68412;
+  --bb-cat-orchid: #a02898;
+  --bb-cat-taupe: #8d7462;
+  --bb-cat-mauve: #9a6e8c;
+  --bb-cat-copper: #7a4a28;
+  --bb-cat-graphite: #7a726a;
 
   /* Grayscale chart ramp. Darker shades read first. */
   --bb-g1: #171717;
@@ -192,18 +192,18 @@
   --bb-bad-text: #f0b0ab;
   --bb-bad-tint: rgba(224, 122, 116, 0.16);
 
-  --bb-cat-honey: #f5c451;
-  --bb-cat-violet: #8b5cf6;
-  --bb-cat-sage: #b5c46a;
-  --bb-cat-wine: #db2777;
-  --bb-cat-clay: #d7b08a;
-  --bb-cat-plum: #c026d3;
-  --bb-cat-sand: #e0b15a;
-  --bb-cat-rose: #e879f9;
-  --bb-cat-slate: #a8a29e;
-  --bb-cat-berry: #be185d;
-  --bb-cat-dusk: #7f9bb8;
-  --bb-cat-ash: #d6d3d1;
+  --bb-cat-honey: #f0d060;
+  --bb-cat-violet: #a855f7;
+  --bb-cat-clay: #f0a020;
+  --bb-cat-plum: #c45cc0;
+  --bb-cat-sand: #d4a84a;
+  --bb-cat-rose: #b44888;
+  --bb-cat-mustard: #e6c44a;
+  --bb-cat-orchid: #d040b8;
+  --bb-cat-taupe: #806858;
+  --bb-cat-mauve: #986090;
+  --bb-cat-copper: #a06030;
+  --bb-cat-graphite: #7a746e;
 
   --bb-g1: #f5f5f5;
   --bb-g2: #d4d4d4;

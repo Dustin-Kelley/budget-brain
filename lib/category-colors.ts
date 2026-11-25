@@ -1,31 +1,34 @@
 /**
  * Category identity colors. Stored on `categories.color` as a key, never a hex.
  *
- * A warm, varied set: gold, purple, sage, berry, terracotta, magenta, sand,
- * rose, gray, and one muted blue near the end. Light and dark hexes live in
- * `app/globals.css` as `--bb-cat-*`.
+ * Warm and purple only: amber, clay, sand, mustard, copper, rose, orchid,
+ * violet, plum, mauve, taupe, and graphite. No blue, no green, and no true
+ * red, so these tags stay clear of the under-budget green and over-budget
+ * red. Light and dark hexes live in `app/globals.css` as `--bb-cat-<key>`.
  *
- * Status green and status red are not in this set. Over and under budget stay
- * on the money text (and the over-budget bar). These colors are dots, chips,
- * and chart slices.
+ * This array is the app's source of truth, and its order is the default
+ * sequence. A group with no saved color uses its place in the month
+ * (`created_at`, then `id`). The first group gets Honey.
  *
- * Order is the default sequence. A group with no saved color uses its place
- * in the month. The first group gets Honey, not a blue.
+ * The SQL check constraint in
+ * `supabase/migrations/20261125160000_category_color.sql` repeats these keys
+ * in this same order for the one-time backfill. That list has to be kept in
+ * sync by hand when a key is added or renamed.
  */
 
 export const CATEGORY_COLORS = [
   { key: 'honey', name: 'Honey', cssVar: '--bb-cat-honey' },
   { key: 'violet', name: 'Violet', cssVar: '--bb-cat-violet' },
-  { key: 'sage', name: 'Sage', cssVar: '--bb-cat-sage' },
-  { key: 'wine', name: 'Wine', cssVar: '--bb-cat-wine' },
   { key: 'clay', name: 'Clay', cssVar: '--bb-cat-clay' },
   { key: 'plum', name: 'Plum', cssVar: '--bb-cat-plum' },
   { key: 'sand', name: 'Sand', cssVar: '--bb-cat-sand' },
   { key: 'rose', name: 'Rose', cssVar: '--bb-cat-rose' },
-  { key: 'slate', name: 'Slate', cssVar: '--bb-cat-slate' },
-  { key: 'berry', name: 'Berry', cssVar: '--bb-cat-berry' },
-  { key: 'dusk', name: 'Dusk', cssVar: '--bb-cat-dusk' },
-  { key: 'ash', name: 'Ash', cssVar: '--bb-cat-ash' },
+  { key: 'mustard', name: 'Mustard', cssVar: '--bb-cat-mustard' },
+  { key: 'orchid', name: 'Orchid', cssVar: '--bb-cat-orchid' },
+  { key: 'taupe', name: 'Taupe', cssVar: '--bb-cat-taupe' },
+  { key: 'mauve', name: 'Mauve', cssVar: '--bb-cat-mauve' },
+  { key: 'copper', name: 'Copper', cssVar: '--bb-cat-copper' },
+  { key: 'graphite', name: 'Graphite', cssVar: '--bb-cat-graphite' },
 ] as const;
 
 export type CategoryColorKey = (typeof CATEGORY_COLORS)[number]['key'];
