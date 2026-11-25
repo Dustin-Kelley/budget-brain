@@ -71,15 +71,13 @@ export function AppHeader({
         >
           <MonthStepper />
         </Suspense>
-        {isTop && (
-          <Link
-            href='/settings'
-            className='flex size-11 flex-none items-center justify-center rounded-full bg-[var(--bb-text)] text-[12px] font-semibold text-[var(--bb-bg)] hover:text-[var(--bb-bg)] md:size-8'
-            aria-label='Settings'
-          >
-            {initial}
-          </Link>
-        )}
+        <Link
+          href='/settings'
+          className={`flex size-11 flex-none items-center justify-center rounded-full bg-[var(--bb-text)] text-[12px] font-semibold text-[var(--bb-bg)] hover:text-[var(--bb-bg)] md:size-8 ${isTop ? '' : 'md:hidden'}`}
+          aria-label='Settings'
+        >
+          {initial}
+        </Link>
       </div>
     </header>
   );
