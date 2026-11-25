@@ -105,7 +105,7 @@ export function BudgetTransactionList({
         </div>
       </div>
 
-      <div className='bb-card px-6 pt-2 pb-4'>
+      <div className='bb-card px-4 pt-2 pb-4 sm:px-6'>
         {rows.length === 0 ? (
           <p className='py-10 text-center text-[13.5px] text-[var(--bb-sub)]'>
             {openOnly
@@ -139,7 +139,7 @@ export function BudgetTransactionList({
                     </span>
                   </span>
                   <span
-                    className='bb-amount w-[96px] flex-none text-right font-semibold'
+                    className='bb-amount shrink-0 text-right font-semibold tabular-nums'
                     data-income={txn.kind === 'income'}
                   >
                     {formatCurrency(txn.amount)}

@@ -18,6 +18,21 @@ const MONTHS = [
   'December',
 ];
 
+const SHORT_MONTHS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
+
 /**
  * The header month pill. Reads/writes the `month` search param that every
  * ledger query already understands ("July-2026").
@@ -61,30 +76,35 @@ export function MonthStepper() {
   };
 
   return (
-    <span className='flex items-center gap-2.5 rounded-[9px] border border-[var(--bb-line)] bg-[var(--bb-surface-2)] px-3 py-1.5 text-[13px] whitespace-nowrap'>
+    <span className='flex items-center rounded-[12px] border border-[var(--bb-line)] bg-[var(--bb-surface-2)] text-[13px] whitespace-nowrap md:gap-2.5 md:rounded-[9px] md:px-3 md:py-1.5'>
       <button
         type='button'
         onClick={() => step(-1)}
-        className='cursor-pointer text-[var(--bb-dim)] transition-colors hover:text-[var(--bb-text)]'
+        className='inline-flex size-11 cursor-pointer items-center justify-center text-[var(--bb-dim)] transition-colors hover:text-[var(--bb-text)] md:size-6'
         aria-label='Previous month'
       >
         <Icon
           name='caret-left'
-          size={14}
+          size={16}
         />
       </button>
-      <span className='min-w-[86px] text-center'>
-        {MONTHS[monthIndex]} {year}
+      <span className='min-w-[4.75rem] text-center md:min-w-[86px]'>
+        <span className='md:hidden'>
+          {SHORT_MONTHS[monthIndex]} {year}
+        </span>
+        <span className='hidden md:inline'>
+          {MONTHS[monthIndex]} {year}
+        </span>
       </span>
       <button
         type='button'
         onClick={() => step(1)}
-        className='cursor-pointer text-[var(--bb-dim)] transition-colors hover:text-[var(--bb-text)]'
+        className='inline-flex size-11 cursor-pointer items-center justify-center text-[var(--bb-dim)] transition-colors hover:text-[var(--bb-text)] md:size-6'
         aria-label='Next month'
       >
         <Icon
           name='caret-right'
-          size={14}
+          size={16}
         />
       </button>
     </span>

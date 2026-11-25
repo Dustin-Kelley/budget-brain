@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { getCurrentUser } from '@/app/queries/getCurrentUser';
 import { SideNav } from './SideNav';
 import { AppHeader } from './AppHeader';
+import { MobileNav } from './MobileNav';
 import { NAV_MODE_COOKIE, type NavMode } from './nav';
 
 export async function getNavMode(): Promise<NavMode> {
@@ -41,6 +42,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
         <main className='bb-page flex flex-1 flex-col gap-[22px]'>
           {children}
         </main>
+        <MobileNav />
       </div>
     </div>
   );

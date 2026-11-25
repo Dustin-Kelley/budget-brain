@@ -36,12 +36,12 @@ export async function HouseHold() {
   return (
     <Card>
       <CardHeader>
-        <div className='flex items-center justify-between'>
+        <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
           <div>
             <CardTitle>Household Members</CardTitle>
             <CardDescription>Manage members of your household</CardDescription>
           </div>
-          <Button>
+          <Button className='w-full sm:w-auto'>
             <UserPlus className='mr-2 h-4 w-4' />
             Add Member
           </Button>
@@ -53,13 +53,13 @@ export async function HouseHold() {
             const isOwner = user.id === currentUser.id;
             return (
               <div key={user.id}>
-                <div className='flex items-center  justify-between p-4 rounded-lg border bg-card'>
-                  <div className='flex items-center gap-3'>
+                <div className='flex flex-col gap-3 rounded-lg border bg-card p-4 sm:flex-row sm:items-center sm:justify-between'>
+                  <div className='flex min-w-0 items-center gap-3'>
                     <div className='flex items-center justify-center w-10 h-10 rounded-full bg-primary/10'>
                       <User className='h-5 w-5 text-primary' />
                     </div>
-                    <div className='flex flex-col gap-1'>
-                      <div className='flex items-center gap-2'>
+                    <div className='flex min-w-0 flex-col gap-1'>
+                      <div className='flex flex-wrap items-center gap-2'>
                         <h3 className='font-medium'>
                           {user.first_name} {user.last_name}
                         </h3>
@@ -72,7 +72,7 @@ export async function HouseHold() {
                       </div>
                       <div className='flex items-center gap-1 text-sm text-muted-foreground'>
                         <Mail className='h-3 w-3' />
-                        <span>{user.email}</span>
+                        <span className='truncate'>{user.email}</span>
                       </div>
                     </div>
                   </div>
