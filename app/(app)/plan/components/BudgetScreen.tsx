@@ -9,9 +9,7 @@ import {
   figureFor,
   groupFigures,
   isZeroBased,
-  itemActivity,
   spentByItemId,
-  transactionTitle,
 } from '@/lib/budget/math';
 import type { BudgetMonth, BudgetView } from '@/lib/budget/types';
 import {
@@ -24,10 +22,10 @@ import {
   removeItem,
   renameGroup,
   saveIncomeLine,
-  saveItem,
 } from '../actions';
 import { MoneyField, NameField } from './BudgetFields';
 import { AddTransactionFab } from './AddTransactionFab';
+import { LineItemDetail } from './LineItemDetail';
 import {
   TransactionFormDialog,
   draftForEdit,
@@ -44,7 +42,8 @@ const VIEWS: { id: BudgetView; label: string }[] = [
 export function BudgetScreen({ budget }: { budget: BudgetMonth }) {
   const router = useRouter();
   const [view, setView] = useState<BudgetView>('planned');
-  const [activityId, setActivityId] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [openItemId, setOpenItemId] = useState<string | null>(null);
   const [editor, setEditor] = useState<TransactionEditor | null>(null);
   const [copying, setCopying] = useState(false);
   const [confirmCopy, setConfirmCopy] = useState(false);
@@ -90,6 +89,9 @@ export function BudgetScreen({ budget }: { budget: BudgetMonth }) {
   }
 
   const adding = editor !== null && !editor.draft.id;
+  const openItem = findOpenItem(budget, openItemId, spent);
+  let editClass = 'bb-ghost';
+  if (editing) editClass = 'bb-ghost bb-ghost-accent';
 
   function onAddOpenChange(next: boolean) {
     if (next) {
@@ -104,6 +106,17 @@ export function BudgetScreen({ budget }: { budget: BudgetMonth }) {
 
   return (
     <div className='flex flex-col gap-4 pb-[calc(5rem+env(safe-area-inset-bottom,0px))]'>
+      <div className='flex justify-end'>
+        <button
+          type='button'
+          className={editClass}
+          aria-pressed={editing}
+          onClick={() => setEditing((current) => !current)}
+        >
+          {editing ? 'Done' : 'Edit'}
+        </button>
+      </div>
+
       {budget.loadError ? (
         <p className='rounded-[14px] border border-[var(--bb-mg)] bg-[var(--bb-mg-tint)] px-4 py-3 text-[13.5px] text-[var(--bb-mg-text)]'>
           {budget.loadError}
@@ -140,6 +153,7 @@ export function BudgetScreen({ budget }: { budget: BudgetMonth }) {
 
       <IncomeSection
         budget={budget}
+        editing={editing}
         onCommit={commit}
       />
 
@@ -168,32 +182,22 @@ export function BudgetScreen({ budget }: { budget: BudgetMonth }) {
               remaining={group.remaining}
               color={group.color}
               view={view}
-              activityId={activityId}
+              editing={editing}
               spentByItem={spent}
-              transactions={budget.transactions}
               monthParam={budget.monthParam}
-              onToggleActivity={(id) =>
-                setActivityId((current) => (current === id ? null : id))
-              }
+              onOpenItem={setOpenItemId}
               onCommit={commit}
-              onAddTransaction={openNew}
-              onEditTransaction={(id) => {
-                const txn = budget.transactions.find((row) => row.id === id);
-                if (!txn) return;
-                setEditor({
-                  token: Date.now(),
-                  draft: draftForEdit(txn, budget.monthParam),
-                });
-              }}
             />
           );
         })
       )}
 
-      <AddGroupForm
-        monthParam={budget.monthParam}
-        onCommit={commit}
-      />
+      {editing || budget.groups.length === 0 ? (
+        <AddGroupForm
+          monthParam={budget.monthParam}
+          onCommit={commit}
+        />
+      ) : null}
 
       <AddTransactionFab
         open={adding}
@@ -214,8 +218,50 @@ export function BudgetScreen({ budget }: { budget: BudgetMonth }) {
         monthParam={budget.monthParam}
         onClose={() => setEditor(null)}
       />
+
+      <LineItemDetail
+        item={openItem ? openItem.item : null}
+        groupName={openItem ? openItem.groupName : ''}
+        spent={openItem ? openItem.spent : 0}
+        transactions={budget.transactions}
+        onOpenChange={(open) => {
+          if (!open) setOpenItemId(null);
+        }}
+        onCommit={commit}
+        onAddTransaction={(lineItemId) => {
+          setOpenItemId(null);
+          openNew(lineItemId);
+        }}
+        onEditTransaction={(id) => {
+          const txn = budget.transactions.find((row) => row.id === id);
+          setOpenItemId(null);
+          if (!txn) return;
+          setEditor({
+            token: Date.now(),
+            draft: draftForEdit(txn, budget.monthParam),
+          });
+        }}
+      />
     </div>
   );
+}
+
+function findOpenItem(
+  budget: BudgetMonth,
+  openItemId: string | null,
+  spent: Map<string, number>,
+) {
+  if (!openItemId) return null;
+  for (const group of budget.groups) {
+    const item = group.items.find((row) => row.id === openItemId);
+    if (!item) continue;
+    return {
+      item,
+      groupName: group.name,
+      spent: spent.get(item.id) ?? 0,
+    };
+  }
+  return null;
 }
 
 function BudgetBanner({
@@ -308,14 +354,18 @@ function Stat({ label, value }: { label: string; value: number }) {
 
 function IncomeSection({
   budget,
+  editing,
   onCommit,
 }: {
   budget: BudgetMonth;
+  editing: boolean;
   onCommit: (
     action: () => Promise<{ error: string | null }>,
     success?: string,
   ) => Promise<boolean>;
 }) {
+  const showAdd = editing || budget.income.length === 0;
+
   return (
     <section className='bb-card px-4 py-4 sm:px-5'>
       <div className='mb-2 flex items-baseline justify-between gap-3'>
@@ -331,42 +381,69 @@ function IncomeSection({
       ) : (
         <ul>
           {budget.income.map((row) => (
-            <li
+            <IncomeRow
               key={row.id}
-              className='flex items-center gap-2 border-b border-[var(--bb-line-2)] py-1 sm:gap-3'
-            >
-              <NameField
-                value={row.name}
-                label={`Income name ${row.name}`}
-                onSave={(name) =>
-                  onCommit(() => saveIncomeLine({ id: row.id, name }))
-                }
-              />
-              <MoneyField
-                value={row.amount}
-                label={`Planned amount for ${row.name}`}
-                onSave={(amount) =>
-                  onCommit(() => saveIncomeLine({ id: row.id, amount }))
-                }
-              />
-              <RemoveButton
-                label={`Remove ${row.name}`}
-                onRemove={() =>
-                  onCommit(
-                    () => removeIncomeLine(row.id),
-                    'Income removed',
-                  )
-                }
-              />
-            </li>
+              row={row}
+              editing={editing}
+              onCommit={onCommit}
+            />
           ))}
         </ul>
       )}
-      <AddIncomeForm
-        monthParam={budget.monthParam}
-        onCommit={onCommit}
-      />
+      {showAdd ? (
+        <AddIncomeForm
+          monthParam={budget.monthParam}
+          onCommit={onCommit}
+        />
+      ) : null}
     </section>
+  );
+}
+
+function IncomeRow({
+  row,
+  editing,
+  onCommit,
+}: {
+  row: BudgetMonth['income'][number];
+  editing: boolean;
+  onCommit: (
+    action: () => Promise<{ error: string | null }>,
+    success?: string,
+  ) => Promise<boolean>;
+}) {
+  if (!editing) {
+    return (
+      <li className='flex min-h-11 items-center gap-3 border-b border-[var(--bb-line-2)] py-2'>
+        <span className='min-w-0 flex-1 truncate text-base'>{row.name}</span>
+        <span className='shrink-0 text-right text-[14px] font-semibold tabular-nums'>
+          {formatCurrency(row.amount)}
+        </span>
+      </li>
+    );
+  }
+
+  return (
+    <li className='flex items-center gap-2 border-b border-[var(--bb-line-2)] py-1 sm:gap-3'>
+      <NameField
+        value={row.name}
+        label={`Income name ${row.name}`}
+        onSave={(name) => onCommit(() => saveIncomeLine({ id: row.id, name }))}
+      />
+      <MoneyField
+        value={row.amount}
+        label={`Planned amount for ${row.name}`}
+        onSave={(amount) =>
+          onCommit(() => saveIncomeLine({ id: row.id, amount }))
+        }
+      />
+      <RemoveButton
+        label={`Remove ${row.name}`}
+        onRemove={() =>
+          onCommit(() => removeIncomeLine(row.id), 'Income removed')
+        }
+      />
+    </li>
   );
 }
 
@@ -443,14 +520,11 @@ function GroupCard({
   remaining,
   color,
   view,
-  activityId,
+  editing,
   spentByItem,
-  transactions,
   monthParam,
-  onToggleActivity,
+  onOpenItem,
   onCommit,
-  onAddTransaction,
-  onEditTransaction,
 }: {
   group: BudgetMonth['groups'][number];
   planned: number;
@@ -458,17 +532,14 @@ function GroupCard({
   remaining: number;
   color: string;
   view: BudgetView;
-  activityId: string | null;
+  editing: boolean;
   spentByItem: Map<string, number>;
-  transactions: BudgetMonth['transactions'];
   monthParam: string;
-  onToggleActivity: (id: string) => void;
+  onOpenItem: (id: string) => void;
   onCommit: (
     action: () => Promise<{ error: string | null }>,
     success?: string,
   ) => Promise<boolean>;
-  onAddTransaction: (lineItemId?: string) => void;
-  onEditTransaction: (id: string) => void;
 }) {
   const headline = figureFor(view, planned, spentTotal);
   const over = view !== 'planned' && spentTotal > planned && planned > 0;
@@ -486,31 +557,41 @@ function GroupCard({
           className='size-2.5 flex-none rounded-full'
           style={{ background: color }}
         />
-        <NameField
-          value={group.name}
-          label={`Group name ${group.name}`}
-          onSave={(name) => onCommit(() => renameGroup({ id: group.id, name }))}
-          className='min-h-11 min-w-0 flex-1 bg-transparent text-base font-semibold outline-none md:min-h-0'
-        />
+        {editing ? (
+          <NameField
+            value={group.name}
+            label={`Group name ${group.name}`}
+            onSave={(name) =>
+              onCommit(() => renameGroup({ id: group.id, name }))
+            }
+            className='min-h-11 min-w-0 flex-1 bg-transparent text-base font-semibold outline-none md:min-h-0'
+          />
+        ) : (
+          <h2 className='min-w-0 flex-1 truncate text-base font-semibold'>
+            {group.name}
+          </h2>
+        )}
         <span
           className='shrink-0 text-[14px] font-semibold tabular-nums'
           style={{ color: headlineColor }}
         >
           {formatCurrency(headline)}
         </span>
-        <RemoveButton
-          label={`Remove group ${group.name}`}
-          onRemove={() =>
-            onCommit(() => removeGroup(group.id), 'Group removed')
-          }
-        />
+        {editing ? (
+          <RemoveButton
+            label={`Remove group ${group.name}`}
+            onRemove={() =>
+              onCommit(() => removeGroup(group.id), 'Group removed')
+            }
+          />
+        ) : null}
       </div>
       <p className='pt-1 text-[12px] text-[var(--bb-dim)]'>
         {viewCaption(view, planned, remaining)}
       </p>
       <ul>
         {group.items.map((item) => {
-          const itemSpent = moneySafe(spentByItem.get(item.id));
+          const itemSpent = spentByItem.get(item.id) ?? 0;
           const shown = figureFor(view, item.planned, itemSpent);
           const itemOver = item.planned > 0 && itemSpent > item.planned;
           let itemColor: string | undefined;
@@ -519,70 +600,47 @@ function GroupCard({
           } else if (view === 'remaining' && item.planned > 0 && !itemOver) {
             itemColor = 'var(--bb-good-text)';
           }
-          const open = activityId === item.id;
-          const activity = itemActivity(transactions, item.id);
           return (
             <li
               key={item.id}
-              className='border-b border-[var(--bb-line-2)] py-2'
+              className='border-b border-[var(--bb-line-2)]'
             >
-              <div className='flex items-center gap-2 sm:gap-3'>
-                <NameField
-                  value={item.name}
-                  label={`Item name ${item.name}`}
-                  onSave={(name) =>
-                    onCommit(() => saveItem({ id: item.id, name }))
-                  }
-                  className='min-h-11 min-w-0 flex-1 bg-transparent text-base outline-none md:min-h-0 md:text-[14.5px]'
-                />
-                {view === 'planned' ? (
-                  <MoneyField
-                    value={item.planned}
-                    label={`Planned amount for ${item.name}`}
-                    onSave={(amount) =>
-                      onCommit(() => saveItem({ id: item.id, planned: amount }))
-                    }
-                  />
-                ) : (
+              <div className='flex items-center gap-1 sm:gap-2'>
+                <button
+                  type='button'
+                  className='flex min-h-11 min-w-0 flex-1 cursor-pointer items-center gap-3 py-2 text-left'
+                  onClick={() => onOpenItem(item.id)}
+                >
+                  <span className='min-w-0 flex-1 truncate text-base md:text-[14.5px]'>
+                    {item.name}
+                  </span>
                   <span
-                    className='w-[6.5rem] shrink-0 text-right text-[14px] font-semibold tabular-nums sm:w-[108px]'
+                    className='shrink-0 text-right text-[14px] font-semibold tabular-nums'
                     style={{ color: itemColor }}
                   >
                     {formatCurrency(shown)}
                   </span>
-                )}
-                <RemoveButton
-                  label={`Remove ${item.name}`}
-                  onRemove={() =>
-                    onCommit(() => removeItem(item.id), 'Item removed')
-                  }
-                />
+                </button>
+                {editing ? (
+                  <RemoveButton
+                    label={`Remove ${item.name}`}
+                    onRemove={() =>
+                      onCommit(() => removeItem(item.id), 'Item removed')
+                    }
+                  />
+                ) : null}
               </div>
-              <button
-                type='button'
-                className='mt-1 inline-flex min-h-11 cursor-pointer items-center text-[13px] text-[var(--bb-dim)] md:min-h-0 md:text-[12px]'
-                aria-expanded={open}
-                onClick={() => onToggleActivity(item.id)}
-              >
-                {open ? 'Hide activity' : 'Activity this month'}
-              </button>
-              {open ? (
-                <ActivityList
-                  itemName={item.name}
-                  rows={activity}
-                  onAdd={() => onAddTransaction(item.id)}
-                  onEdit={onEditTransaction}
-                />
-              ) : null}
             </li>
           );
         })}
       </ul>
-      <AddItemForm
-        categoryId={group.id}
-        monthParam={monthParam}
-        onCommit={onCommit}
-      />
+      {editing || group.items.length === 0 ? (
+        <AddItemForm
+          categoryId={group.id}
+          monthParam={monthParam}
+          onCommit={onCommit}
+        />
+      ) : null}
     </section>
   );
 }
@@ -591,76 +649,6 @@ function viewCaption(view: BudgetView, planned: number, remaining: number) {
   if (view === 'planned') return 'Planned';
   if (view === 'spent') return `Spent of ${formatCurrency(planned)} planned`;
   return `${formatCurrency(remaining)} remaining of ${formatCurrency(planned)}`;
-}
-
-function moneySafe(value: number | undefined) {
-  return value ?? 0;
-}
-
-function ActivityList({
-  itemName,
-  rows,
-  onAdd,
-  onEdit,
-}: {
-  itemName: string;
-  rows: BudgetMonth['transactions'];
-  onAdd: () => void;
-  onEdit: (id: string) => void;
-}) {
-  return (
-    <div className='mt-2 rounded-[12px] bg-[var(--bb-surface-2)] px-3 py-2'>
-      <div className='mb-1 flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:justify-between'>
-        <span className='text-[12px] font-semibold tracking-[0.06em] text-[var(--bb-dim)] uppercase'>
-          Activity this month
-        </span>
-        <button
-          type='button'
-          className='inline-flex min-h-11 cursor-pointer items-center text-[13px] text-[var(--bb-text)] md:min-h-0 md:text-[12.5px]'
-          onClick={onAdd}
-        >
-          Add to {itemName}
-        </button>
-      </div>
-      {rows.length === 0 ? (
-        <p className='py-1 text-[13px] text-[var(--bb-sub)]'>
-          Nothing assigned here yet.
-        </p>
-      ) : (
-        <ul>
-          {rows.map((txn) => (
-            <li key={txn.id}>
-              <button
-                type='button'
-                className='flex w-full min-h-11 cursor-pointer items-center gap-3 py-2 text-left text-[14px]'
-                onClick={() => onEdit(txn.id)}
-              >
-                <span className='w-12 flex-none text-[12px] text-[var(--bb-dim)]'>
-                  {shortDate(txn.date)}
-                </span>
-                <span className='min-w-0 flex-1 truncate'>
-                  {transactionTitle(txn.description)}
-                  {txn.accountName ? ` · ${txn.accountName}` : ''}
-                </span>
-                <span
-                  className='bb-amount shrink-0 font-semibold tabular-nums'
-                  data-income={txn.kind === 'income'}
-                >
-                  {formatCurrency(txn.amount)}
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-
-function shortDate(iso: string | null) {
-  if (!iso) return '—';
-  const date = new Date(`${iso}T00:00:00`);
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
 function AddItemForm({

@@ -49,24 +49,16 @@ export function PlanSummaryCard({ budget }: { budget: BudgetMonth }) {
 
   return (
     <section className='bb-card flex flex-col gap-5 px-4 py-4 sm:px-6 sm:py-[22px]'>
-      <div className='flex flex-wrap items-start justify-between gap-3'>
-        <div>
-          <h2 className='text-[18px] font-semibold tracking-[-0.015em]'>
-            {budget.monthLabel}
-          </h2>
-          <p
-            className='mt-0.5 text-[13.5px]'
-            style={{ color: statusColor }}
-          >
-            {status}
-          </p>
-        </div>
-        <Link
-          href={budgetHref}
-          className='text-[13px]'
+      <div>
+        <h2 className='text-[18px] font-semibold tracking-[-0.015em]'>
+          {budget.monthLabel}
+        </h2>
+        <p
+          className='mt-0.5 text-[13.5px]'
+          style={{ color: statusColor }}
         >
-          Open budget →
-        </Link>
+          {status}
+        </p>
       </div>
 
       <dl className='grid grid-cols-3 gap-2 sm:gap-3'>
