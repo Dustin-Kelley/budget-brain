@@ -27,6 +27,8 @@ import type {
   TransactionDraft,
 } from '@/lib/budget/types';
 import { removeTransaction, saveTransaction } from '../actions';
+import { CategoryDot } from '@/components/bb/CategoryColorPicker';
+import { resolveCategoryColor } from '@/lib/category-colors';
 
 export type TransactionEditor = {
   token: number;
@@ -236,6 +238,17 @@ export function TransactionForm({
 
   const title = editing ? 'Edit transaction' : 'Add transaction';
   const description = `Record spending or income for ${monthName}. Expenses count against the budget item you assign.`;
+  const selectedGroupIndex = groups.findIndex((group) =>
+    group.items.some((item) => item.id === form.lineItemId),
+  );
+  let selectedGroupColor: string | null = null;
+  if (selectedGroupIndex >= 0) {
+    const selectedGroup = groups[selectedGroupIndex];
+    selectedGroupColor = resolveCategoryColor(
+      selectedGroup.colorKey,
+      selectedGroupIndex,
+    );
+  }
 
   return (
     <>
@@ -309,7 +322,15 @@ export function TransactionForm({
           </div>
         </div>
         <label className='flex flex-col gap-1 text-[13px] text-[var(--bb-sub)]'>
-          Budget item
+          <span className='flex items-center gap-2'>
+            Budget item
+            {selectedGroupColor ? (
+              <CategoryDot
+                color={selectedGroupColor}
+                className='size-2'
+              />
+            ) : null}
+          </span>
           <select
             value={form.lineItemId}
             onChange={(event) =>

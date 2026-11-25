@@ -17,6 +17,8 @@ export type BudgetItem = {
 export type BudgetGroup = {
   id: string;
   name: string;
+  /** Palette key. Null until the user picks one, or before the column exists. */
+  colorKey: string | null;
   items: BudgetItem[];
 };
 
@@ -34,6 +36,8 @@ export type BudgetTransaction = {
   lineItemId: string | null;
   lineItemName: string | null;
   groupName: string | null;
+  /** Resolved CSS color for the group dot. Null when the row has no group. */
+  groupColor: string | null;
   accountId: string | null;
   accountName: string | null;
   kind: BudgetKind;

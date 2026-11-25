@@ -11,6 +11,7 @@ import type {
   BudgetTransaction,
 } from '@/lib/budget/types';
 import { AddTransactionFab } from '@/app/(app)/plan/components/AddTransactionFab';
+import { CategoryDot } from '@/components/bb/CategoryColorPicker';
 import {
   TransactionFormDialog,
   draftForEdit,
@@ -134,8 +135,14 @@ export function BudgetTransactionList({
                     <span className='block truncate font-semibold'>
                       {transactionTitle(txn.description)}
                     </span>
-                    <span className='block truncate text-[12.5px] text-[var(--bb-dim)]'>
-                      {transactionDetail(txn)}
+                    <span className='flex min-w-0 items-center gap-1.5 text-[12.5px] text-[var(--bb-dim)]'>
+                      {txn.groupColor ? (
+                        <CategoryDot
+                          color={txn.groupColor}
+                          className='size-2'
+                        />
+                      ) : null}
+                      <span className='truncate'>{transactionDetail(txn)}</span>
                     </span>
                   </span>
                   <span

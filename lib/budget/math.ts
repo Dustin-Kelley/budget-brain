@@ -1,3 +1,8 @@
+import {
+  resolveCategoryColor,
+  resolveCategoryColorKey,
+  type CategoryColorKey,
+} from '@/lib/category-colors';
 import type {
   BudgetGroup,
   BudgetIncome,
@@ -6,24 +11,6 @@ import type {
   BudgetTransaction,
   BudgetView,
 } from './types';
-
-/** Grayscale shades for group charts. Green and red stay semantic. */
-export const BUDGET_GROUP_COLORS = [
-  'var(--bb-g1)',
-  'var(--bb-g2)',
-  'var(--bb-g3)',
-  'var(--bb-g4)',
-  'var(--bb-g5)',
-  'var(--bb-g6)',
-  'var(--bb-g2)',
-  'var(--bb-g3)',
-  'var(--bb-g4)',
-  'var(--bb-g5)',
-] as const;
-
-export function groupColor(index: number) {
-  return BUDGET_GROUP_COLORS[index % BUDGET_GROUP_COLORS.length];
-}
 
 export function money(value: unknown) {
   const numeric = typeof value === 'number' ? value : Number(value);
@@ -77,6 +64,7 @@ export type GroupFigure = {
   spent: number;
   remaining: number;
   color: string;
+  colorKey: CategoryColorKey;
 };
 
 export function spentByItemId(transactions: BudgetTransaction[]) {
@@ -104,7 +92,8 @@ export function groupFigures(budget: Pick<BudgetMonth, 'groups' | 'transactions'
       planned: money(planned),
       spent: money(groupSpent),
       remaining: money(planned - groupSpent),
-      color: groupColor(index),
+      color: resolveCategoryColor(group.colorKey, index),
+      colorKey: resolveCategoryColorKey(group.colorKey, index),
     } satisfies GroupFigure;
   });
 }

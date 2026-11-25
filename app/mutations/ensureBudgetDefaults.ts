@@ -4,6 +4,8 @@ import { createClient } from '@/utils/supabase/server';
 import { getCurrentUser } from '@/app/queries/getCurrentUser';
 import { getMonthAndYearNumberFromDate } from '@/lib/utils';
 import { DEFAULT_BUDGET_GROUPS } from '@/lib/budget/defaults';
+import { insertCategory } from '@/lib/budget/writeCategory';
+import { defaultCategoryColorKey } from '@/lib/category-colors';
 
 /**
  * Gives a household its first month of groups when it has never planned one.
@@ -38,17 +40,17 @@ export async function ensureBudgetDefaults(date: string | undefined) {
 
   for (let index = 0; index < DEFAULT_BUDGET_GROUPS.length; index += 1) {
     const group = DEFAULT_BUDGET_GROUPS[index];
-    const { data: category, error: categoryError } = await supabase
-      .from('categories')
-      .insert({
+    const { data: category, error: categoryError } = await insertCategory(
+      supabase,
+      {
         name: group.name,
         household_id: householdId,
         month: monthNumber,
         year: yearNumber,
+        color: defaultCategoryColorKey(index),
         created_at: new Date(started + index * 1000).toISOString(),
-      })
-      .select('id')
-      .single();
+      },
+    );
 
     if (categoryError || !category) {
       console.error('ensureBudgetDefaults category:', categoryError);

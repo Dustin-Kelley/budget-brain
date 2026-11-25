@@ -1,4 +1,4 @@
-import { categoryColors } from '@/lib/constants';
+import { resolveCategoryColor } from '@/lib/category-colors';
 import { getCategories } from '../queries/getCategories';
 import { getTotalIncomePerMonth } from '../queries/getTotalIncome';
 import { CategoryPieChart } from './CategoryPieChart';
@@ -34,7 +34,7 @@ export async function Charts({ date }: { date: string | undefined }) {
   const chartData = categoriesWithLineItems.map((category, index) => ({
     name: category.name,
     value: category.totalPlannedAmount,
-    color: categoryColors[index % categoryColors.length],
+    color: resolveCategoryColor(category.color, index),
   }));
 
   return (

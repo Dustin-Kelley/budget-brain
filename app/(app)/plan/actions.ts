@@ -6,6 +6,10 @@ import { createClient } from '@/utils/supabase/server';
 import { getCurrentUser } from '@/app/queries/getCurrentUser';
 import { getMonthAndYearNumberFromDate } from '@/lib/utils';
 import { money } from '@/lib/budget/math';
+import { isMissingCategoryColor } from '@/lib/budget/schema';
+import { insertCategory } from '@/lib/budget/writeCategory';
+import { isCategoryColorKey, nextCategoryColorKey } from '@/lib/category-colors';
+import { listCategoryColorSlots } from '@/app/queries/categoryColors';
 import { isMissingAccountColumn } from '@/lib/budget/schema';
 import { transactionsHaveAccountLink } from '@/app/queries/budgetAccountLink';
 import { rolloverBudget } from '@/app/mutations/rolloverBudget';
@@ -196,11 +200,20 @@ export async function addGroup(input: { name: string; monthParam: string }) {
   const { monthNumber, yearNumber } = getMonthAndYearNumberFromDate(
     input.monthParam,
   );
-  const { error } = await supabase.from('categories').insert({
+  const slots = await listCategoryColorSlots(
+    supabase,
+    householdId,
+    monthNumber,
+    yearNumber,
+  );
+  if (slots.error) return { error: slots.error };
+
+  const { error } = await insertCategory(supabase, {
     name,
     household_id: householdId,
     month: monthNumber,
     year: yearNumber,
+    color: nextCategoryColorKey(slots.rows),
   });
 
   if (error) return { error: 'Could not add that group.' };
@@ -220,6 +233,29 @@ export async function renameGroup(input: { id: string; name: string }) {
     .eq('household_id', householdId);
 
   if (error) return { error: 'Could not rename that group.' };
+  revalidateBudget();
+  return { error: null };
+}
+
+export async function setGroupColor(input: { id: string; color: string }) {
+  const { supabase, householdId } = await context();
+  if (!isCategoryColorKey(input.color)) {
+    return { error: 'Pick a color from the palette.' };
+  }
+
+  const owned = await categoryOwned(supabase, input.id, householdId);
+  if (!owned) return { error: 'That group is not in this household.' };
+
+  const { error } = await supabase
+    .from('categories')
+    .update({ color: input.color })
+    .eq('id', input.id)
+    .eq('household_id', householdId);
+
+  if (error && isMissingCategoryColor(error)) {
+    return { error: 'Colors show up after the database update is applied.' };
+  }
+  if (error) return { error: 'Could not save that color.' };
   revalidateBudget();
   return { error: null };
 }

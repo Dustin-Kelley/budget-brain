@@ -8,9 +8,21 @@ migrations against the **production** Supabase project used by Vercel:
 3. `supabase/migrations/20261023203956_budget_account_link_rls.sql` — nullable
    `transactions.account_id`, plus household RLS on `categories`, `line_items`,
    `income`, and `transactions`
+4. `supabase/migrations/20261125160000_category_color.sql` — `categories.color`
+   as a palette key
 
-The app keeps working if step 3 lands a few minutes after the deploy. Until
-that column exists, budget transactions save without an account.
+On the hosted project this column already exists. An older `add_category_color`
+migration (not in this repo) stored raw hex such as `#3b82f6`, `#ec4899`, and
+`#10b981`. The script in this repo adds the column only if it is missing,
+drops whatever check or default is already on it, and replaces nulls and those
+legacy hex values with a palette key. Groups that already store one of the 12
+keys are left as they are. Run the file as written. Do not skip it because the
+column is already there.
+
+The app keeps working if steps 3 and 4 land a few minutes after the deploy.
+Until `account_id` exists, budget transactions save without an account. Until
+`categories.color` exists, groups still show a color from their order in the
+month, and picking a color waits for the column.
 
 ## Option A — Supabase SQL editor
 
