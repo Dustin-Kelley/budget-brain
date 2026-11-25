@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { money } from '@/lib/budget/math';
 
-function parseMoneyInput(text: string) {
+export function parseMoneyInput(text: string) {
   const cleaned = text.replace(/[$,\s]/g, '');
   if (cleaned === '') return 0;
   const value = Number(cleaned);

@@ -1,5 +1,7 @@
 import { cookies } from 'next/headers';
 import { getCurrentUser } from '@/app/queries/getCurrentUser';
+import { getAuthUser } from '@/app/queries/getAuthUser';
+import { avatarUrlFromMetadata, initialsFromName } from '@/lib/avatar';
 import { SideNav } from './SideNav';
 import { AppHeader } from './AppHeader';
 import { MobileNav } from './MobileNav';
@@ -15,29 +17,35 @@ export async function getNavMode(): Promise<NavMode> {
  * on the server — no flash of the wrong shell on first paint.
  */
 export async function AppShell({ children }: { children: React.ReactNode }) {
-  const [mode, { currentUser }] = await Promise.all([
+  const [mode, { currentUser }, { user }] = await Promise.all([
     getNavMode(),
     getCurrentUser(),
+    getAuthUser(),
   ]);
 
-  const first = (currentUser?.first_name || '').charAt(0);
-  const last = (currentUser?.last_name || '').charAt(0);
-  const initial = (
-    first + last ||
-    currentUser?.email?.charAt(0) ||
-    'B'
-  ).toUpperCase();
+  const initial = initialsFromName(
+    currentUser?.first_name,
+    currentUser?.last_name,
+    currentUser?.email || user.email,
+  );
+  const imageUrl = avatarUrlFromMetadata(user.user_metadata);
 
   return (
     <div
       data-nav={mode}
       className='flex min-h-dvh bg-[var(--bb-bg)] text-[var(--bb-text)]'
     >
-      {mode === 'sidebar' && <SideNav initial={initial} />}
+      {mode === 'sidebar' && (
+        <SideNav
+          initial={initial}
+          imageUrl={imageUrl}
+        />
+      )}
       <div className='flex min-w-0 flex-1 flex-col'>
         <AppHeader
           mode={mode}
           initial={initial}
+          imageUrl={imageUrl}
         />
         <main className='bb-page flex flex-1 flex-col gap-[22px]'>
           {children}

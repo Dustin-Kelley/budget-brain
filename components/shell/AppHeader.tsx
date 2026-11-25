@@ -4,21 +4,23 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Logo } from '@/components/ui/logo';
-import { ThemeCycle } from './ThemeCycle';
 import { MonthStepper } from './MonthStepper';
+import { UserAvatar } from './UserAvatar';
 import { NAV_ITEMS, isNavActive, screenTitle, type NavMode } from './nav';
 
 /**
  * Sticky app header. In top-bar mode it carries the brand and, from the md
  * breakpoint up, the tab nav. Phones use the bottom bar instead, so this row
- * stays a single line: brand, month, theme, and settings.
+ * stays a single line: brand, month, and settings.
  */
 export function AppHeader({
   mode,
   initial,
+  imageUrl,
 }: {
   mode: NavMode;
   initial: string;
+  imageUrl?: string | null;
 }) {
   const pathname = usePathname();
   const isTop = mode === 'top';
@@ -60,23 +62,23 @@ export function AppHeader({
       )}
 
       <div className='ml-auto flex shrink-0 items-center gap-1 md:gap-3.5'>
-        <ThemeCycle
-          size={19}
-          className='inline-flex size-11 items-center justify-center md:size-8'
-        />
         <Suspense
           fallback={
-            <span className='h-11 w-[132px] rounded-[9px] bg-[var(--bb-surface-2)] md:h-[30px] md:w-[150px]' />
+            <span className='h-11 w-[148px] rounded-full bg-[var(--bb-surface-2)] md:h-9 md:w-[168px]' />
           }
         >
           <MonthStepper />
         </Suspense>
         <Link
           href='/settings'
-          className={`flex size-11 flex-none items-center justify-center rounded-full bg-[var(--bb-text)] text-[12px] font-semibold text-[var(--bb-bg)] hover:text-[var(--bb-bg)] md:size-8 ${isTop ? '' : 'md:hidden'}`}
+          className={`bb-avatar-link rounded-full ${isTop ? '' : 'md:hidden'}`}
           aria-label='Settings'
         >
-          {initial}
+          <UserAvatar
+            initial={initial}
+            imageUrl={imageUrl}
+            className='size-11 md:size-8 md:text-[12px]'
+          />
         </Link>
       </div>
     </header>
