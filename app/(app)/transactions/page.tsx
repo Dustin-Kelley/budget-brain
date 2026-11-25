@@ -24,7 +24,7 @@ export default async function TransactionsPage({
   if (!currentUser) redirect('/welcome');
 
   return (
-    <div className='flex flex-col gap-[18px] pb-20'>
+    <div className='flex flex-col gap-[18px] pb-[calc(5rem+env(safe-area-inset-bottom,0px))]'>
       <Suspense
         key={`${params.month ?? ''}:${params.track ?? ''}:${params.account ?? ''}`}
         fallback={<Skeleton className='h-[600px] rounded-2xl' />}

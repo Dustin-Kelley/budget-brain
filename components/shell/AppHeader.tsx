@@ -25,7 +25,7 @@ export function AppHeader({
   const tabs = [...NAV_ITEMS];
 
   return (
-    <header className='sticky top-0 z-10 flex min-h-[58px] flex-none flex-wrap items-center gap-x-5 gap-y-2 border-b border-[var(--bb-line)] bg-[var(--bb-surface)] px-4 py-2 sm:px-6'>
+    <header className='bb-header sticky top-0 z-10 flex min-h-[58px] flex-none flex-wrap items-center gap-x-5 gap-y-2 border-b border-[var(--bb-line)] bg-[var(--bb-surface)]'>
       {isTop ? (
         <div className='flex min-w-0 items-center gap-[18px]'>
           <Link
@@ -80,7 +80,7 @@ export function AppHeader({
       </div>
 
       {/* The sidebar is hidden below md, so the tabs carry navigation there. */}
-      <nav className='-mx-4 flex w-[calc(100%+2rem)] gap-5 overflow-x-auto px-4 pb-0.5 md:hidden'>
+      <nav className='bb-header-tabs gap-5 overflow-x-auto pb-0.5 md:hidden'>
         {tabs.map((item) => (
           <Link
             key={item.href}

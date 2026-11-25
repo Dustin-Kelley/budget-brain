@@ -1,7 +1,22 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+const PWA_PATHS = new Set(['/manifest.webmanifest', '/sw.js', '/offline'])
+
+function isPwaPath(pathname: string) {
+  if (PWA_PATHS.has(pathname)) return true
+  if (pathname.startsWith('/icons/')) return true
+  if (pathname.startsWith('/offline/')) return true
+  return false
+}
+
 export async function updateSession(request: NextRequest) {
+  // The manifest, service worker, icons, and offline page must load
+  // before anyone is signed in. Skip the session lookup entirely.
+  if (isPwaPath(request.nextUrl.pathname)) {
+    return NextResponse.next({ request })
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   })

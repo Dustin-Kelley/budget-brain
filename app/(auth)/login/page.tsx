@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function Page() {
   return (
-    <div className='flex min-h-svh flex-col items-center justify-center px-4 py-10 sm:px-6'>
+    <div className='bb-safe-screen flex min-h-svh flex-col items-center justify-center'>
       <div className='flex w-full max-w-md flex-col items-center gap-8'>
         <Link
           href='/welcome'

@@ -11,7 +11,7 @@ export function SideNav({ initial }: { initial: string }) {
   const pathname = usePathname();
 
   return (
-    <aside className='sticky top-0 hidden h-screen w-[228px] flex-none flex-col border-r border-[var(--bb-line)] bg-[var(--bb-side)] p-[20px_14px] md:flex'>
+    <aside className='bb-sidenav sticky top-0 hidden h-dvh w-[228px] flex-none flex-col border-r border-[var(--bb-line)] bg-[var(--bb-side)] md:flex'>
       <Link
         href='/'
         className='flex items-center gap-[11px] px-2 pt-0.5 pb-5 text-[var(--bb-text)] hover:text-[var(--bb-text)]'

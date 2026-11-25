@@ -23,7 +23,7 @@ const POINTS = [
 export default function LandingPage() {
   return (
     <div className='flex min-h-[100dvh] flex-col bg-[var(--bb-bg)] text-[var(--bb-text)]'>
-      <header className='sticky top-0 z-50 w-full border-b border-[var(--bb-line)] bg-[var(--bb-bg)]/90 backdrop-blur-lg'>
+      <header className='bb-safe-top sticky top-0 z-50 w-full border-b border-[var(--bb-line)] bg-[var(--bb-bg)]/90 backdrop-blur-lg'>
         <div className='mx-auto flex h-16 w-full max-w-5xl items-center justify-between px-4 md:px-6'>
           <Link
             href='/welcome'
@@ -90,7 +90,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className='w-full border-t border-[var(--bb-line)]'>
+      <footer className='bb-safe-bottom w-full border-t border-[var(--bb-line)]'>
         <div className='mx-auto flex w-full max-w-5xl flex-col items-center justify-between gap-4 px-4 py-6 sm:flex-row md:px-6'>
           <p className='text-xs text-[var(--bb-dim)]'>
             &copy; {new Date().getFullYear()} Budget Brain. All rights reserved.
