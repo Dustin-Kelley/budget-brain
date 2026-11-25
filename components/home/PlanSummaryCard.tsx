@@ -48,7 +48,7 @@ export function PlanSummaryCard({ budget }: { budget: BudgetMonth }) {
   const hasGroups = groups.length > 0;
 
   return (
-    <section className='bb-card flex flex-col gap-5 px-6 py-[22px]'>
+    <section className='bb-card flex flex-col gap-5 px-4 py-4 sm:px-6 sm:py-[22px]'>
       <div className='flex flex-wrap items-start justify-between gap-3'>
         <div>
           <h2 className='text-[18px] font-semibold tracking-[-0.015em]'>
@@ -69,7 +69,7 @@ export function PlanSummaryCard({ budget }: { budget: BudgetMonth }) {
         </Link>
       </div>
 
-      <dl className='grid grid-cols-3 gap-3'>
+      <dl className='grid grid-cols-3 gap-2 sm:gap-3'>
         <Total
           label='Income'
           value={totals.income}
@@ -113,6 +113,7 @@ export function PlanSummaryCard({ budget }: { budget: BudgetMonth }) {
                       <span className='truncate font-semibold'>{group.name}</span>
                     </span>
                     <span
+                      className='shrink-0 text-right text-[13px] tabular-nums'
                       style={{
                         color: itemOver ? 'var(--bb-bad-text)' : 'var(--bb-sub)',
                       }}
@@ -158,11 +159,11 @@ function barWidth(planned: number, spent: number) {
 
 function Total({ label, value }: { label: string; value: number }) {
   return (
-    <div className='rounded-[12px] bg-[var(--bb-surface-2)] px-3 py-2.5'>
+    <div className='min-w-0 rounded-[12px] bg-[var(--bb-surface-2)] px-2.5 py-2.5 sm:px-3'>
       <dt className='text-[11px] tracking-[0.08em] text-[var(--bb-dim)] uppercase'>
         {label}
       </dt>
-      <dd className='mt-0.5 text-[18px] font-semibold tracking-[-0.02em]'>
+      <dd className='mt-0.5 text-[15px] font-semibold tracking-[-0.02em] tabular-nums sm:text-[18px]'>
         {formatCurrency(value)}
       </dd>
     </div>

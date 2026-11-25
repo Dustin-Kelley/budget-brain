@@ -73,7 +73,7 @@ async function AccountsBody({ month }: { month: string | undefined }) {
       </div>
 
       {accounts.length > 0 && (
-        <div className='grid gap-4 lg:grid-cols-2'>
+        <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
           {accounts.map((account) => {
             const budgetOnAccount = accountActivity(
               budget.transactions,
@@ -89,10 +89,10 @@ async function AccountsBody({ month }: { month: string | undefined }) {
             return (
               <div
                 key={account.id}
-                className='bb-card flex flex-col gap-[18px] p-6'
+                className='bb-card flex min-w-0 flex-col gap-[18px] p-4 sm:p-6'
               >
-                <div className='flex items-center gap-3'>
-                  <span className='flex size-[42px] flex-none items-center justify-center rounded-xl bg-[var(--bb-surface-2)]'>
+                <div className='flex items-start gap-3'>
+                  <span className='flex size-11 flex-none items-center justify-center rounded-xl bg-[var(--bb-surface-2)]'>
                     <Icon
                       name='bank'
                       size={22}
@@ -110,8 +110,13 @@ async function AccountsBody({ month }: { month: string | undefined }) {
                         .filter(Boolean)
                         .join(' · ')}
                     </div>
+                    <div className='mt-1 text-[22px] font-semibold tracking-[-0.03em] tabular-nums sm:hidden'>
+                      {account.current_balance == null
+                        ? '—'
+                        : formatCurrency(Number(account.current_balance))}
+                    </div>
                   </div>
-                  <div className='text-[24px] font-semibold tracking-[-0.03em]'>
+                  <div className='hidden text-[24px] font-semibold tracking-[-0.03em] tabular-nums sm:block'>
                     {account.current_balance == null
                       ? '—'
                       : formatCurrency(Number(account.current_balance))}
@@ -119,22 +124,22 @@ async function AccountsBody({ month }: { month: string | undefined }) {
                 </div>
 
                 {budget.accountsLinked ? (
-                  <div className='flex flex-wrap gap-6 text-[13px]'>
-                    <div>
-                      <div className='bb-kicker'>Budget spent</div>
-                      <div className='mt-0.5 text-[16px] font-semibold'>
+                  <div className='grid grid-cols-3 gap-2 text-[13px]'>
+                    <div className='min-w-0'>
+                      <div className='text-[11px] text-[var(--bb-dim)]'>Spent</div>
+                      <div className='mt-0.5 text-[16px] font-semibold tabular-nums'>
                         {formatCurrency(budgetOnAccount.spent)}
                       </div>
                     </div>
-                    <div>
-                      <div className='bb-kicker'>Budget income</div>
-                      <div className='mt-0.5 text-[16px] font-semibold'>
+                    <div className='min-w-0'>
+                      <div className='text-[11px] text-[var(--bb-dim)]'>Income</div>
+                      <div className='mt-0.5 text-[16px] font-semibold tabular-nums'>
                         {formatCurrency(budgetOnAccount.income)}
                       </div>
                     </div>
-                    <div>
-                      <div className='bb-kicker'>Assigned</div>
-                      <div className='mt-0.5 text-[16px] font-semibold'>
+                    <div className='min-w-0'>
+                      <div className='text-[11px] text-[var(--bb-dim)]'>Assigned</div>
+                      <div className='mt-0.5 text-[16px] font-semibold tabular-nums'>
                         {budgetOnAccount.rows.length}
                       </div>
                     </div>
@@ -157,7 +162,7 @@ async function AccountsBody({ month }: { month: string | undefined }) {
                           key={txn.id}
                           className='flex items-baseline justify-between gap-3'
                         >
-                          <span className='truncate'>
+                          <span className='min-w-0 flex-1 truncate'>
                             {txn.description.trim() || 'Transaction'}
                           </span>
                           <span className='flex-none font-semibold'>
@@ -169,7 +174,7 @@ async function AccountsBody({ month }: { month: string | undefined }) {
                   </div>
                 ) : null}
 
-                <div className='flex flex-wrap items-end gap-2.5'>
+                <div className='flex flex-col items-stretch gap-2.5 sm:flex-row sm:flex-wrap sm:items-end'>
                   <Link
                     href={transactionsHref}
                     className='bb-ghost'
@@ -181,7 +186,7 @@ async function AccountsBody({ month }: { month: string | undefined }) {
                       'use server';
                       await updateAccountBalance(formData);
                     }}
-                    className='flex items-end gap-2'
+                    className='flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-end'
                   >
                     <input
                       type='hidden'
@@ -199,7 +204,7 @@ async function AccountsBody({ month }: { month: string | undefined }) {
                             ? String(account.current_balance)
                             : ''
                         }
-                        className='w-32 rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface-2)] px-3 py-2 text-[14px] outline-none focus-visible:border-[var(--bb-text)]'
+                        className='bb-field w-full bg-[var(--bb-surface-2)] sm:w-36'
                       />
                     </label>
                     <button
@@ -218,7 +223,7 @@ async function AccountsBody({ month }: { month: string | undefined }) {
 
       <div
         id='add-account'
-        className='bb-card flex flex-col gap-4 px-6 py-[22px]'
+        className='bb-card flex flex-col gap-4 px-4 py-5 sm:px-6 sm:py-[22px]'
       >
         <span className='bb-kicker'>Add an account</span>
         <form
@@ -306,8 +311,7 @@ function Field({
   );
 }
 
-const CONTROL =
-  'w-full rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface-2)] px-3 py-2 text-[14px] outline-none transition-colors focus-visible:border-[var(--bb-text)]';
+const CONTROL = 'bb-field bg-[var(--bb-surface-2)]';
 
 function TextInput(props: React.ComponentProps<'input'>) {
   return (

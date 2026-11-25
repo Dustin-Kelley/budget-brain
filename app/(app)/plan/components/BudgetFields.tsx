@@ -56,7 +56,7 @@ export function MoneyField({
       onKeyDown={(event) => {
         if (event.key === 'Enter') event.currentTarget.blur();
       }}
-      className='w-[108px] rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface-2)] px-2 py-1 text-right text-[14px] font-semibold text-[var(--bb-text)] outline-none focus:border-[var(--bb-text)]'
+      className='h-11 w-[6.5rem] shrink-0 rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface-2)] px-2 text-right text-base font-semibold text-[var(--bb-text)] outline-none focus:border-[var(--bb-text)] md:h-8 md:w-[108px] md:text-sm'
     />
   );
 }
@@ -105,7 +105,7 @@ export function NameField({
       }}
       className={
         className ??
-        'min-w-0 flex-1 bg-transparent text-[14.5px] font-semibold text-[var(--bb-text)] outline-none'
+        'min-h-11 min-w-0 flex-1 bg-transparent text-base font-semibold text-[var(--bb-text)] outline-none md:min-h-0 md:text-[14.5px]'
       }
     />
   );

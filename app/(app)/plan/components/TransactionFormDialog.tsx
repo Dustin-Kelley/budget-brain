@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useMediaQuery } from '@/hooks/use-media-query';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -11,6 +12,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import {
+  Drawer,
+  DrawerContent,
   DrawerDescription,
   DrawerTitle,
 } from '@/components/ui/drawer';
@@ -77,6 +80,37 @@ export function TransactionFormDialog({
   monthParam: string;
   onClose: () => void;
 }) {
+  const isMobile = useMediaQuery('(max-width: 767px)');
+  const form = editor ? (
+    <TransactionForm
+      key={editor.token}
+      initial={editor.draft}
+      groups={groups}
+      accounts={accounts}
+      accountsLinked={accountsLinked}
+      monthParam={monthParam}
+      onClose={onClose}
+      surface={isMobile ? 'drawer' : 'dialog'}
+    />
+  ) : null;
+
+  if (isMobile) {
+    return (
+      <Drawer
+        open={editor !== null}
+        onOpenChange={(open) => {
+          if (!open) onClose();
+        }}
+      >
+        <DrawerContent className='rounded-t-2xl data-[vaul-drawer-direction=bottom]:max-h-[min(92dvh,760px)]!'>
+          <div className='max-h-[min(84dvh,700px)] overflow-y-auto overscroll-contain px-4 pt-2 pb-[max(1.25rem,env(safe-area-inset-bottom,0px))]'>
+            {form}
+          </div>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
   return (
     <Dialog
       open={editor !== null}
@@ -85,17 +119,7 @@ export function TransactionFormDialog({
       }}
     >
       <DialogContent className='sm:max-w-[440px]'>
-        {editor && (
-          <TransactionForm
-            key={editor.token}
-            initial={editor.draft}
-            groups={groups}
-            accounts={accounts}
-            accountsLinked={accountsLinked}
-            monthParam={monthParam}
-            onClose={onClose}
-          />
-        )}
+        {form}
       </DialogContent>
     </Dialog>
   );
@@ -221,7 +245,7 @@ export function TransactionForm({
             onChange={(event) =>
               setForm({ ...form, date: event.target.value })
             }
-            className='rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px] text-[var(--bb-text)]'
+            className='bb-field'
           />
         </label>
         <label className='flex flex-col gap-1 text-[13px] text-[var(--bb-sub)]'>
@@ -234,7 +258,7 @@ export function TransactionForm({
             onChange={(event) =>
               setForm({ ...form, amount: event.target.value })
             }
-            className='rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px] text-[var(--bb-text)]'
+            className='bb-field'
           />
         </label>
         <label className='flex flex-col gap-1 text-[13px] text-[var(--bb-sub)]'>
@@ -245,13 +269,13 @@ export function TransactionForm({
             onChange={(event) =>
               setForm({ ...form, description: event.target.value })
             }
-            className='rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px] text-[var(--bb-text)]'
+            className='bb-field'
           />
         </label>
         <div className='flex flex-col gap-1 text-[13px] text-[var(--bb-sub)]'>
           Type
           <div
-            className='flex gap-2'
+            className='bb-segments'
             role='group'
             aria-label='Transaction type'
           >
@@ -276,7 +300,7 @@ export function TransactionForm({
             onChange={(event) =>
               setForm({ ...form, lineItemId: event.target.value })
             }
-            className='rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px] text-[var(--bb-text)]'
+            className='bb-field'
           >
             <option value=''>Unassigned</option>
             {groups.map((group) => (
@@ -304,7 +328,7 @@ export function TransactionForm({
               onChange={(event) =>
                 setForm({ ...form, accountId: event.target.value })
               }
-              className='rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px] text-[var(--bb-text)]'
+              className='bb-field'
             >
               <option value=''>No account</option>
               {accounts.map((account) => (
@@ -333,7 +357,7 @@ export function TransactionForm({
           {editing ? (
             <button
               type='button'
-              className='cursor-pointer text-[13px] text-[var(--bb-mg-text)]'
+              className='inline-flex min-h-11 cursor-pointer items-center text-[14px] text-[var(--bb-mg-text)] md:min-h-0 md:text-[13px]'
               disabled={pending}
               onClick={() => {
                 void onDelete();

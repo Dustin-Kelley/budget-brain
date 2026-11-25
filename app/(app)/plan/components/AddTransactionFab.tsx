@@ -70,8 +70,8 @@ export function AddTransactionFab({
         <DrawerTrigger asChild>
           <FabButton />
         </DrawerTrigger>
-        <DrawerContent className='data-[vaul-drawer-direction=bottom]:max-h-[min(92dvh,760px)]!'>
-          <div className='max-h-[min(84dvh,700px)] overflow-y-auto overscroll-contain px-4 pt-1 pb-[max(1.25rem,env(safe-area-inset-bottom,0px))]'>
+        <DrawerContent className='rounded-t-2xl data-[vaul-drawer-direction=bottom]:max-h-[min(92dvh,760px)]!'>
+          <div className='max-h-[min(84dvh,700px)] overflow-y-auto overscroll-contain px-4 pt-2 pb-[max(1.25rem,env(safe-area-inset-bottom,0px))]'>
             {form}
           </div>
         </DrawerContent>

@@ -47,17 +47,17 @@ export default async function SettingsPage({
 
       <section>
         <div className='bb-kicker mb-3'>Preferences</div>
-        <div className='bb-card px-[22px] py-2'>
-          <div className='bb-row'>
-            <span className='flex-1'>Currency</span>
+        <div className='bb-card px-4 py-2 sm:px-[22px]'>
+          <div className='bb-row flex-wrap'>
+            <span className='min-w-0 flex-1'>Currency</span>
             <span className='text-[var(--bb-sub)]'>US dollar · $</span>
           </div>
-          <div className='bb-row'>
-            <span className='flex-1'>Month starts on</span>
+          <div className='bb-row flex-wrap'>
+            <span className='min-w-0 flex-1'>Month starts on</span>
             <span className='text-[var(--bb-sub)]'>The 1st</span>
           </div>
-          <div className='bb-row bb-row-last'>
-            <span className='flex-1'>Period used across the app</span>
+          <div className='bb-row bb-row-last flex-wrap'>
+            <span className='min-w-0 flex-1'>Period used across the app</span>
             <span className='text-[var(--bb-sub)]'>Calendar month</span>
           </div>
         </div>
@@ -78,8 +78,8 @@ export default async function SettingsPage({
 
       <section>
         <div className='bb-kicker mb-3'>Danger zone</div>
-        <div className='bb-card flex flex-wrap items-center gap-3 px-6 py-5'>
-          <p className='min-w-[220px] flex-1 text-[13px] text-[var(--bb-sub)]'>
+        <div className='bb-card flex flex-col gap-3 px-4 py-4 sm:flex-row sm:flex-wrap sm:items-center sm:px-6 sm:py-5'>
+          <p className='text-[13px] text-[var(--bb-sub)] sm:min-w-[220px] sm:flex-1'>
             Resetting clears the envelope plan for the selected month. Accounts
             stay as they are.
           </p>
@@ -101,7 +101,7 @@ async function Connections() {
   const { accounts } = await getAccounts();
 
   return (
-    <div className='bb-card px-[22px] pt-2 pb-4'>
+    <div className='bb-card px-4 pt-2 pb-4 sm:px-[22px]'>
       {accounts.length === 0 ? (
         <p className='py-6 text-[13.5px] text-[var(--bb-sub)]'>
           No accounts yet.

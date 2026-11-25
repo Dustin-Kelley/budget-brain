@@ -258,10 +258,10 @@ function BudgetBanner({
   return (
     <section
       aria-live='polite'
-      className='bb-card flex flex-col gap-4 px-6 py-5'
+      className='bb-card flex flex-col gap-4 px-4 py-4 sm:px-6 sm:py-5'
       style={{ background, borderColor: border }}
     >
-      <div className='flex flex-wrap items-end justify-between gap-4'>
+      <div className='flex flex-col gap-4'>
         <div>
           <div
             className='text-[13px] font-semibold'
@@ -274,7 +274,7 @@ function BudgetBanner({
           </div>
           <p className='mt-1 text-[13.5px] text-[var(--bb-sub)]'>{detail}</p>
         </div>
-        <dl className='grid grid-cols-3 gap-4 text-right'>
+        <dl className='grid grid-cols-3 gap-2 sm:gap-4 sm:text-right'>
           <Stat
             label='Income'
             value={income}
@@ -299,7 +299,9 @@ function Stat({ label, value }: { label: string; value: number }) {
       <dt className='text-[11px] tracking-[0.08em] text-[var(--bb-dim)] uppercase'>
         {label}
       </dt>
-      <dd className='text-[16px] font-semibold'>{formatCurrency(value)}</dd>
+      <dd className='text-[15px] font-semibold tabular-nums sm:text-base'>
+        {formatCurrency(value)}
+      </dd>
     </div>
   );
 }
@@ -315,7 +317,7 @@ function IncomeSection({
   ) => Promise<boolean>;
 }) {
   return (
-    <section className='bb-card px-5 py-4'>
+    <section className='bb-card px-4 py-4 sm:px-5'>
       <div className='mb-2 flex items-baseline justify-between gap-3'>
         <h2 className='text-[16px] font-semibold'>Income</h2>
         <span className='text-[13px] text-[var(--bb-sub)]'>
@@ -331,7 +333,7 @@ function IncomeSection({
           {budget.income.map((row) => (
             <li
               key={row.id}
-              className='flex items-center gap-3 border-b border-[var(--bb-line-2)] py-2'
+              className='flex items-center gap-2 border-b border-[var(--bb-line-2)] py-1 sm:gap-3'
             >
               <NameField
                 value={row.name}
@@ -406,14 +408,14 @@ function AddIncomeForm({
       onSubmit={(event) => {
         void onSubmit(event);
       }}
-      className='mt-3 flex flex-wrap items-center gap-2'
+      className='mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center'
     >
       <input
         aria-label='New income name'
         value={name}
         placeholder='Paycheck'
         onChange={(event) => setName(event.target.value)}
-        className='min-w-[140px] flex-1 rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-1.5 text-[14px]'
+        className='bb-field sm:min-w-[140px] sm:flex-1'
       />
       <input
         aria-label='New income amount'
@@ -421,7 +423,7 @@ function AddIncomeForm({
         value={amount}
         placeholder='0.00'
         onChange={(event) => setAmount(event.target.value)}
-        className='w-[108px] rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-2 py-1.5 text-right text-[14px]'
+        className='bb-field text-right sm:w-[7.5rem] sm:flex-none'
       />
       <button
         type='submit'
@@ -478,8 +480,8 @@ function GroupCard({
   }
 
   return (
-    <section className='bb-card px-5 py-4'>
-      <div className='flex items-center gap-3 border-b border-[var(--bb-line-2)] pb-2'>
+    <section className='bb-card px-4 py-4 sm:px-5'>
+      <div className='flex items-center gap-2 border-b border-[var(--bb-line-2)] pb-2 sm:gap-3'>
         <span
           className='size-2.5 flex-none rounded-full'
           style={{ background: color }}
@@ -488,10 +490,10 @@ function GroupCard({
           value={group.name}
           label={`Group name ${group.name}`}
           onSave={(name) => onCommit(() => renameGroup({ id: group.id, name }))}
-          className='min-w-0 flex-1 bg-transparent text-[16px] font-semibold outline-none'
+          className='min-h-11 min-w-0 flex-1 bg-transparent text-base font-semibold outline-none md:min-h-0'
         />
         <span
-          className='text-[14px] font-semibold'
+          className='shrink-0 text-[14px] font-semibold tabular-nums'
           style={{ color: headlineColor }}
         >
           {formatCurrency(headline)}
@@ -524,14 +526,14 @@ function GroupCard({
               key={item.id}
               className='border-b border-[var(--bb-line-2)] py-2'
             >
-              <div className='flex items-center gap-3'>
+              <div className='flex items-center gap-2 sm:gap-3'>
                 <NameField
                   value={item.name}
                   label={`Item name ${item.name}`}
                   onSave={(name) =>
                     onCommit(() => saveItem({ id: item.id, name }))
                   }
-                  className='min-w-0 flex-1 bg-transparent text-[14.5px] outline-none'
+                  className='min-h-11 min-w-0 flex-1 bg-transparent text-base outline-none md:min-h-0 md:text-[14.5px]'
                 />
                 {view === 'planned' ? (
                   <MoneyField
@@ -543,7 +545,7 @@ function GroupCard({
                   />
                 ) : (
                   <span
-                    className='w-[108px] text-right text-[14px] font-semibold'
+                    className='w-[6.5rem] shrink-0 text-right text-[14px] font-semibold tabular-nums sm:w-[108px]'
                     style={{ color: itemColor }}
                   >
                     {formatCurrency(shown)}
@@ -558,7 +560,7 @@ function GroupCard({
               </div>
               <button
                 type='button'
-                className='mt-1 cursor-pointer text-[12px] text-[var(--bb-dim)]'
+                className='mt-1 inline-flex min-h-11 cursor-pointer items-center text-[13px] text-[var(--bb-dim)] md:min-h-0 md:text-[12px]'
                 aria-expanded={open}
                 onClick={() => onToggleActivity(item.id)}
               >
@@ -608,13 +610,13 @@ function ActivityList({
 }) {
   return (
     <div className='mt-2 rounded-[12px] bg-[var(--bb-surface-2)] px-3 py-2'>
-      <div className='mb-1 flex items-center justify-between gap-2'>
+      <div className='mb-1 flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:justify-between'>
         <span className='text-[12px] font-semibold tracking-[0.06em] text-[var(--bb-dim)] uppercase'>
           Activity this month
         </span>
         <button
           type='button'
-          className='cursor-pointer text-[12.5px] text-[var(--bb-cy-text)]'
+          className='inline-flex min-h-11 cursor-pointer items-center text-[13px] text-[var(--bb-text)] md:min-h-0 md:text-[12.5px]'
           onClick={onAdd}
         >
           Add to {itemName}
@@ -630,7 +632,7 @@ function ActivityList({
             <li key={txn.id}>
               <button
                 type='button'
-                className='flex w-full cursor-pointer items-center gap-3 py-1.5 text-left text-[13.5px]'
+                className='flex w-full min-h-11 cursor-pointer items-center gap-3 py-2 text-left text-[14px]'
                 onClick={() => onEdit(txn.id)}
               >
                 <span className='w-12 flex-none text-[12px] text-[var(--bb-dim)]'>
@@ -641,7 +643,7 @@ function ActivityList({
                   {txn.accountName ? ` · ${txn.accountName}` : ''}
                 </span>
                 <span
-                  className='bb-amount font-semibold'
+                  className='bb-amount shrink-0 font-semibold tabular-nums'
                   data-income={txn.kind === 'income'}
                 >
                   {formatCurrency(txn.amount)}
@@ -692,14 +694,14 @@ function AddItemForm({
       onSubmit={(event) => {
         void onSubmit(event);
       }}
-      className='mt-3 flex flex-wrap items-center gap-2'
+      className='mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center'
     >
       <input
         aria-label='New item name'
         value={name}
         placeholder='Add an item'
         onChange={(event) => setName(event.target.value)}
-        className='min-w-[160px] flex-1 rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-1.5 text-[14px]'
+        className='bb-field sm:min-w-[160px] sm:flex-1'
       />
       <button
         type='submit'
@@ -741,14 +743,14 @@ function AddGroupForm({
       onSubmit={(event) => {
         void onSubmit(event);
       }}
-      className='flex flex-wrap items-center gap-2'
+      className='flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center'
     >
       <input
         aria-label='New group name'
         value={name}
         placeholder='New group'
         onChange={(event) => setName(event.target.value)}
-        className='min-w-[180px] flex-1 rounded-xl border border-[var(--bb-line)] bg-[var(--bb-surface)] px-3 py-2 text-[14px]'
+        className='bb-field sm:min-w-[180px] sm:flex-1'
       />
       <button
         type='submit'
@@ -779,7 +781,7 @@ function EmptyMonth({
   onCopy: () => void;
 }) {
   return (
-    <section className='bb-card flex flex-col items-start gap-3 px-6 py-6'>
+    <section className='bb-card flex flex-col items-start gap-3 px-4 py-5 sm:px-6 sm:py-6'>
       <h2 className='text-[16px] font-semibold'>This month is empty</h2>
       <p className='max-w-[52ch] text-[14px] text-[var(--bb-sub)]'>
         Add a group below
@@ -835,7 +837,7 @@ function RemoveButton({
     return (
       <button
         type='button'
-        className='cursor-pointer text-[12px] text-[var(--bb-dim)]'
+        className='inline-flex min-h-11 cursor-pointer items-center px-1 text-[13px] text-[var(--bb-dim)] md:min-h-0 md:px-0 md:text-[12px]'
         aria-label={label}
         onClick={() => setArmed(true)}
       >
@@ -845,10 +847,10 @@ function RemoveButton({
   }
 
   return (
-    <span className='flex items-center gap-2 text-[12px]'>
+    <span className='flex items-center gap-1 text-[13px] md:text-[12px]'>
       <button
         type='button'
-        className='cursor-pointer text-[var(--bb-mg-text)]'
+        className='inline-flex min-h-11 cursor-pointer items-center px-1 text-[var(--bb-mg-text)] md:min-h-0'
         onClick={() => {
           void onRemove();
         }}
@@ -857,7 +859,7 @@ function RemoveButton({
       </button>
       <button
         type='button'
-        className='cursor-pointer text-[var(--bb-dim)]'
+        className='inline-flex min-h-11 cursor-pointer items-center px-1 text-[var(--bb-dim)] md:min-h-0'
         onClick={() => setArmed(false)}
       >
         Keep
