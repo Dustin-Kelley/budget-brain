@@ -4,8 +4,8 @@ import { Logo } from '@/components/ui/logo';
 
 export default function SupportPage() {
   return (
-    <div className='flex min-h-[100dvh] flex-col'>
-      <header className='sticky top-0 z-50 w-full backdrop-blur-lg bg-background/80 border-b'>
+    <div className='flex min-h-[100dvh] flex-col pb-[env(safe-area-inset-bottom,0px)]'>
+      <header className='bb-safe-top sticky top-0 z-50 w-full backdrop-blur-lg bg-background/80 border-b'>
         <div className='container flex h-16 items-center'>
           <Link
             href='/welcome'

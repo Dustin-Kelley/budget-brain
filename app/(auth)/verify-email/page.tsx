@@ -4,7 +4,7 @@ import Link from "next/link"
 
 export default function VerifyEmailPage() {
   return (
-    <div className="flex min-h-svh w-full flex-col items-center justify-center px-4 py-10 sm:px-6">
+    <div className="bb-safe-screen flex min-h-svh w-full flex-col items-center justify-center">
       <Card className="w-full max-w-md gap-8 py-8 sm:py-10">
         <CardHeader className="gap-3 px-5 text-center sm:px-8">
           <CardTitle className="text-2xl font-semibold tracking-tight sm:text-3xl">

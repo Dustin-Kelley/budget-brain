@@ -30,7 +30,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div
       data-nav={mode}
-      className='flex min-h-screen bg-[var(--bb-bg)] text-[var(--bb-text)]'
+      className='flex min-h-dvh bg-[var(--bb-bg)] text-[var(--bb-text)]'
     >
       {mode === 'sidebar' && <SideNav initial={initial} />}
       <div className='flex min-w-0 flex-1 flex-col'>

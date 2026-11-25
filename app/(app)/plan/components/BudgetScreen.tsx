@@ -103,7 +103,7 @@ export function BudgetScreen({ budget }: { budget: BudgetMonth }) {
   }
 
   return (
-    <div className='flex flex-col gap-4 pb-20'>
+    <div className='flex flex-col gap-4 pb-[calc(5rem+env(safe-area-inset-bottom,0px))]'>
       {budget.loadError ? (
         <p className='rounded-[14px] border border-[var(--bb-mg)] bg-[var(--bb-mg-tint)] px-4 py-3 text-[13.5px] text-[var(--bb-mg-text)]'>
           {budget.loadError}
