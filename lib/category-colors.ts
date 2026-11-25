@@ -1,10 +1,12 @@
 /**
  * Category identity colors. Stored on `categories.color` as a key, never a hex.
  *
- * Warm and purple only: amber, clay, sand, mustard, copper, rose, orchid,
+ * Warm and purple only: honey, sand, clay, mustard, copper, rose, orchid,
  * violet, plum, mauve, taupe, and graphite. No blue, no green, and no true
  * red, so these tags stay clear of the under-budget green and over-budget
- * red. Light and dark hexes live in `app/globals.css` as `--bb-cat-<key>`.
+ * red. Honey, sand, clay, and mustard are separated in this list and use
+ * different lightness so they do not blur together. Light and dark hexes
+ * live in `app/globals.css` as `--bb-cat-<key>`.
  *
  * This array is the app's source of truth, and its order is the default
  * sequence. A group with no saved color uses its place in the month
@@ -19,15 +21,15 @@
 export const CATEGORY_COLORS = [
   { key: 'honey', name: 'Honey', cssVar: '--bb-cat-honey' },
   { key: 'violet', name: 'Violet', cssVar: '--bb-cat-violet' },
-  { key: 'clay', name: 'Clay', cssVar: '--bb-cat-clay' },
-  { key: 'plum', name: 'Plum', cssVar: '--bb-cat-plum' },
   { key: 'sand', name: 'Sand', cssVar: '--bb-cat-sand' },
+  { key: 'plum', name: 'Plum', cssVar: '--bb-cat-plum' },
+  { key: 'clay', name: 'Clay', cssVar: '--bb-cat-clay' },
   { key: 'rose', name: 'Rose', cssVar: '--bb-cat-rose' },
   { key: 'mustard', name: 'Mustard', cssVar: '--bb-cat-mustard' },
   { key: 'orchid', name: 'Orchid', cssVar: '--bb-cat-orchid' },
-  { key: 'taupe', name: 'Taupe', cssVar: '--bb-cat-taupe' },
-  { key: 'mauve', name: 'Mauve', cssVar: '--bb-cat-mauve' },
   { key: 'copper', name: 'Copper', cssVar: '--bb-cat-copper' },
+  { key: 'mauve', name: 'Mauve', cssVar: '--bb-cat-mauve' },
+  { key: 'taupe', name: 'Taupe', cssVar: '--bb-cat-taupe' },
   { key: 'graphite', name: 'Graphite', cssVar: '--bb-cat-graphite' },
 ] as const;
 
