@@ -23,6 +23,7 @@ import {
   SquaresFour,
   Sun,
   Target,
+  User,
   Wallet,
   Warning,
 } from '@phosphor-icons/react/dist/ssr';
@@ -59,6 +60,7 @@ const ICONS = {
   'squares-four': SquaresFour,
   sun: Sun,
   target: Target,
+  user: User,
   wallet: Wallet,
   warning: Warning,
 } as const;

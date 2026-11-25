@@ -76,11 +76,11 @@ export function MonthStepper() {
   };
 
   return (
-    <span className='flex items-center rounded-[12px] border border-[var(--bb-line)] bg-[var(--bb-surface-2)] text-[13px] whitespace-nowrap md:gap-2.5 md:rounded-[9px] md:px-3 md:py-1.5'>
+    <span className='inline-flex h-11 items-center rounded-full border border-[var(--bb-line)] bg-[var(--bb-surface-2)] text-[13px] whitespace-nowrap text-[var(--bb-text)] md:h-9'>
       <button
         type='button'
         onClick={() => step(-1)}
-        className='inline-flex size-11 cursor-pointer items-center justify-center text-[var(--bb-dim)] transition-colors hover:text-[var(--bb-text)] md:size-6'
+        className='inline-flex size-11 cursor-pointer items-center justify-center rounded-full text-[var(--bb-dim)] transition-colors hover:text-[var(--bb-text)] md:size-8'
         aria-label='Previous month'
       >
         <Icon
@@ -88,7 +88,7 @@ export function MonthStepper() {
           size={16}
         />
       </button>
-      <span className='min-w-[4.75rem] text-center md:min-w-[86px]'>
+      <span className='min-w-[4.6rem] px-0.5 text-center font-medium tabular-nums md:min-w-[7.25rem]'>
         <span className='md:hidden'>
           {SHORT_MONTHS[monthIndex]} {year}
         </span>
@@ -99,7 +99,7 @@ export function MonthStepper() {
       <button
         type='button'
         onClick={() => step(1)}
-        className='inline-flex size-11 cursor-pointer items-center justify-center text-[var(--bb-dim)] transition-colors hover:text-[var(--bb-text)] md:size-6'
+        className='inline-flex size-11 cursor-pointer items-center justify-center rounded-full text-[var(--bb-dim)] transition-colors hover:text-[var(--bb-text)] md:size-8'
         aria-label='Next month'
       >
         <Icon

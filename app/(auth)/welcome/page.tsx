@@ -3,7 +3,6 @@ import { ChevronRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/ui/logo';
-import { ThemeCycle } from '@/components/shell/ThemeCycle';
 
 const POINTS = [
   {
@@ -33,7 +32,6 @@ export default function LandingPage() {
             Budget Brain
           </Link>
           <div className='flex items-center gap-3'>
-            <ThemeCycle />
             <Link
               href='/login'
               className='hover:no-underline'

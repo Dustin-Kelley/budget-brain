@@ -4,10 +4,16 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Logo } from '@/components/ui/logo';
 import { Icon } from './Icon';
-import { ThemeCycle } from './ThemeCycle';
+import { UserAvatar } from './UserAvatar';
 import { NAV_ITEMS, SETTINGS_ITEM, isNavActive } from './nav';
 
-export function SideNav({ initial }: { initial: string }) {
+export function SideNav({
+  initial,
+  imageUrl,
+}: {
+  initial: string;
+  imageUrl?: string | null;
+}) {
   const pathname = usePathname();
 
   return (
@@ -58,10 +64,14 @@ export function SideNav({ initial }: { initial: string }) {
         <div className='mt-2 flex items-center gap-2.5 border-t border-[var(--bb-line)] px-2 pt-3 pb-1'>
           <Link
             href='/settings'
-            className='flex size-[30px] flex-none items-center justify-center rounded-full bg-[var(--bb-text)] text-[12px] font-semibold text-[var(--bb-bg)] hover:text-[var(--bb-bg)]'
+            className='bb-avatar-link rounded-full'
             aria-label='Settings'
           >
-            {initial}
+            <UserAvatar
+              initial={initial}
+              imageUrl={imageUrl}
+              className='size-[30px] text-[12px]'
+            />
           </Link>
           <div className='min-w-0'>
             <div className='text-[13.5px] leading-tight font-semibold'>
@@ -71,7 +81,6 @@ export function SideNav({ initial }: { initial: string }) {
               Budget Brain
             </div>
           </div>
-          <ThemeCycle className='ml-auto' />
         </div>
       </div>
     </aside>
