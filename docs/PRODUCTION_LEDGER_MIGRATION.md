@@ -8,9 +8,13 @@ migrations against the **production** Supabase project used by Vercel:
 3. `supabase/migrations/20261023203956_budget_account_link_rls.sql` — nullable
    `transactions.account_id`, plus household RLS on `categories`, `line_items`,
    `income`, and `transactions`
+4. `supabase/migrations/20261125160000_category_color.sql` — nullable
+   `categories.color` (a palette key)
 
-The app keeps working if step 3 lands a few minutes after the deploy. Until
-that column exists, budget transactions save without an account.
+The app keeps working if steps 3 and 4 land a few minutes after the deploy.
+Until `account_id` exists, budget transactions save without an account. Until
+`categories.color` exists, groups still show a color from their order in the
+month, and picking a color waits for the column.
 
 ## Option A — Supabase SQL editor
 

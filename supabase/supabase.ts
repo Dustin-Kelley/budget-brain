@@ -11,6 +11,7 @@ export type Database = {
     Tables: {
       categories: {
         Row: {
+          color: string | null
           created_at: string
           household_id: string
           id: string
@@ -20,6 +21,7 @@ export type Database = {
           year: number | null
         }
         Insert: {
+          color?: string | null
           created_at?: string
           household_id: string
           id?: string
@@ -29,6 +31,7 @@ export type Database = {
           year?: number | null
         }
         Update: {
+          color?: string | null
           created_at?: string
           household_id?: string
           id?: string

@@ -11,6 +11,11 @@ import {
   isZeroBased,
   spentByItemId,
 } from '@/lib/budget/math';
+import {
+  categoryColorByKey,
+  resolveCategoryColor,
+  type CategoryColorKey,
+} from '@/lib/category-colors';
 import type { BudgetMonth, BudgetView } from '@/lib/budget/types';
 import {
   addGroup,
@@ -22,7 +27,12 @@ import {
   removeItem,
   renameGroup,
   saveIncomeLine,
+  setGroupColor,
 } from '../actions';
+import {
+  CategoryColorPicker,
+  CategoryDot,
+} from '@/components/bb/CategoryColorPicker';
 import { MoneyField, NameField } from './BudgetFields';
 import { AddTransactionFab } from './AddTransactionFab';
 import { LineItemDetail } from './LineItemDetail';
@@ -181,6 +191,7 @@ export function BudgetScreen({ budget }: { budget: BudgetMonth }) {
               spentTotal={group.spent}
               remaining={group.remaining}
               color={group.color}
+              colorKey={group.colorKey}
               view={view}
               editing={editing}
               spentByItem={spent}
@@ -222,6 +233,7 @@ export function BudgetScreen({ budget }: { budget: BudgetMonth }) {
       <LineItemDetail
         item={openItem ? openItem.item : null}
         groupName={openItem ? openItem.groupName : ''}
+        groupColor={openItem ? openItem.groupColor : 'var(--bb-dim)'}
         spent={openItem ? openItem.spent : 0}
         transactions={budget.transactions}
         onOpenChange={(open) => {
@@ -252,12 +264,14 @@ function findOpenItem(
   spent: Map<string, number>,
 ) {
   if (!openItemId) return null;
-  for (const group of budget.groups) {
+  for (let index = 0; index < budget.groups.length; index += 1) {
+    const group = budget.groups[index];
     const item = group.items.find((row) => row.id === openItemId);
     if (!item) continue;
     return {
       item,
       groupName: group.name,
+      groupColor: resolveCategoryColor(group.colorKey, index),
       spent: spent.get(item.id) ?? 0,
     };
   }
@@ -519,6 +533,7 @@ function GroupCard({
   spentTotal,
   remaining,
   color,
+  colorKey,
   view,
   editing,
   spentByItem,
@@ -531,6 +546,7 @@ function GroupCard({
   spentTotal: number;
   remaining: number;
   color: string;
+  colorKey: CategoryColorKey;
   view: BudgetView;
   editing: boolean;
   spentByItem: Map<string, number>;
@@ -553,10 +569,23 @@ function GroupCard({
   return (
     <section className='bb-card px-4 py-4 sm:px-5'>
       <div className='flex items-center gap-2 border-b border-[var(--bb-line-2)] pb-2 sm:gap-3'>
-        <span
-          className='size-2.5 flex-none rounded-full'
-          style={{ background: color }}
-        />
+        {editing ? (
+          <CategoryColorPicker
+            name={group.name}
+            color={color}
+            colorKey={colorKey}
+            onPick={(key) =>
+              onCommit(() => setGroupColor({ id: group.id, color: key }))
+            }
+          />
+        ) : (
+          <span
+            className='inline-flex size-6 flex-none items-center justify-center'
+            title={categoryColorByKey(colorKey).name}
+          >
+            <CategoryDot color={color} />
+          </span>
+        )}
         {editing ? (
           <NameField
             value={group.name}

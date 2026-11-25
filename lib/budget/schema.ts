@@ -11,3 +11,17 @@ export function isMissingAccountColumn(error: {
   if (message.includes('schema cache')) return true;
   return false;
 }
+
+/** True when PostgREST is talking to a database that has no categories.color yet. */
+export function isMissingCategoryColor(error: {
+  code?: string;
+  message?: string;
+} | null) {
+  if (!error) return false;
+  const message = (error.message ?? '').toLowerCase();
+  if (!message.includes('color')) return false;
+  if (error.code === '42703' || error.code === 'PGRST204') return true;
+  if (message.includes('does not exist')) return true;
+  if (message.includes('schema cache')) return true;
+  return false;
+}

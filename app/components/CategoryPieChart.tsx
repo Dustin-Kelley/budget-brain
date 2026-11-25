@@ -17,7 +17,6 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import { useMemo, useState } from 'react';
-import { categoryColors } from '@/lib/constants';
 import { Separator } from '@/components/ui/separator';
 
 type ChartData = {
@@ -112,11 +111,11 @@ export function CategoryPieChart({
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const chartConfig = useMemo(() => {
     const config: ChartConfig = {} satisfies ChartConfig;
-    chartData.forEach((category, index) => {
+    chartData.forEach((category) => {
       if (category.name) {
         config[category.name] = {
           label: category.name,
-          color: categoryColors[index % categoryColors.length],
+          color: category.color,
         };
       }
     });

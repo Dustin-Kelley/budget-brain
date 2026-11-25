@@ -4,6 +4,8 @@ import { createClient } from '@/utils/supabase/server';
 import { getCurrentUser } from '@/app/queries/getCurrentUser';
 import { redirect } from 'next/navigation';
 import { getMonthAndYearNumberFromDate } from '@/lib/utils';
+import { insertCategory } from '@/lib/budget/writeCategory';
+import { resolveCategoryColorKey } from '@/lib/category-colors';
 
 export const rolloverBudget = async ({ fromDate, toDate }: { fromDate: string; toDate: string }) => {
   const supabase = await createClient();
@@ -43,18 +45,18 @@ export const rolloverBudget = async ({ fromDate, toDate }: { fromDate: string; t
   }
 
   // Insert duplicated categories and line items for the current month
-  for (const category of prevCategories || []) {
-    // Insert category for current month
-    const { data: newCat, error: newCatError } = await supabase
-      .from('categories')
-      .insert({
+  for (const [index, category] of (prevCategories || []).entries()) {
+    // Insert category for current month, keeping the color the user already picked.
+    const { data: newCat, error: newCatError } = await insertCategory(
+      supabase,
+      {
         name: category.name,
         household_id: currentUser.household_id,
         month: toMonth,
         year: toYear,
-      })
-      .select()
-      .single();
+        color: resolveCategoryColorKey(category.color, index),
+      },
+    );
     if (newCatError) {
       return { error: newCatError };
     }

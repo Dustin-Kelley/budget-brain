@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/drawer';
 import { parseMoneyInput } from './BudgetFields';
 import { saveItem } from '../actions';
+import { CategoryDot } from '@/components/bb/CategoryColorPicker';
 
 type Commit = (
   action: () => Promise<{ error: string | null }>,
@@ -34,6 +35,7 @@ type Commit = (
 export function LineItemDetail({
   item,
   groupName,
+  groupColor,
   spent,
   transactions,
   onOpenChange,
@@ -43,6 +45,7 @@ export function LineItemDetail({
 }: {
   item: BudgetItem | null;
   groupName: string;
+  groupColor: string;
   spent: number;
   transactions: BudgetMonth['transactions'];
   onOpenChange: (open: boolean) => void;
@@ -57,6 +60,7 @@ export function LineItemDetail({
       key={`${item.id}:${item.name}:${item.planned}`}
       item={item}
       groupName={groupName}
+      groupColor={groupColor}
       spent={spent}
       transactions={transactions}
       surface={isMobile ? 'drawer' : 'dialog'}
@@ -98,6 +102,7 @@ export function LineItemDetail({
 function LineItemBody({
   item,
   groupName,
+  groupColor,
   spent,
   transactions,
   surface,
@@ -108,6 +113,7 @@ function LineItemBody({
 }: {
   item: BudgetItem;
   groupName: string;
+  groupColor: string;
   spent: number;
   transactions: BudgetMonth['transactions'];
   surface: 'dialog' | 'drawer';
@@ -181,7 +187,13 @@ function LineItemBody({
         </label>
         <div className='flex items-center justify-between gap-3 py-1 text-[14px]'>
           <span className='text-[var(--bb-sub)]'>Group</span>
-          <span className='min-w-0 truncate font-semibold'>{groupName}</span>
+          <span className='flex min-w-0 items-center justify-end gap-2 font-semibold'>
+            <CategoryDot
+              color={groupColor}
+              className='size-2'
+            />
+            <span className='truncate'>{groupName}</span>
+          </span>
         </div>
         <div className='grid grid-cols-2 gap-2'>
           <div className='rounded-xl bg-[var(--bb-surface-2)] px-3 py-2.5'>

@@ -82,6 +82,20 @@
   --bb-bad-text: #b42318;
   --bb-bad-tint: #fdf2f2;
 
+  /* Category identity tags. See lib/category-colors.ts. */
+  --bb-cat-cobalt: #2563eb;
+  --bb-cat-honey: #854d0e;
+  --bb-cat-violet: #6d28d9;
+  --bb-cat-cyan: #0891b2;
+  --bb-cat-orchid: #c026d3;
+  --bb-cat-wine: #9d174d;
+  --bb-cat-slate: #334155;
+  --bb-cat-plum: #86198f;
+  --bb-cat-navy: #1e40af;
+  --bb-cat-sky: #0369a1;
+  --bb-cat-indigo: #312e81;
+  --bb-cat-clay: #d97706;
+
   /* Grayscale chart ramp. Darker shades read first. */
   --bb-g1: #171717;
   --bb-g2: #3f3f3f;
@@ -177,6 +191,19 @@
   --bb-bad: #e07a74;
   --bb-bad-text: #f0b0ab;
   --bb-bad-tint: rgba(224, 122, 116, 0.16);
+
+  --bb-cat-cobalt: #60a5fa;
+  --bb-cat-honey: #f5c542;
+  --bb-cat-violet: #c084fc;
+  --bb-cat-cyan: #2dd4bf;
+  --bb-cat-orchid: #f0abfc;
+  --bb-cat-wine: #db2777;
+  --bb-cat-slate: #94a3b8;
+  --bb-cat-plum: #d946ef;
+  --bb-cat-navy: #3b82f6;
+  --bb-cat-sky: #67e8f9;
+  --bb-cat-indigo: #a5b4fc;
+  --bb-cat-clay: #fb923c;
 
   --bb-g1: #f5f5f5;
   --bb-g2: #d4d4d4;
