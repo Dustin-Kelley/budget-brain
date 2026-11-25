@@ -65,6 +65,17 @@ export function draftForEdit(
 
 export type TransactionFormSurface = 'dialog' | 'drawer';
 
+/**
+ * Desktop dialogs land on the amount, not the date.
+ * Focusing a date input opens the calendar and covers the form.
+ */
+export function focusAmountField(event: Event) {
+  event.preventDefault();
+  const content = event.currentTarget;
+  if (!(content instanceof HTMLElement)) return;
+  content.querySelector<HTMLInputElement>('[data-field="amount"]')?.focus();
+}
+
 export function TransactionFormDialog({
   editor,
   groups,
@@ -118,7 +129,10 @@ export function TransactionFormDialog({
         if (!open) onClose();
       }}
     >
-      <DialogContent className='sm:max-w-[440px]'>
+      <DialogContent
+        className='sm:max-w-[440px]'
+        onOpenAutoFocus={focusAmountField}
+      >
         {form}
       </DialogContent>
     </Dialog>
@@ -252,6 +266,7 @@ export function TransactionForm({
           Amount
           <input
             required
+            data-field='amount'
             inputMode='decimal'
             value={form.amount}
             placeholder='0.00'

@@ -16,6 +16,7 @@ import { useMediaQuery } from '@/hooks/use-media-query';
 import { cn } from '@/lib/utils';
 import {
   TransactionForm,
+  focusAmountField,
   type TransactionEditor,
 } from './TransactionFormDialog';
 import type {
@@ -65,7 +66,6 @@ export function AddTransactionFab({
       <Drawer
         open={open}
         onOpenChange={onOpenChange}
-        autoFocus
       >
         <DrawerTrigger asChild>
           <FabButton />
@@ -87,7 +87,10 @@ export function AddTransactionFab({
       <DialogTrigger asChild>
         <FabButton />
       </DialogTrigger>
-      <DialogContent className='max-h-[min(40rem,85vh)] overflow-y-auto sm:max-w-[440px]'>
+      <DialogContent
+        className='max-h-[min(40rem,85vh)] overflow-y-auto sm:max-w-[440px]'
+        onOpenAutoFocus={focusAmountField}
+      >
         {form}
       </DialogContent>
     </Dialog>
