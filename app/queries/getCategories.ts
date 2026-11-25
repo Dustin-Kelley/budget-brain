@@ -19,7 +19,9 @@ export const getCategories = cache(async ({ date }: { date: string | undefined }
     .select('*, line_items(*)')
     .eq('household_id', currentUser.household_id)
     .eq('year', yearNumber)
-    .eq('month', monthNumber);
+    .eq('month', monthNumber)
+    .order('created_at', { ascending: true })
+    .order('id', { ascending: true });
 
   if (error) {
     console.error(error);

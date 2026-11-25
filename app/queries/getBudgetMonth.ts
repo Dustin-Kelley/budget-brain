@@ -247,7 +247,8 @@ async function loadMonthCategories(
       .eq('household_id', householdId)
       .eq('month', monthNumber)
       .eq('year', yearNumber)
-      .order('created_at', { ascending: true });
+      .order('created_at', { ascending: true })
+      .order('id', { ascending: true });
     return { data: result.data, error: result.error };
   }
 
@@ -259,7 +260,8 @@ async function loadMonthCategories(
     .eq('household_id', householdId)
     .eq('month', monthNumber)
     .eq('year', yearNumber)
-    .order('created_at', { ascending: true });
+    .order('created_at', { ascending: true })
+    .order('id', { ascending: true });
   const data = (result.data ?? []).map((row) => ({
     ...row,
     color: null,

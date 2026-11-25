@@ -33,7 +33,8 @@ export async function listCategoryColorSlots(
     .eq('household_id', householdId)
     .eq('month', month)
     .eq('year', year)
-    .order('created_at', { ascending: true });
+    .order('created_at', { ascending: true })
+    .order('id', { ascending: true });
 
   if (!withColor.error) {
     const rows = (withColor.data ?? []).map((row) => ({ color: row.color }));
@@ -50,7 +51,8 @@ export async function listCategoryColorSlots(
     .eq('household_id', householdId)
     .eq('month', month)
     .eq('year', year)
-    .order('created_at', { ascending: true });
+    .order('created_at', { ascending: true })
+    .order('id', { ascending: true });
 
   if (plain.error) {
     return { rows: [], error: 'Could not read groups.' };

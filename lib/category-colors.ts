@@ -1,32 +1,31 @@
 /**
  * Category identity colors. Stored on `categories.color` as a key, never a hex.
  *
- * Harbor is a cool set (blues, teal, violet) with a few warm anchors so a
- * donut is still readable when many groups are on screen. Light and dark
- * hexes live in `app/globals.css` as `--bb-cat-*` so a chart can use
- * `var(--bb-cat-cobalt)` and follow the theme.
+ * A warm, varied set: gold, purple, sage, berry, terracotta, magenta, sand,
+ * rose, gray, and one muted blue near the end. Light and dark hexes live in
+ * `app/globals.css` as `--bb-cat-*`.
  *
  * Status green and status red are not in this set. Over and under budget stay
- * on the money text. These colors are dots, chips, and chart slices.
+ * on the money text (and the over-budget bar). These colors are dots, chips,
+ * and chart slices.
  *
- * Order is the default sequence: a group with no saved color uses its place
- * in the month (created first gets Cobalt). The first colors are the ones
- * furthest apart.
+ * Order is the default sequence. A group with no saved color uses its place
+ * in the month. The first group gets Honey, not a blue.
  */
 
 export const CATEGORY_COLORS = [
-  { key: 'cobalt', name: 'Cobalt', cssVar: '--bb-cat-cobalt' },
   { key: 'honey', name: 'Honey', cssVar: '--bb-cat-honey' },
   { key: 'violet', name: 'Violet', cssVar: '--bb-cat-violet' },
-  { key: 'cyan', name: 'Cyan', cssVar: '--bb-cat-cyan' },
-  { key: 'orchid', name: 'Orchid', cssVar: '--bb-cat-orchid' },
+  { key: 'sage', name: 'Sage', cssVar: '--bb-cat-sage' },
   { key: 'wine', name: 'Wine', cssVar: '--bb-cat-wine' },
-  { key: 'slate', name: 'Slate', cssVar: '--bb-cat-slate' },
-  { key: 'plum', name: 'Plum', cssVar: '--bb-cat-plum' },
-  { key: 'navy', name: 'Navy', cssVar: '--bb-cat-navy' },
-  { key: 'sky', name: 'Sky', cssVar: '--bb-cat-sky' },
-  { key: 'indigo', name: 'Indigo', cssVar: '--bb-cat-indigo' },
   { key: 'clay', name: 'Clay', cssVar: '--bb-cat-clay' },
+  { key: 'plum', name: 'Plum', cssVar: '--bb-cat-plum' },
+  { key: 'sand', name: 'Sand', cssVar: '--bb-cat-sand' },
+  { key: 'rose', name: 'Rose', cssVar: '--bb-cat-rose' },
+  { key: 'slate', name: 'Slate', cssVar: '--bb-cat-slate' },
+  { key: 'berry', name: 'Berry', cssVar: '--bb-cat-berry' },
+  { key: 'dusk', name: 'Dusk', cssVar: '--bb-cat-dusk' },
+  { key: 'ash', name: 'Ash', cssVar: '--bb-cat-ash' },
 ] as const;
 
 export type CategoryColorKey = (typeof CATEGORY_COLORS)[number]['key'];

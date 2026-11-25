@@ -118,7 +118,7 @@ export function PlanSummaryCard({ budget }: { budget: BudgetMonth }) {
                       className='h-full rounded-[4px]'
                       style={{
                         width: `${width}%`,
-                        background: group.color,
+                        background: itemOver ? 'var(--bb-bad)' : group.color,
                       }}
                     />
                   </div>

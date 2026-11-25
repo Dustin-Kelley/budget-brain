@@ -26,7 +26,9 @@ export const rolloverBudget = async ({ fromDate, toDate }: { fromDate: string; t
     .select('*, line_items(*)')
     .eq('household_id', currentUser.household_id)
     .eq('month', fromMonth)
-    .eq('year', fromYear);
+    .eq('year', fromYear)
+    .order('created_at', { ascending: true })
+    .order('id', { ascending: true });
     
     if (prevCatError) {
       return { error: prevCatError };
